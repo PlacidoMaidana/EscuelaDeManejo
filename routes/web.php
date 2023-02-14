@@ -17,6 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/planificaevento','App\Http\Controllers\eventos@index');
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
