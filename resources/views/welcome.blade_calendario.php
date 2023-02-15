@@ -23,7 +23,7 @@
           </head>
           <body>
             <div id='calendar'></div>
-          </body>
+            </body>
 
 
 
