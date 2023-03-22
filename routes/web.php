@@ -18,6 +18,9 @@ Route::get('/', function () {
 });
 
 Route::get('/planificaevento','App\Http\Controllers\eventos_curso@index');
+Route::get('/calendario','App\Http\Controllers\CalendarioController@index');
+Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@store');
+
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
