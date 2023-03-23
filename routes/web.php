@@ -17,8 +17,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+Route::get('/Alumnos_curso','App\Http\Controllers\voyager\Alumnos_CursosController@index');
+
 Route::get('/planificaevento','App\Http\Controllers\eventos_curso@index');
+Route::post('/planificaevento/agregar','App\Http\Controllers\eventos_curso@store');
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
