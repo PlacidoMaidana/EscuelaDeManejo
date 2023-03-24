@@ -22,7 +22,9 @@ Route::get('/', function () {
 Route::get('/Alumnos_curso','App\Http\Controllers\voyager\Alumnos_CursosController@index');
 
 Route::get('/planificaevento','App\Http\Controllers\eventos_curso@index');
-Route::post('/planificaevento/agregar','App\Http\Controllers\eventos_curso@store');
+Route::get('/calendario/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@index');
+Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@store');
+
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();

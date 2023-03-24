@@ -11,22 +11,16 @@
             <a href="{{ route('voyager.'.$dataType->slug.'.create') }}" class="btn btn-success btn-add-new">
                 <i class="voyager-plus"></i> <span>{{ __('voyager::generic.add_new') }}</span>
             </a>
+            <a href="{{url("/calendario")}}"  class="btn btn-primary" >Calendario</a>
         @endcan
         @can('delete', app($dataType->model_name))
             @include('voyager::partials.bulk-delete')
         @endcan
-
-  
-
-
-
-
         @can('edit', app($dataType->model_name))
             @if(!empty($dataType->order_column) && !empty($dataType->order_display_column))
                 <a href="{{ route('voyager.'.$dataType->slug.'.order') }}" class="btn btn-primary btn-add-new">
                     <i class="voyager-list"></i> <span>{{ __('voyager::bread.order') }}</span>
                 </a>
-               
             @endif
         @endcan
         @can('delete', app($dataType->model_name))
@@ -265,7 +259,6 @@
                                                     @include('voyager::bread.partials.actions', ['action' => $action])
                                                 @endif
                                             @endforeach
-                                            <a href="{{url('/calendario/'.$data->getKey())}}" class=" btn  btn-primary "> Clases </a>
                                         </td>
                                     </tr>
                                     @endforeach
