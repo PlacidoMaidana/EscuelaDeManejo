@@ -163,7 +163,7 @@
                 formulario.idVehiculo.value={{$AlumnoCursoInfo[0]->id_vehiculo}};
                 formulario.idInstructor.value={{$AlumnoCursoInfo[0]->id_instructor}};
                 
-               
+                 console.log(info);
 
                 $('#ModCalendario').modal("show");
             },
@@ -183,6 +183,7 @@
             .then(
                 (respuesta)=>{
                     console.log(respuesta);
+                    calendar.refetchEvents();
                     $("#ModCalendario").modal("hide");
                 }
             )

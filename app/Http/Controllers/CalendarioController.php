@@ -69,6 +69,7 @@ class CalendarioController extends Controller
         $validator = \Validator::make($request->all(), [
                  'clase' => 'required|max:255',
                  'start_date' => 'required'
+
                  
         ]);
         if ($validator->fails()) {
@@ -78,7 +79,13 @@ class CalendarioController extends Controller
         $clase = AlumnoEvento::create([
           'clase' => $request['clase'],
           'start_date' => $request['start_date'],
-          'end_date' => $request['end_date'] ,                   
+          'end_date' => $request['end_date'] ,  
+          'id_alumno_curso' => $request['idAlumnoCurso'] ,
+          'id_vehiculo' => $request['idVehiculo'] ,
+          'id_instructor' => $request['idInstructor'] ,
+          'asistencia' => $request['asistencia'] ,
+          'descripcion' => $request['descripcion'] ,
+
         ]);
         
 

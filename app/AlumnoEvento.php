@@ -12,6 +12,6 @@ class AlumnoEvento extends Model
         'start_date'=>'required'
               
     ];
-    protected $fillable = ['clase', 'start_date','end_date',];
+    protected $fillable = ['clase', 'start_date','end_date','id_alumno_curso','id_vehiculo', 'id_instructor','asistencia', 'descripcion'];
     protected $table = 'alumno_evento';    
 }
