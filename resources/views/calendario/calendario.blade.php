@@ -61,14 +61,22 @@
                        <form action="" id="FormCalendar" method="post">
                         {!! csrf_field() !!}
                         <div class="form-group">
-                          <label for="clase"></label>
-                          <input type="text" class="form-control" name="clase" id="clase" aria-describedby="helpId" placeholder="">
-                          <small id="helpId" class="form-text text-muted">Clase</small>
+                          <label for="id"></label>
+                          <input type="text" class="form-control" name="id" id="id" aria-describedby="helpId" placeholder="" value="">
+                          <small id="helpId" class="form-text text-muted">Id</small>
                         </div>
 
                         <div class="form-group">
+                          <label for="clase"></label>
+                          <input type="text" class="form-control" name="clase" id="clase" aria-describedby="helpId" placeholder="" value="">
+                          <small id="helpId" class="form-text text-muted">Clase</small>
+                        </div>
+
+                       
+
+                        <div class="form-group">
                           <label for="start_date"></label>
-                          <input type="date" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="">
+                          <input type="date" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
                           <small id="helpId" class="form-text text-muted">start_date</small>
                         </div>
 
@@ -167,6 +175,35 @@
 
                 $('#ModCalendario').modal("show");
             },
+            eventClick:function(info){
+              var evento=info.event;
+              console.log(evento);
+             //  window.location.href = "http://127.0.0.1:8000/calendario/editar/"+info.event.id;
+
+             axios.post("http://127.0.0.1:8000/calendario/editar/"+info.event.id)
+              .then(
+                (respuesta)=>{
+                    formulario.id.value=respuesta.data.id;
+                    formulario.clase.value=respuesta.data.clase;
+                    formulario.start_date.value=respuesta.data.start_date;
+                    formulario.end_date.value=respuesta.data.end_date;
+                    formulario.idAlumnoCurso.value=respuesta.data.id_alumno_curso;
+                    formulario.idVehiculo.value=respuesta.data.id_vehiculo;
+                    formulario.idInstructor.value=respuesta.data.id_instructor;
+                    formulario.asistencia.value=respuesta.data.asistencia;
+                    formulario.descripcion.value=respuesta.data.descripcion;
+
+                    $("#ModCalendario").modal("show");
+                }
+            )
+            .catch((error) => {
+               console.log(error);
+               // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
+             });
+          
+
+
+            },
             
 
           events: @json($events) 
@@ -184,6 +221,7 @@
                 (respuesta)=>{
                     console.log(respuesta);
                     calendar.refetchEvents();
+                    
                     $("#ModCalendario").modal("hide");
                 }
             )

@@ -37,10 +37,15 @@ class CalendarioController extends Controller
         $events = [];
        foreach ($all_events as $event) {
        
-       $events[] = ['title' => $event->clase,
+       $events[] = ['id' => $event->id,
+       'title' => $event->clase,
        'start' => $event->start_date,
        'end' => $event->end_date,
-       'idAlumnoCurso'=>$idAlumnoCurso
+       'idAlumnoCurso'=>$idAlumnoCurso,
+       'idVehiculo'=>$event->id_vehiculo,
+       'idInstructor'=>$event->id_instructor,
+       'asistencia'=>$event->asistencia,
+       'descripcion'=>$event->descripcion
     //    'idVehiculo'
     //    'idInstructor'
     //    'asistencia'
@@ -95,6 +100,16 @@ class CalendarioController extends Controller
           ], 200);
        
     }
+
+
+    public function edit($id)
+    {
+       $evento=AlumnoEvento::find($id);
+        return response()->json($evento);   
+    }
+
+
+
 
 
 
