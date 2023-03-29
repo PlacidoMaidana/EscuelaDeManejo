@@ -185,6 +185,7 @@
                     console.log(respuesta);
                     calendar.refetchEvents();
                     $("#ModCalendario").modal("hide");
+                    
                 }
             )
             .catch((error) => {
