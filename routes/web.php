@@ -24,6 +24,7 @@ Route::get('/Alumnos_curso','App\Http\Controllers\voyager\Alumnos_CursosControll
 Route::get('/planificaevento','App\Http\Controllers\eventos_curso@index');
 Route::get('/calendario/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@index');
 Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@store');
+Route::post('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');
 
 
 Route::group(['prefix' => 'admin'], function () {
