@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\AlumnoEvento;
+use Carbon\Carbon;
 
 class CalendarioController extends Controller
 {
@@ -11,9 +12,7 @@ class CalendarioController extends Controller
 
     public function index($idAlumnoCurso)
     {
-        //dd($idAlumnoCurso);
-        // código para mostrar la lista de elementos
-        //$all_events = AlumnoEvento::all();
+       
 
         $all_events = DB::table('alumno_evento')
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
@@ -27,11 +26,7 @@ class CalendarioController extends Controller
         //->join('vehiculos as v','alumno_evento.id_vehiculo','=','v.id')
         ->where('alumnos_cursos.id','=', $idAlumnoCurso)
         ->select(['alumnos_cursos.id as id', 'id_vehiculo', 'id_instructor'])->get();
-
-
-
-       // dd($all_events,$AlumnoCursoInfo);
-        
+       
 
 
         $events = [];
@@ -46,10 +41,7 @@ class CalendarioController extends Controller
        'idInstructor'=>$event->id_instructor,
        'asistencia'=>$event->asistencia,
        'descripcion'=>$event->descripcion
-    //    'idVehiculo'
-    //    'idInstructor'
-    //    'asistencia'
-    //    'descripcion'
+ 
         ];
        }
            
@@ -63,8 +55,14 @@ class CalendarioController extends Controller
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      */
+    public function show(AlumnoEvento $evento)
+    {
+        $evento=AlumnoEvento::all();
+        return response()->json($evento); 
 
+    }
     public function store(Request $request)
     {
          //request()->validate(AlumnoEvento::$rules);
@@ -105,10 +103,25 @@ class CalendarioController extends Controller
     public function edit($id)
     {
        $evento=AlumnoEvento::find($id);
-        return response()->json($evento);   
+       $evento->start_date = Carbon::createFromFormat('Y-m-d H:i:s', $evento->start_date)->Format('Y-m-d H:i') ;
+       $evento->end_date = Carbon::createFromFormat('Y-m-d H:i:s', $evento->end_date)->Format('Y-m-d H:i') ;
+       return response()->json($evento);   
+    }
+
+    public function destroy($id)
+    {
+      
+        $evento=AlumnoEvento::find($id)->delete();
+        return response()->json($evento);
     }
 
 
+    public function update(Request $request, AlumnoEvento $evento)
+    {
+        request()->validate(AlumnoEvento::$rules);
+        $evento->update($request->all());
+        return response()->json($evento);
+    }
 
 
 

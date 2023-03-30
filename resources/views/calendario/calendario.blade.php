@@ -76,13 +76,13 @@
 
                         <div class="form-group">
                           <label for="start_date"></label>
-                          <input type="date" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
+                          <input type="datetime" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
                           <small id="helpId" class="form-text text-muted">start_date</small>
                         </div>
 
                         <div class="form-group">
                             <label for="end_date"></label>
-                            <input type="date" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
+                            <input type="datetime" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
                             <small id="helpId" class="form-text text-muted">end_date</small>
                         </div>
 
@@ -148,16 +148,16 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
-    <script>
+<script>
 
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
 
         let formulario = document.getElementById("FormCalendar");
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
           
-          headerToolbar:{
+            headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
@@ -195,49 +195,82 @@
 
                     $("#ModCalendario").modal("show");
                 }
-            )
-            .catch((error) => {
+                )
+              .catch((error) =>
+                {
                console.log(error);
                // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
-             });
-          
-
-
+                });
             },
-            
-
-          events: @json($events) 
+  
+        //  events: @json($events) 
+         events: "http://127.0.0.1:8000/calendario/index" ,
         });
+        
+
         calendar.setOption('locale','Es');
         calendar.render();
-
+       
         document.getElementById("btn-guardar").addEventListener("click",function(){
             const datos= new FormData(formulario);
-            console.log(datos.get('start_date'));
-            console.log(formulario.clase.value);
+            //console.log(datos.get('start_date'));
+            // console.log(formulario.clase.value);
            
             axios.post("http://127.0.0.1:8000/calendario/agregar", datos)
             .then(
                 (respuesta)=>{
                     console.log(respuesta);
                     calendar.refetchEvents();
-                    
                     $("#ModCalendario").modal("hide");
-                    
                 }
             )
             .catch((error) => {
                console.log(error);
                // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
              });
-
-
-        });
+        }); 
         
+        document.getElementById("btn-eliminar").addEventListener("click",function(){
+            const datos= new FormData(formulario);
+            // console.log(datos.get('start_date'));
+            // console.log(formulario.clase.value);
+           
+            axios.post("http://127.0.0.1:8000/calendario/borrar/"+formulario.id.value)
+            .then(
+                (respuesta)=>{
+                    console.log(respuesta);
+                    calendar.refetchEvents();
+                    $("#ModCalendario").modal("hide");
+                }
+              )
+            .catch((error) => {
+               console.log(error);
+               // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
+             });
 
+        }); 
 
+        document.getElementById("btn-modificar").addEventListener("click",function(){
+            const datos= new FormData(formulario);
+            //console.log(datos.get('start_date'));
+            //console.log(formulario.clase.value);
+           
+            axios.post("http://127.0.0.1:8000/calendario/actualizar/"+formulario.id.value , datos)
+            .then(
+                (respuesta)=>{
+                    console.log(respuesta);
+                    calendar.refetchEvents();
+                    $("#ModCalendario").modal("hide");
+                }
+              )
+            .catch((error) => {
+               console.log(error);
+               // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
+             });
 
+        }); 
       });
-        
-    </script>
+     
+
+</script>
 @stop

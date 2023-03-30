@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
      
        axios.post('http://127.0.0.1:8000/planificaevento/agregar', datos ).
           then(response => {
+            calendar.refetchEvent();
             $("#evento").modal("hide");
         }).catch(e => {
             console.log(e);
