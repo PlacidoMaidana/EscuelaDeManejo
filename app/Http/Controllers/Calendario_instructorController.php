@@ -4,28 +4,31 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\AlumnoEvento;
+use App\Instructore;
 use Carbon\Carbon;
 
-class CalendarioController extends Controller
+class Calendario_instructorController extends Controller
 {
     //
 
-    public function index($idAlumnoCurso)
+    public function index($idInstructor)
     {
-       
-
         $all_events = DB::table('alumno_evento')
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
         //->join('vehiculos as v','alumno_evento.id_vehiculo','=','v.id')
-        ->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
-        ->select(['alumno_evento.id as id', 'id_vehiculo', 'id_instructor',
+        ->where('alumno_evento.id_instructor','=', $idInstructor)
+        ->select(['alumno_evento.id as id','id_alumno_curso' ,'id_vehiculo', 'id_instructor',
         'clase','start_date','end_date','asistencia','descripcion'])->get();
 
+        /*
+         * En este calendario no tenemos un alumno seleccionado al ingresar 
+        ********************************************************************
         $AlumnoCursoInfo = DB::table('alumnos_cursos')
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
         //->join('vehiculos as v','alumno_evento.id_vehiculo','=','v.id')
         ->where('alumnos_cursos.id','=', $idAlumnoCurso)
         ->select(['alumnos_cursos.id as id', 'id_vehiculo', 'id_instructor'])->get();
+        */
        
 
 
@@ -36,7 +39,7 @@ class CalendarioController extends Controller
        'title' => $event->clase,
        'start' => $event->start_date,
        'end' => $event->end_date,
-       'idAlumnoCurso'=>$idAlumnoCurso,
+       'idAlumnoCurso'=>$event->id_alumno_curso,
        'idVehiculo'=>$event->id_vehiculo,
        'idInstructor'=>$event->id_instructor,
        'asistencia'=>$event->asistencia,
@@ -44,8 +47,10 @@ class CalendarioController extends Controller
  
         ];
        }
-           
-        return view('calendario.calendario', compact('events','AlumnoCursoInfo','idAlumnoCurso'));
+           //!!!!!!!!!!!!!!! hay que buscar el vehiculo del instructor  >>>>>>
+           $instructor=$idInstructor;
+           $vehiculo=1;
+        return view('calendario.calendario_instructor', compact('events','instructor','vehiculo',));
     }
 
 

@@ -260,7 +260,7 @@
                                                     @include('voyager::bread.partials.actions', ['action' => $action])
                                                 @endif
                                             @endforeach
-                                            <a href="{{url('/calendario/'.$data->getKey())}}" class=" btn  btn-primary "> Clases </a>
+                                            <a href="{{url('/calendario_instructor/'.$data->getKey())}}" class=" btn  btn-primary "> Clases </a>
                                         </td>
                                     </tr>
                                     @endforeach

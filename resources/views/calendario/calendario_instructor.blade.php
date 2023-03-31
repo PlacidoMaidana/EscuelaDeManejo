@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <h1>Esta es la pagina para el calendario</h1>
+                <h1>Calendario del instructor</h1>
                 
     <div class="card">
 
@@ -167,9 +167,8 @@
                 formulario.reset();
                 formulario.start_date.value=info.dateStr;
                 formulario.end_date.value=info.dateStr;
-                formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
-                formulario.idVehiculo.value={{$AlumnoCursoInfo[0]->id_vehiculo}};
-                formulario.idInstructor.value={{$AlumnoCursoInfo[0]->id_instructor}};
+                formulario.idVehiculo.value={{$vehiculo}};
+                formulario.idInstructor.value={{$instructor}};
                 
                  console.log(info);
 
@@ -221,7 +220,7 @@
                 (respuesta)=>{
                     console.log(respuesta);
                     //calendar.refetchEvents();
-                    location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+                    location.href = "http://127.0.0.1:8000/calendario/"+{{$instructor}};
                     $("#ModCalendario").modal("hide");
                 }
             )
@@ -240,8 +239,8 @@
             .then(
                 (respuesta)=>{
                     console.log(respuesta);
-                    //calendar.refetchEvents();
-                    location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+                 //   calendar.refetchEvents();
+                 location.href = "http://127.0.0.1:8000/calendario/"+{{$instructor}};
                     $("#ModCalendario").modal("hide");
                 }
               )
@@ -261,8 +260,7 @@
             .then(
                 (respuesta)=>{
                     console.log(respuesta);
-                   // calendar.refetchEvents();
-                   location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+                    calendar.refetchEvents();
                     $("#ModCalendario").modal("hide");
                 }
               )
