@@ -18,9 +18,9 @@ Route::get('/', function () {
 });
 
 
-
+Route::get('Alumnos_elegir', 'App\Http\Controllers\AlumnoBrebeController@alumno_elegir');
 Route::get('/Alumnos_curso','App\Http\Controllers\voyager\Alumnos_CursosController@index');
-Route::get('/planificaevento','App\Http\Controllers\eventos_curso@index');
+
 
 //|##############################################|
 //|           Calendario del alumno              |
@@ -44,4 +44,15 @@ Route::post('/calendario_instructor/borrar/{id}','App\Http\Controllers\Calendari
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
+
+//////////////////////////////////////////////////////////
+// GRILLA DE CURSOS ALUMNOS
+//////////////////////////////////////////////////////////
+
+
+Route::get('/cursos_activos/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_activos');
+Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_terminados');
+
+
 

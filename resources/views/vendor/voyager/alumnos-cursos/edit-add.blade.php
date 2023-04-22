@@ -7,6 +7,7 @@
 
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @livewireStyles
 @stop
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -15,10 +16,12 @@
     <h1 class="page-title">
         DATOS DE LA INSCRIPCION
         <i class="{{ $dataType->icon }}"></i>
-        {{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
     </h1>
     @include('voyager::multilingual.language-selector')
 @stop
+
+
+
 
 @section('content')
     <div class="page-content edit-add container-fluid">
@@ -54,11 +57,14 @@
                             <!-- Adding / Editing -->
                             @php
                                 $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
+                          
+                        
                             @endphp
-
-                            @foreach($dataTypeRows as $row)
+                          
+                            @for ($i = 0; $i < count($dataTypeRows); $i++)
                                 <!-- GET THE DISPLAY OPTIONS -->
                                 @php
+                                $row=$dataTypeRows[$i];
                                     $display_options = $row->details->display ?? NULL;
                                     if ($dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')}) {
                                         $dataTypeContent->{$row->field} = $dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')};
@@ -67,6 +73,107 @@
                                 @if (isset($row->details->legend) && isset($row->details->legend->text))
                                     <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
                                 @endif
+                                
+                                           
+
+
+                                @if ($row->getTranslatedAttribute('display_name')=='alumnos')
+                                                {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                                <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      Boton + Alumno          <<<<<<<<<<<<<<<<<<<<<<<<<
+                                                <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                              <<<<<<<<<<<<<<<<<<<<<<<<
+                                                <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< --}}
+                                                          <!-- Modal -->
+                                                             <div class="modal fade modal-warning" id="modal_alumno" v-if="allowCrop">
+                                                               <div class="modal-dialog"  style="min-width: 50%">
+                                                                   <div class="modal-content">
+                                                                       <div class="modal-header">
+                                                                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                           <h4 class="modal-title">Nuevo alumno</h4>
+                                                                       </div>
+                                                                       <div id="x34" class="modal-body">
+                                                                           <livewire:ficha-alumno /> 
+                                                                       </div>
+                                                                       <div class="modal-footer">
+                                                                           <button type="button" id="salir" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                                       </div>
+                                                                   </div>
+                                                               </div>
+                                                             </div>	
+                                    
+
+                                                 <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                                    {{ $row->slugify }}
+                                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}
+                                                          <!-- Button trigger modal -->
+                                                          <button type="button" id="alumno" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_alumno">
+                                                            + Alumno
+                                                          </button>
+                                                    </label>
+
+                                                    <button type="button" id="boton_elegir_alumno" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_alumno_elegir">
+                                                        Buscar Alumno
+                                                    </button>
+                                                     
+                                                        <input type="hidden" id="id_alumno" name="id_alumno"  value="{{$id_alumno}}" >
+                                                        
+                                                        
+                                                        <input type="text" id="alumno_elegido" name="alumno_elegido" required readonly value="{{$nombre_alumno}}" style="WIDTH: 550px" >
+                                                 
+                                                </div>
+
+                                                 
+                                                @php
+                                                    continue;
+                                                @endphp
+                                             @endif
+
+                                       {{--  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
+                                       {{-- >>>>>>>>>>>>>>>>>>>>>>   ALUMNOS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
+                                       {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
+                                       
+                                       <div class="modal fade modal-warning" id="modal_alumno_elegir" v-if="allowCrop">
+                                        <div class="modal-dialog"  style="min-width: 90%">
+                                            <div class="modal-content">
+                                           
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title">Seleccione un Alumno</h4>
+                                                </div>
+                                            
+                                                <div id="x34" class="modal-body">
+                                                    <div class="card" style="min-width: 70%">
+                                                        <img class="card-img-top" src="holder.js/100x180/" alt="">
+                                                        <div class="card-body">
+                                                           <h4 class="card-title">Elegir Alumnos</h4>
+                                                           <table id="AlumnosTable" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+                                                            <thead>
+                                                              <tr>
+                                                                  <th>id</th>
+                                                                  <th>Nombre</th>
+                                                                  <th>Direccion</th>
+                                                                  <th>Mail</th>
+                                                                  <th>Telefono</th>
+                                                                  <th>seleccionar</th>
+                                                              </tr>
+                                                             </thead>
+                                                           </table>    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                                                <div class="modal-footer">
+                                                    <button type="button" id="salir" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                       {{-- <<<<<<<<<<<<<<<<<<<<<<<    FIN MODAL ALUMNOS    >>>>>>>>>>>>>>>>>>>>>>>>>>>> --}}
+                                       {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
+                                       {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
+                                       
+                                     
+
 
                                 <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                     {{ $row->slugify }}
@@ -89,7 +196,34 @@
                                         @endforeach
                                     @endif
                                 </div>
-                            @endforeach
+
+                                
+                                @if ($row->getTranslatedAttribute('display_name')=='sucursales')
+                                @php
+                                 if(!$edit){
+                                  $user=auth()->user();
+                                  $sucursal=$user->id_sucursal;
+                                  
+                                 }else{
+                                  $sucursal=$dataTypeContent->sucursal ;
+                                 } 
+
+                                 @endphp     
+                                
+                                <div class="form-group  col-md-6 ">
+                                   <label class="control-label" for="name">Sucursal</label>
+                                   <input type="text" class="form-control"  id='sucursal'  name="sucursal" placeholder="sucursal" value="{{$sucursal}}">
+                                </div>
+                               
+                                @php
+                                continue;
+                                @endphp
+                                @endif
+
+
+
+
+                            @endfor
 
                         </div><!-- panel-body -->
 
@@ -137,6 +271,7 @@
         </div>
     </div>
     <!-- End Delete File Modal -->
+    @livewireScripts
 @stop
 
 @section('javascript')
@@ -212,4 +347,51 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
-@stop
+
+<script>
+    $('#alumno').on('click',function(){
+        $('#modal_alumno').modal({show:true});
+    });
+    $('#guardar_alumno').on('click',function(){
+        $('#modal_alumno').modal('hide');
+    });
+   </script>
+
+ <script>
+    $('#boton_elegir_alumno').on('click',function(){
+      $('#modal_alumno_elegir').modal({show:true});
+                });
+ </script> 
+
+
+<script>
+    $(document).ready(function() {
+        $('#AlumnosTable').dataTable( {
+             "serverSide": true,
+             "ajax":"{{url('/Alumnos_elegir')}}",                
+             "columns":[
+                     {data: 'id', name: 'alumnos.id', width: '50px'},
+                     {data: 'nombre', name: 'alumnos.nombre', width: '205px'},
+                     {data: 'direccion', name: 'alumnos.direccion', width: '30px'},
+                     {data: 'mail', name: 'alumnos.mail', width: '205px'},
+                     {data: 'telefono', name: 'alumnos.telefono', width: '205px'},
+                     {data: 'seleccionar', name: 'seleccionar', width: '150px'},
+                                              
+                      ]           
+        } );
+    } );
+
+ </script>
+
+
+    <script>
+        function selecciona_alumno(id,nombre) {     
+        
+         $('#id_alumno').val(id);
+         $('#alumno_elegido').val(nombre);
+         $('#modal_alumno_elegir').modal('hide');
+
+         }
+     </script>
+
+     @stop

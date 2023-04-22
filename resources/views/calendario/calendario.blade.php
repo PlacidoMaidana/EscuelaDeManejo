@@ -16,20 +16,14 @@
     <div class="page-content read container-fluid">
         <div class="row">
             <div class="col-md-12">
+             
+              <div class="card">
 
-                <h1>Esta es la pagina para el calendario</h1>
-                
-    <div class="card">
-
-    <div class="card-header">{{ __('Dashboard') }} </div>
-    
-     <div class="card-body">
-    
-        <div id='calendar'></div>
-    
-     </div>
-    
-    </div>
+                <div class="card-header">{{ __('Dashboard') }} </div>
+                <div class="card-body">
+                    <div id='calendar'></div>
+                </div>
+              </div>
 
             </div>
         </div>
@@ -63,61 +57,50 @@
                         <div class="form-group">
                           <label for="id"></label>
                           <input type="text" class="form-control" name="id" id="id" aria-describedby="helpId" placeholder="" value="">
-                          <small id="helpId" class="form-text text-muted">Id</small>
                         </div>
 
                         <div class="form-group">
-                          <label for="clase"></label>
+                          <label for="clase"> Descripcion Clase </label>
                           <input type="text" class="form-control" name="clase" id="clase" aria-describedby="helpId" placeholder="" value="">
-                          <small id="helpId" class="form-text text-muted">Clase</small>
                         </div>
 
                        
 
                         <div class="form-group">
-                          <label for="start_date"></label>
-                          <input type="datetime" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
-                          <small id="helpId" class="form-text text-muted">start_date</small>
+                          <label for="start_date">fecha inicio</label>
+                          <input type="date" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
                         </div>
 
                         <div class="form-group">
-                            <label for="end_date"></label>
-                            <input type="datetime" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
-                            <small id="helpId" class="form-text text-muted">end_date</small>
+                            <label for="end_date"> fecha fin</label>
+                            <input type="date" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
                         </div>
 
                         <div class="form-group">
                           <label for="idAlumnoCurso">id alumno curso</label>
                           <input type="text" class="form-control" name="idAlumnoCurso" id="idAlumnoCurso" aria-describedby="helpId" placeholder="" value="">
-                          <small id="helpId" class="form-text text-muted">id alumno curso</small>
                         </div>
 
                         <div class="form-group">
-                          <label for="idVehiculo"></label>
+                          <label for="idVehiculo">Vehiculo</label>
                           <input type="text" class="form-control" name="idVehiculo" id="idVehiculo" aria-describedby="helpId" placeholder="">
-                          <small id="helpId" class="form-text text-muted">idVehiculo</small>
                         </div>
 
                         <div class="form-group">
                           <label for="idInstructor">idInstructor</label>
                           <input type="text" class="form-control" name="idInstructor" id="idInstructor" aria-describedby="helpId" placeholder="">
-                          <small id="helpId" class="form-text text-muted">idInstructor</small>
                         </div>
 
                         <div class="form-group">
                           <label for="asistencia">asistencia</label>
                           <input type="text" class="form-control" name="asistencia" id="asistencia" aria-describedby="helpId" placeholder="">
-                          <small id="helpId" class="form-text text-muted">asistencia</small>
                         </div>
 
                         <div class="form-group">
                           <label for="descripcion">descripcion</label>
                           <textarea class="form-control" name="descripcion" id="descripcion"
                            cols="30" rows="10" aria-describedby="helpId"></textarea>
-                          
-                          <small id="helpId" class="form-text text-muted">descripcion</small>
                         </div>
-
 
                        </form>
 
@@ -125,7 +108,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" id="btn-guardar">Guardar</button>
+                        <button type="button" class="btn btn-success" id="btn-guardar">Agregar</button>
                         <button type="button" class="btn btn-warning" id="btn-modificar">Modificar</button>
                         <button type="button" class="btn btn-danger" id="btn-eliminar">Eliminar</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

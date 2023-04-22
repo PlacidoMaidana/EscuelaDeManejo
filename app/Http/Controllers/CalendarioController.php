@@ -13,13 +13,13 @@ class CalendarioController extends Controller
     public function index($idAlumnoCurso)
     {
        
-
         $all_events = DB::table('alumno_evento')
-        //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
-        //->join('vehiculos as v','alumno_evento.id_vehiculo','=','v.id')
+        ->join('instructores','alumno_evento.id_instructor','=','instructores.id')
+        ->join('vehiculos','alumno_evento.id_vehiculo','=','vehiculos.id')
         ->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
-        ->select(['alumno_evento.id as id', 'id_vehiculo', 'id_instructor',
-        'clase','start_date','end_date','asistencia','descripcion'])->get();
+        ->select(['alumno_evento.id as id', 'id_vehiculo', 'vehiculos.marca_modelo_anio as marca_modelo_anio',
+          'id_instructor','instructores.nombre as nombre',
+          'clase','start_date','end_date','asistencia','descripcion'])->get();
 
         $AlumnoCursoInfo = DB::table('alumnos_cursos')
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
@@ -38,7 +38,9 @@ class CalendarioController extends Controller
        'end' => $event->end_date,
        'idAlumnoCurso'=>$idAlumnoCurso,
        'idVehiculo'=>$event->id_vehiculo,
+       'marca_modelo_anio'=>$event->marca_modelo_anio,
        'idInstructor'=>$event->id_instructor,
+       'nombre'=>$event->nombre,
        'asistencia'=>$event->asistencia,
        'descripcion'=>$event->descripcion
  
