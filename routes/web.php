@@ -53,6 +53,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 Route::get('/cursos_activos/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_activos');
 Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_terminados');
+Route::get('/create_alumno_curos/{id_alumno_curso}', 'App\Http\Controllers\IngresosCursosController@create_alumno_cursos');
 
 
 
