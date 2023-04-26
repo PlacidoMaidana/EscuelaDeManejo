@@ -31,11 +31,11 @@
 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
     <thead>
       <tr>
-        <th>fecha inscripcion</th>
         <th>Alumno</th>
         <th>Curso</th>
-        <th>Vendedor</th>
-        <th>Precio Curso</th>
+        <th>Instructor</th>
+        <th>Precio acordado x clase</th>
+        <th>Cantidad clases</th>
         <th>Comision</th>
       </tr>
      </thead>
@@ -46,8 +46,9 @@
       <thead>
         <tr>
           <th>Sucursal</th>
-          <th>Vendedor</th>
-          <th>Ventas</th>
+          <th>Instructor</th>
+          <th>Precio acordado x clase</th>
+          <th>Cantidad clases</th>
           <th>Comisiones</th>
         </tr>
        </thead>
@@ -79,7 +80,7 @@
 
   function filtrar() {
 
-    var filtro ="{{url('/informevtasComisiones_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
+    var filtro ="{{url('/informeclasesComisiones_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
       
     $('#example').dataTable( {
     "serverSide": true,
@@ -87,16 +88,16 @@
     "paging": true,
     "searching": true,
     "columns":[
-            {data: 'fecha_inscripcion', name: 'alumnos_cursos.fecha_inscripcion', width: '5%'},
             {data: 'nombre', name: 'alumnos.nombre', width: '5%'},
             {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '10%'},
-            {data: 'vendedor', name: 'empleados.nombre', width: '10%'},
-            {data: 'precio', name: 'alumnos_cursos.precio',width: '10%'},
-            {data: 'monto_comision', name: 'cursos.monto_comision', width: '10%'},
+            {data: 'instructor', name: 'instructores.nombre', width: '10%'},
+            {data: 'monto_clase', name: 'instructores.monto_clase', render: $.fn.dataTable.render.number(",", ".", 2,'$ '), width: '10%'},
+            {data: 'cant_clases', name: 'cant_clases',width: '10%'},
+            {data: 'comisiones', name: 'comisiones', render: $.fn.dataTable.render.number(",", ".", 2,'$ '), width: '10%'},
              ]        
 });
 
-var filtrototales ="{{url('/totalesvtasComisiones_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
+var filtrototales ="{{url('/totalesclasesComisiones_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
   
  
 $('#totales').dataTable( {
@@ -106,9 +107,10 @@ $('#totales').dataTable( {
     "searching": false,
     "columns":[
             {data: 'sucursal', name: 's.sucursal', width: '5%'},
-            {data: 'nombre', name: 'v.nombre', width: '5%'},
-            {data: 'Importe_Venta', name: 'Importe_Venta', render: $.fn.dataTable.render.number(",", ".", 2,'$ '), width: '10%'},
-            {data: 'Comisiones', name: 'Comisiones', render: $.fn.dataTable.render.number(",", ".", 2,'$ '), width: '10%'},
+            {data: 'nombre', name: 'instructores.nombre', width: '5%'},
+            {data: 'monto_clase', name: 'instructores.monto_clase', render: $.fn.dataTable.render.number(",", ".", 2,'$ '), width: '10%'},
+            {data: 'cant_clases', name: 'cant_clases', width: '10%'},
+            {data: 'comisiones', name: 'comisiones', render: $.fn.dataTable.render.number(",", ".", 2,'$ '), width: '10%'},
               ]        
 });
 
@@ -120,7 +122,7 @@ $('#totales').dataTable( {
 
 <script>
    function excelExport()   {
-       window.location.href =  "{{url('/informes_ventasComisiones/export/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
+       window.location.href =  "{{url('/informes_clasesComisiones/export/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
    }
 </script>
 

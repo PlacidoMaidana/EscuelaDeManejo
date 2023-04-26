@@ -72,8 +72,7 @@
 <script>
 
   function filtrar() {
-    //var fechas=$("#fecha_desde").val()+"hasta: "+$("#fecha_hasta").val();
-    // var filtro ='/informeflujofinanciero_rango_de_fechas/'+ $("#anio").val();
+   
     var filtro ="{{url('/informeflujofinanciero_rango_de_fechas/')}}"+"/"+ $("#anio").val();
         
     $('#movimientos').dataTable( {

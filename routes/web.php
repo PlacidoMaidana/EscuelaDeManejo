@@ -54,5 +54,26 @@ Route::group(['prefix' => 'admin'], function () {
 Route::get('/cursos_activos/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_activos');
 Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_terminados');
 
+Route::get('/Informeingresos','App\Http\Controllers\informes_tesoreria@index_ing');
+Route::get('/Informeegresos','App\Http\Controllers\informes_tesoreria@index_egr');
+Route::get('/Informecomisiones','App\Http\Controllers\informes_ventas_comisiones@index');
+Route::get('/Informeclasescomisiones','App\Http\Controllers\informes_clases_comisiones@index');
+Route::get('/informe_flujofinanciero', 'App\Http\Controllers\informes_flujofinancieroController@index');
 
+Route::get('/informeingresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_en_rango_de_fechas');//ruta que devuelve datos
+Route::get('/totalesingresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_totales_en_rango_de_fechas');//ruta que devuelve datos
+Route::get('/informeegresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@egr_en_rango_de_fechas');//ruta que devuelve datos
+Route::get('/totalesegresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@egr_totales_en_rango_de_fechas');//ruta que devuelve datos
 
+Route::get('/informeflujofinanciero_rango_de_fechas/{anio}','App\Http\Controllers\informes_flujofinancieroController@en_rango_de_fechas');//ruta que devuelve datos
+
+Route::get('/informevtasComisiones_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_ventas_comisiones@en_rango_de_fechas');//ruta que devuelve datos
+Route::get('/totalesvtasComisiones_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_ventas_comisiones@totalesen_rango_de_fechas');//ruta que devuelve datos
+Route::get('/informeclasesComisiones_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_clases_comisiones@en_rango_de_fechas');//ruta que devuelve datos
+Route::get('/totalesclasesComisiones_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_clases_comisiones@totalesen_rango_de_fechas');//ruta que devuelve datos
+
+Route::get('informes_tesoreria/ing_export/{from}/{to}', 'App\Http\Controllers\informes_tesoreria@ing_export');
+Route::get('informes_tesoreria/egr_export/{from}/{to}', 'App\Http\Controllers\informes_tesoreria@egr_export');
+Route::get('informes_flujofinanciero/export/{anio}', 'App\Http\Controllers\informes_flujofinancieroController@export');
+Route::get('informes_ventasComisiones/export/{from}/{to}', 'App\Http\Controllers\informes_ventas_comisiones@export');
+Route::get('informes_clasesComisiones/export/{from}/{to}', 'App\Http\Controllers\informes_clases_comisiones@export');

@@ -30,26 +30,27 @@
 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
     <thead>
       <tr>
-        <th>fecha</th>
-        <th>Operador</th>
+        <th>Fecha</th>
+        <th>Sucursal</th>
+        <th>Detalle</th>
         <th>modalidad_pago</th>
-        <th>detalle</th>
-        <th>tipo_movimiento</th>
+        <th>importe</th>
         <th>Tipo gasto 1</th>
         <th>Tipo gasto 2</th>
-        <th>importe_egreso</th>
-        
       </tr>
      </thead>
      
     </table>
-    <div class="card">
-      <div class="card-body">
-          <h5 class="card-title">Total egresos {{$total}}</h5>
-          <p class="card-text"> </p>
-      </div>
-    </div>
+  
     
+    <table id="totales" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+      <thead>
+        <tr>
+          <th>Sucursal</th> 
+          <th>Total Gastos</th>
+        </tr>
+       </thead>
+      </table>
 @stop
 
 @section('css')
@@ -74,12 +75,8 @@
 <script>
 
   function filtrar() {
-    //var fechas=$("#fecha_desde").val()+"hasta: "+$("#fecha_hasta").val();
-    
+   
     var filtro ="{{url('/informeegresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-  
-    
-
 
     $('#example').dataTable( {
     "serverSide": true,
@@ -87,16 +84,29 @@
     "paging": true,
     "searching": true,
     "columns":[
-            {data: 'fecha', name: 'mov_financieros.fecha', width: '5%'},
-            {data: 'name', name: 'users.name', width: '5%'},
-            {data: 'modalidad_pago', name: 'mov_financieros.modalidad_pago', width: '10%'},
-            {data: 'detalle', name:'mov_financieros.detalle', width: '10%'},
-            {data: 'tipo_movimiento', name: 'mov_financieros.tipo_movimiento', width: '10%'},
+            {data: 'fecha', name: 'egresos_gastos.fecha', width: '5%'},
+            {data: 'sucursal', name: 'sucursales.sucursal', width: '5%'},
+            {data: 'descripcion', name:'egresos_gastos.descripcion', width: '10%'},
+            {data: 'modalidad_pago', name: 'egresos_gastos.modalidad_pago', width: '10%'},
+            {data: 'importe', name: 'egresos_gastos.importe', width: '10%'},
             {data: 'tipo1', name: 'tipos_gastos.tipo1', width: '10%'},
             {data: 'tipo2', name: 'tipos_gastos.tipo2', width: '10%'},
-            {data: 'importe_egreso', name: 'mov_financieros.importe_egreso', width: '10%'},
-              ]        
+          ]        
 });
+
+
+var filtrototales ="{{url('/totalesegresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
+  
+$('#totales').dataTable( {
+    "serverSide": true,
+    "ajax":filtrototales,
+    "paging": false,
+    "searching": false,
+    "columns":[{data: 'sucursal', name: 'sucursales.sucursal', width: '10%'},
+               {data: 'total_gastos', name: 'total_gastos', width: '10%'},
+             ]        
+});
+
    
   }
 </script>
