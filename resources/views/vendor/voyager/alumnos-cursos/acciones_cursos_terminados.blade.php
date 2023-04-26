@@ -11,6 +11,8 @@
 
 <a href="{{url('/calendario/'.$idAlumnoCurso)}}" title="Clases" class="btn btn-primary ">Clases</a>
 
+
+
 </td>
 
 
