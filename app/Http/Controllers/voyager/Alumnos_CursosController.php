@@ -215,21 +215,21 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
        
 
     return $datos = datatables()->of(DB::table('alumnos_cursos')
+    ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
     ->leftjoin('empleados','alumnos_cursos.id_vendedor','=','empleados.id')
-    ->leftjoin('vehiculos','alumnos_cursos.id_vehiculo','=','vehiculos.id')
-    ->leftjoin('instructores','alumnos_cursos.id_instructor','=','instructores.id')
     ->where('alumnos_cursos.activo','=', 'SI')
     ->where('alumnos_cursos.id_sucursal','=', $sucursal)
+    ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
     ->select([  'alumnos_cursos.id as idAlumnoCurso',
                 'alumnos_cursos.fecha_inscripcion',
                 'cursos.nombre_curso',
                 'alumnos.nombre as nombre_alumno',
                 'empleados.nombre as nombre_vend',
-                'vehiculos.marca_modelo_anio',
-                'instructores.nombre as nombre_instructor',
-                'alumnos_cursos.precio'
+                'alumnos_cursos.precio',
+                 DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
+                
               ]))  
               ->addColumn('check','vendor/voyager/alumnos-cursos/check')
               ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_activos')
@@ -243,21 +243,20 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
        
 
     return $datos = datatables()->of(DB::table('alumnos_cursos')
+    ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
     ->leftjoin('empleados','alumnos_cursos.id_vendedor','=','empleados.id')
-    ->leftjoin('vehiculos','alumnos_cursos.id_vehiculo','=','vehiculos.id')
-    ->leftjoin('instructores','alumnos_cursos.id_instructor','=','instructores.id')
     ->where('alumnos_cursos.activo','=', 'NO')
     ->where('alumnos_cursos.id_sucursal','=', $sucursal)
+    ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
     ->select([  'alumnos_cursos.id as idAlumnoCurso',
                 'alumnos_cursos.fecha_inscripcion',
                 'cursos.nombre_curso',
                 'alumnos.nombre as nombre_alumno',
                 'empleados.nombre as nombre_vend',
-                'vehiculos.marca_modelo_anio',
-                'instructores.nombre as nombre_instructor',
-                'alumnos_cursos.precio'
+                'alumnos_cursos.precio',
+                DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
               ]))  
               ->addColumn('check','vendor/voyager/alumnos-cursos/check')
               ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_terminados')
@@ -421,6 +420,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         }
 
         // Check permission
+        $data = $query->findOrFail($id);
         $this->authorize('edit', $data);
 
         // Validate fields with ajax

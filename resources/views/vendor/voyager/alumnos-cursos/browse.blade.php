@@ -40,9 +40,8 @@
                                     <th>curso</th>
                                     <th>alumno</th>
                                     <th>vendedor</th>
-                                    <th>vehiculo</th>
-                                    <th>instructor</th>
-                                    <th>precio</th>
+                                    <th>precio curso</th>
+                                    <th>Cobrado</th>
                                     <th>accion</th>
                                 </tr>
                             </thead>
@@ -62,9 +61,8 @@
                                     <th>curso</th>
                                     <th>alumno</th>
                                     <th>vendedor</th>
-                                    <th>vehiculo</th>
-                                    <th>instructor</th>
-                                    <th>precio</th>
+                                    <th>precio curso</th>
+                                    <th>Cobrado</th>
                                     <th>accion</th>
                                 </tr>
                              </thead>
@@ -109,9 +107,8 @@
                      {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '5%'},
                      {data: 'nombre_alumno', name: 'alumnos.nombre', width: '10%'},
                      {data: 'nombre_vend', name: 'empleados.nombre', width: '10%'},
-                     {data: 'marca_modelo_anio', name: 'vehiculos.marca_modelo_anio', width: '10%'},
-                     {data: 'nombre_instructor', name: 'instructores.nombre', width: '10%'},
                      {data: 'precio', name: 'alumnos_cursos.precio', width: '10%'},
+                     {data: 'cobrado', name: 'cobrado', width: '10%'},
                      {data: 'accion', width: '10%'},
                       ]           
         } );
@@ -137,9 +134,8 @@
                      {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '5%'},
                      {data: 'nombre_alumno', name: 'alumnos.nombre', width: '10%'},
                      {data: 'nombre_vend', name: 'empleados.nombre', width: '10%'},
-                     {data: 'marca_modelo_anio', name: 'vehiculos.marca_modelo_anio', width: '10%'},
-                     {data: 'nombre_instructor', name: 'instructores.nombre', width: '10%'},
                      {data: 'precio', name: 'alumnos_cursos.precio', width: '10%'},
+                     {data: 'cobrado', name: 'cobrado', width: '10%'},
                      {data: 'accion', width: '10%'},
                      
                     ]           

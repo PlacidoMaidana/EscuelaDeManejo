@@ -74,9 +74,7 @@
                                     <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
                                 @endif
                                 
-                                           
-
-
+ 
                                 @if ($row->getTranslatedAttribute('display_name')=='alumnos')
                                                 {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                                                 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      Boton + Alumno          <<<<<<<<<<<<<<<<<<<<<<<<<
@@ -99,7 +97,6 @@
                                                                    </div>
                                                                </div>
                                                              </div>	
-                                    
 
                                                  <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                                     {{ $row->slugify }}
@@ -120,12 +117,11 @@
                                                         <input type="text" id="alumno_elegido" name="alumno_elegido" required readonly value="{{$nombre_alumno}}" style="WIDTH: 550px" >
                                                  
                                                 </div>
-
                                                  
                                                 @php
                                                     continue;
                                                 @endphp
-                                             @endif
+                                @endif
 
                                        {{--  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
                                        {{-- >>>>>>>>>>>>>>>>>>>>>>   ALUMNOS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
@@ -166,14 +162,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                       </div>
 
                                        {{-- <<<<<<<<<<<<<<<<<<<<<<<    FIN MODAL ALUMNOS    >>>>>>>>>>>>>>>>>>>>>>>>>>>> --}}
                                        {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
-                                       {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
-                                       
-                                     
-
+                                       {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}                                  
 
                                 <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                     {{ $row->slugify }}
@@ -196,32 +189,24 @@
                                         @endforeach
                                     @endif
                                 </div>
-
                                 
                                 @if ($row->getTranslatedAttribute('display_name')=='sucursales')
-                                @php
-                                 if(!$edit){
-                                  $user=auth()->user();
-                                  $sucursal=$user->id_sucursal;
-                                  
-                                 }else{
-                                  $sucursal=$dataTypeContent->sucursal ;
-                                 } 
-
-                                 @endphp     
-                                
-                                <div class="form-group  col-md-6 ">
-                                   <label class="control-label" for="name">Sucursal</label>
-                                   <input type="text" class="form-control"  id='sucursal'  name="sucursal" placeholder="sucursal" value="{{$sucursal}}">
-                                </div>
-                               
-                                @php
-                                continue;
-                                @endphp
+                                    @php
+                                    if(!$edit){
+                                        $user=auth()->user();
+                                        $sucursal=$user->id_sucursal;
+                                        
+                                    }else{
+                                        $sucursal=$dataTypeContent->sucursal ;
+                                    } 
+                                    @endphp    
+                                            <div class="form-group  col-md-6 ">
+                                                <input type="hidden" class="form-control"  id='sucursal'  name="sucursal" placeholder="sucursal" value="{{$sucursal}}">
+                                            </div>   
+                                                              
                                 @endif
 
-
-
+                                
 
                             @endfor
 

@@ -430,7 +430,7 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
     }
 
-    public function create_alumno_cursos($id_alumno_curso)
+    public function create_pago_cursos($id_alumno_curso)
     {   
         $slug = "ingresos-cursos";
 

@@ -25,7 +25,7 @@ class CalendarioController extends Controller
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
         //->join('vehiculos as v','alumno_evento.id_vehiculo','=','v.id')
         ->where('alumnos_cursos.id','=', $idAlumnoCurso)
-        ->select(['alumnos_cursos.id as id', 'id_vehiculo', 'id_instructor'])->get();
+        ->select(['alumnos_cursos.id as id'])->get();
        
 
 

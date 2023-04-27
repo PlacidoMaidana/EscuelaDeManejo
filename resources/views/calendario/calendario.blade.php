@@ -151,9 +151,8 @@
                 formulario.start_date.value=info.dateStr;
                 formulario.end_date.value=info.dateStr;
                 formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
-                formulario.idVehiculo.value={{$AlumnoCursoInfo[0]->id_vehiculo}};
-                formulario.idInstructor.value={{$AlumnoCursoInfo[0]->id_instructor}};
                 
+              
                  console.log(info);
 
                 $('#ModCalendario').modal("show");
