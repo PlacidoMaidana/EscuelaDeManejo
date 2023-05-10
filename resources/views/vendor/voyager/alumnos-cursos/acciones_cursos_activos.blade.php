@@ -9,9 +9,11 @@
 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Edit</span>
 </a>
 
-<a href="{{url('/calendario/'.$idAlumnoCurso)}}" title="Clases" class="btn btn-primary ">Clases</a>
+<a href="{{url('/calendario/'.$idAlumnoCurso)}}" title="Clases" class="btn btn-primary ">Programar Clases</a>
 
-<a href="{{url('/create_pago_alumno/'.$idAlumnoCurso)}}" title="Clases" class="btn btn-primary ">Pagar</a>
+<a href="{{url('/create_pago_alumno/'.$idAlumnoCurso)}}" title="Pagar" class="btn btn-primary ">Pagos</a>
+
+<a href="{{url('/seguimiento_alumno/'.$idAlumnoCurso)}}" title="Seguimiento" class="btn btn-primary ">Seguimiento</a>
 
 </td>
 

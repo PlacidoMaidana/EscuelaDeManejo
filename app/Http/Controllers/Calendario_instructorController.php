@@ -3,13 +3,67 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\AlumnoEvento;
 use App\Instructore;
 use Carbon\Carbon;
 
 class Calendario_instructorController extends Controller
 {
-    //
+       
+    public function lista_instructores_sucursal()
+    {
+        //*****************
+       // Averigua sucursal y filtra datos de alumnos por sucursal
+       // *************
+       $user = Auth::user();
+       $sucursal=$user->id_sucursal;
+       // ******************
+        return view('voyager::instructores.instructores_suc_browse', compact('sucursal'));
+      
+    }
+    public function lista_alumnos_instructor_fecha($idInstructor)
+    {
+        return view('voyager::instructores.lista_alumnnos_browse', compact('idInstructor'));
+    }
+   // public function alumnos_instructor_por_fecha($idInstructor,$from)
+    public function alumnos_instructor_por_fecha($idInstructor, $from)
+    {
+       
+           return $datos = datatables()->of(DB::table('alumno_evento')
+               ->join ('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
+               ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
+               ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
+               ->whereDate('alumno_evento.start_date','=',$from )
+               ->where('alumno_evento.id_instructor','=',$idInstructor )
+               ->select(['alumno_evento.start_date',
+                         'alumnos.nombre',
+                         'alumnos.telefono',
+                         'cursos.nombre_curso',
+                         'alumno_evento.clase',
+                         'alumno_evento.descripcion',
+                           ]))
+                ->toJson();  
+    }
+    public function query_instructores_sucursal($sucursal)
+    {
+        $hoy=now();
+        return $datos = datatables()->of(DB::table('instructores')
+        ->join('alumno_evento','instructores.id','=','alumno_evento.id_instructor')
+        ->join('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
+        ->where('alumnos_cursos.id_sucursal','=', $sucursal)
+       //->where('alumno_evento.start_date','>=', $hoy)
+        ->groupBy('instructores.id','instructores.nombre')
+        ->select([  'instructores.id','instructores.nombre',
+                     DB::raw('COUNT(alumno_evento.id) AS clases'),
+                    
+                  ]))  
+                  ->addColumn('accion','vendor/voyager/instructores/acciones_instructores')
+                  ->rawColumns(['accion'])  
+                   
+        ->toJson();   
+        }
+    
 
     public function index($idInstructor)
     {
