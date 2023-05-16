@@ -21,7 +21,7 @@ class FichaAlumno extends Component
         public $mail;
         public $telefono;
         public $foto;
-        public $alumno_curso_id=2;
+        //public $alumno_curso_id=2;
        
     public function render()
     {
@@ -46,7 +46,8 @@ class FichaAlumno extends Component
                           
        
         $alumno->save();
-        return redirect('admin/alumnos-cursos/'.$this->alumno_curso_id.'/edit');
+        $this->emit('alumnoAgregado');
+        //return redirect('admin/alumnos-cursos/'.$this->alumno_curso_id.'/edit');
     }
 
 }

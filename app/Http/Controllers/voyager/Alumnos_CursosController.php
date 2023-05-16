@@ -15,6 +15,8 @@ use TCG\Voyager\Events\BreadDataUpdated;
 use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
+use App\Curso;
+
 
 class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
@@ -369,6 +371,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
     public function edit(Request $request, $id)
     {
+        $cursos= Curso::all();
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -422,7 +425,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
        $nombre_alumno=$datos_alumno->nombre;
 
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno', 'nombre_alumno'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno', 'nombre_alumno','cursos'));
     }
 
     // POST BR(E)AD
@@ -493,6 +496,8 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
     public function create(Request $request)
     {
+        $cursos= Curso::all();
+        
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -525,7 +530,13 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
         $id_alumno=1;
         $nombre_alumno='';
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno','nombre_alumno'));
+        //*****************
+       // Averigua sucursal 
+       // *************
+        $user = Auth::user();
+        $sucursal=$user->id_sucursal;
+        // ******************
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno','nombre_alumno','cursos','sucursal'));
     }
 
     /**

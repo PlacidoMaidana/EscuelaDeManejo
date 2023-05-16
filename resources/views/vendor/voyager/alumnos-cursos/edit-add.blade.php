@@ -1,4 +1,5 @@
 @php
+    use App\Sucursale;
     $edit = !is_null($dataTypeContent->getKey());
     $add  = is_null($dataTypeContent->getKey());
 @endphp
@@ -27,7 +28,7 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-
+           
                 <div class="panel panel-bordered">
                     <!-- form start -->
                     <form role="form"
@@ -57,8 +58,7 @@
                             <!-- Adding / Editing -->
                             @php
                                 $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
-                          
-                        
+                              
                             @endphp
                           
                             @for ($i = 0; $i < count($dataTypeRows); $i++)
@@ -73,7 +73,67 @@
                                 @if (isset($row->details->legend) && isset($row->details->legend->text))
                                     <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
                                 @endif
+                               
+                                @if ($row->getTranslatedAttribute('display_name')=='cursos')
+                                              
+                                <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                   {{ $row->slugify }}
+                                   <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}
+                                        
+                                   </label>                                 
+                                    @php
+                                         foreach ($cursos as $curso)
+                                         {
+                                         if ($curso->id==$dataTypeContent->id_curso) {
+                                         $nombrecurso=$curso->nombre_curso;   
+                                         }
+                                         }
+                                         
+                                    @endphp
+                                       
+                                   <select name="id_curso" class="form-control " id="id_curso" onchange="actualizarPrecio()">
+                                    @if($edit)
+                                    <option selected value ="{{$dataTypeContent->id_curso}}">{{$nombrecurso}} </option>
+                                        
+                                    @endif
+                               
+                                    @foreach ($cursos as $curso)
+                                   <option value="{{ $curso->id }}" data-precio="{{ $curso->precio_curso }}">{{ $curso->nombre_curso }}</option>
+                                       @endforeach
+                                   </select>                                                     
+                                    
+                               </div>
                                 
+                               @php
+                                   continue;
+                               @endphp
+                               @endif
+
+                               @if ($row->getTranslatedAttribute('display_name')=='sucursales')
+                                    @php
+                                    $user=auth()->user();
+                                    $sucursal=$user->id_sucursal;
+                                    $registro = Sucursale::find($sucursal);
+                                    @endphp    
+                                
+                                                  
+                               <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                {{ $row->slugify }}
+                                <label class="control-label" for="name">Sucursal: {{ $registro->sucursal}}
+                                </label>
+                                <div class="form-group  col-md-12 ">     
+                                    <input type="text" class="form-control"  id='sucursal'  name="id_sucursal" placeholder="sucursal" value="{{ $registro->id}}" readonly >
+                                </div>                              
+                                      
+                               </div>
+
+                             @php
+                                continue;
+                             @endphp
+                                                              
+                            @endif
+                           
+                               
  
                                 @if ($row->getTranslatedAttribute('display_name')=='alumnos')
                                                 {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -114,7 +174,7 @@
                                                         <input type="hidden" id="id_alumno" name="id_alumno"  value="{{$id_alumno}}" >
                                                         
                                                         
-                                                        <input type="text" id="alumno_elegido" name="alumno_elegido" required readonly value="{{$nombre_alumno}}" style="WIDTH: 550px" >
+                                                        <input type="text"  id="alumno_elegido" name="alumno_elegido" required readonly value="{{$nombre_alumno}}" style="WIDTH: 550px" >
                                                  
                                                 </div>
                                                  
@@ -190,22 +250,7 @@
                                     @endif
                                 </div>
                                 
-                                @if ($row->getTranslatedAttribute('display_name')=='sucursales')
-                                    @php
-                                    if(!$edit){
-                                        $user=auth()->user();
-                                        $sucursal=$user->id_sucursal;
-                                        
-                                    }else{
-                                        $sucursal=$dataTypeContent->sucursal ;
-                                    } 
-                                    @endphp    
-                                            <div class="form-group  col-md-6 ">
-                                                <input type="hidden" class="form-control"  id='sucursal'  name="sucursal" placeholder="sucursal" value="{{$sucursal}}">
-                                            </div>   
-                                                              
-                                @endif
-
+                              
                                 
 
                             @endfor
@@ -350,6 +395,44 @@
 
 
 <script>
+    // Escuchar el evento personalizado alumnoAgregado y actualizar el datatable
+    Livewire.on('alumnoAgregado', function() {
+        // Código para actualizar el datatable con los datos más recientes
+        // Por ejemplo:
+        actualizarDatos();
+       // window.livewire.find('tablaAlumnos').call('actualizarDatos');
+    });
+</script>
+
+<script>
+    function actualizarDatos() {
+        var table = $('#AlumnosTable').DataTable();
+
+        // Destruir la tabla existente
+        table.destroy();
+
+        $('#AlumnosTable').dataTable( {
+             "serverSide": true,
+             "ajax":"{{url('/Alumnos_elegir')}}",                
+             "columns":[
+                     {data: 'id', name: 'alumnos.id', width: '50px'},
+                     {data: 'nombre', name: 'alumnos.nombre', width: '205px'},
+                     {data: 'direccion', name: 'alumnos.direccion', width: '30px'},
+                     {data: 'mail', name: 'alumnos.mail', width: '205px'},
+                     {data: 'telefono', name: 'alumnos.telefono', width: '205px'},
+                     {data: 'seleccionar', name: 'seleccionar', width: '150px'},
+                                              
+                      ]           
+        } );
+    } ;
+
+ </script>
+
+
+
+
+
+<script>
     $(document).ready(function() {
         $('#AlumnosTable').dataTable( {
              "serverSide": true,
@@ -369,7 +452,7 @@
  </script>
 
 
-    <script>
+     <script>
         function selecciona_alumno(id,nombre) {     
         
          $('#id_alumno').val(id);
@@ -377,6 +460,18 @@
          $('#modal_alumno_elegir').modal('hide');
 
          }
+     </script>
+
+     
+    <script>
+     function actualizarPrecio() {
+            var select = document.getElementById("id_curso");
+            var precio = select.options[select.selectedIndex].getAttribute("data-precio");
+            document.getElementsByName("precio")[0].value =precio ;
+    
+        }
+     </script>
+
      </script>
 
      @stop
