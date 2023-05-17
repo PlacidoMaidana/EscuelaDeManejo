@@ -27,8 +27,17 @@ class CalendarioController extends Controller
         ->where('alumnos_cursos.id','=', $idAlumnoCurso)
         ->select(['alumnos_cursos.id as id'])->get();
        
-
-
+        $registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
+        $franjasHorarias = DB::table('franjas_horarias')->get();
+        $numero_clases = DB::table('alumnos_cursos')
+        ->select(DB::raw('COUNT(alumno_evento.id) AS cantidad_eventos, alumnos_cursos.id_alumno, alumnos.nombre'))
+        ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+        ->join('alumno_evento', 'alumnos_cursos.id', '=', 'alumno_evento.id_alumno_curso')
+        ->groupBy('alumnos_cursos.id_alumno', 'alumnos.nombre')
+        ->get();
+        //$resultado
+        //dd($numero_clases[1]->nombre." ".($numero_clases[1]->cantidad_eventos +1));
+        //dd($franjasHorarias);
         $events = [];
        foreach ($all_events as $event) {
        
@@ -47,7 +56,9 @@ class CalendarioController extends Controller
         ];
        }
            
-        return view('calendario.calendario', compact('events','AlumnoCursoInfo','idAlumnoCurso'));
+        return view('calendario.calendario', 
+        compact('events','AlumnoCursoInfo','idAlumnoCurso',
+        'numero_clases','franjasHorarias','registro_AlumnoCurso'));
     }
 
 

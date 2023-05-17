@@ -54,14 +54,21 @@
 
                        <form action="" id="FormCalendar" method="post">
                         {!! csrf_field() !!}
-                        <div class="form-group">
-                          <label for="id"></label>
-                          <input type="text" class="form-control" name="id" id="id" aria-describedby="helpId" placeholder="" value="">
-                        </div>
+                       
 
                         <div class="form-group">
                           <label for="clase"> Descripcion Clase </label>
-                          <input type="text" class="form-control" name="clase" id="clase" aria-describedby="helpId" placeholder="" value="">
+                          <input type="text" class="form-control" name="clase" id="clase" 
+                          aria-describedby="helpId" placeholder="" value=" {{ $numero_clases[1]->nombre." ".($numero_clases[1]->cantidad_eventos +1) }}">
+                        </div>
+
+                        <div class="form-group">
+                          <label for="id">Franjas horarias</label>
+                          <select name="franja_horaria">
+                            @foreach ($franjasHorarias as $franjaHoraria)
+                                <option value="{{ $franjaHoraria->id }}">{{ $franjaHoraria->descripcion }}</option>
+                            @endforeach
+                        </select>
                         </div>
 
                        
