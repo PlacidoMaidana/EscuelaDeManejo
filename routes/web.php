@@ -31,6 +31,7 @@ Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@sto
 Route::post('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');
 Route::post('/calendario/actualizar/{evento}','App\Http\Controllers\CalendarioController@update');
 Route::post('/calendario/borrar/{id}','App\Http\Controllers\CalendarioController@destroy');
+Route::get('/calendario/obtener_fechas/{franjaHoraria}','App\Http\Controllers\CalendarioController@obtener_fechas');
 //|##############################################|
 //|           Calendario del Instructor          |
 //|##############################################|

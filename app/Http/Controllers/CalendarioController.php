@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\AlumnoEvento;
+use App\FranjasHoraria;
 use Carbon\Carbon;
 
 class CalendarioController extends Controller
@@ -112,7 +113,27 @@ class CalendarioController extends Controller
        
     }
 
+    public function obtener_fechas($franjaHoraria)
+    {
 
+        
+        // Obtener la franja horaria seleccionada desde la base de datos o cualquier otra fuente de datos
+        $franjaHoraria1 = FranjasHoraria::find($franjaHoraria);
+    
+       
+
+        // Calcular las fechas de inicio y fin utilizando Carbon
+        $startDateTime = Carbon::parse($franjaHoraria1->start_time);
+        $endDateTime = Carbon::parse($franjaHoraria1->end_time);
+    
+        // Formatear las fechas como strings en el formato deseado
+        $start_date = $startDateTime->format('Y-m-d H:i:s');
+        $end_date = $endDateTime->format('Y-m-d H:i:s');
+    
+        // Retornar los valores de start_date y end_date en la respuesta JSON
+        return response()->json(['start_date' => $start_date, 'end_date' => $end_date]);
+      
+    }
     public function edit($id)
     {
        $evento=AlumnoEvento::find($id);
