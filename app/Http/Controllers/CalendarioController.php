@@ -24,8 +24,11 @@ class CalendarioController extends Controller
         $AlumnoCursoInfo = DB::table('alumnos_cursos')
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
         //->join('vehiculos as v','alumno_evento.id_vehiculo','=','v.id')
+        ->leftjoin('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
         ->where('alumnos_cursos.id','=', $idAlumnoCurso)
-        ->select(['alumnos_cursos.id as id'])->get();
+        ->select(['alumnos_cursos.id as id',
+        'alumnos.nombre'])->get();
+       // dd($AlumnoCursoInfo[0]);
        
         $registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
         $franjasHorarias = DB::table('franjas_horarias')->get();
