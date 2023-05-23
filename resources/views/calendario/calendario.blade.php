@@ -284,7 +284,7 @@ $(document).ready(function() {
       method: 'GET',
       success: function(response) {
         // Actualizar los campos de fecha en el formulario del evento
-        alert(response.start_date);
+        
         $('#start_date').val(response.start_date);
         $('#end_date').val(response.end_date);
       },
