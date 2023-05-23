@@ -55,6 +55,11 @@
                        <form action="" id="FormCalendar" method="post">
                         {!! csrf_field() !!}
                        
+                        <div class="form-group">
+                          <label for="clase"> Alumno </label>
+                          <input type="text" class="form-control" name="alumno" id="alumno" 
+                          aria-describedby="helpId" placeholder="" value=" {{ $AlumnoCursoInfo[0]->nombre }}">
+                        </div>
 
                         <div class="form-group">
                           <label for="clase"> Descripcion Clase </label>
