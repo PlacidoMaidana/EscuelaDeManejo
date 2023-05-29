@@ -77,6 +77,16 @@
                         </select>
                         </div>
 
+                          <!-- El select de franjas horarias  -->
+                          <div class="form-group">
+                            <label for="id">Tipos Eventos</label>
+                            <select name="tipos_eventos" id="tipos_eventos_select">
+                              @foreach ($tipos_eventos as $tipo)
+                                  <option value="{{ $tipo->id }}">{{ $tipo->tipo_evento }}</option>
+                              @endforeach
+                          </select>
+                          </div>
+
                        
 
                         <div class="form-group">
@@ -88,11 +98,8 @@
                             <label for="end_date"> fecha fin</label>
                             <input type="text" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
                         </div>
-
-                        <div class="form-group">
-                          <label for="idAlumnoCurso">id alumno curso</label>
-                          <input type="text" class="form-control" name="idAlumnoCurso" id="idAlumnoCurso" aria-describedby="helpId" placeholder="" value="">
-                        </div>
+                        <input type="hidden"  name="idAlumnoCurso" id="idAlumnoCurso" aria-describedby="helpId" placeholder="" value="">
+                       
 
                         <div class="form-group">
                           <label for="idVehiculo">Vehiculo</label>
@@ -106,9 +113,9 @@
 
                         <div class="form-group">
                           <label for="asistencia">asistencia</label>
-                          <input type="text" class="form-control" name="asistencia" id="asistencia" aria-describedby="helpId" placeholder="">
+                          <input type="checkbox"  name="asistencia" id="asistencia" value="1" >
                         </div>
-
+                       
                         <div class="form-group">
                           <label for="descripcion">descripcion</label>
                           <textarea class="form-control" name="descripcion" id="descripcion"
