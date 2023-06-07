@@ -24,7 +24,8 @@ class Calendario_instructorController extends Controller
     }
     public function lista_alumnos_instructor_fecha($idInstructor)
     {
-        return view('voyager::instructores.lista_alumnnos_browse', compact('idInstructor'));
+        $nombre_instructor=Instructore::find($idInstructor);
+        return view('voyager::instructores.lista_alumnnos_browse', compact('idInstructor','nombre_instructor'));
     }
    // public function alumnos_instructor_por_fecha($idInstructor,$from)
     public function alumnos_instructor_por_fecha($idInstructor, $from)

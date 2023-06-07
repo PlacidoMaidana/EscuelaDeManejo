@@ -4,7 +4,7 @@
 @section('page_title', __('voyager::generic.viewing').' '.'Lista de Alumnos por Instructor')
 
 @section('content')
-
+<h3> Lista de Alumnos del Instructor: {{$nombre_instructor->nombre}}  </h3>
 
 <div class="form-group col-md-2 ">
     <label for="">fecha</label>
@@ -19,7 +19,7 @@
 </div>
 <div class="row ">
   <div class="col-md-2  ">
-    <button  type="button" id="excel"  onclick="excelExport()" class="btn btn-sm btn-primary" >Excel</button>
+    <button  type="button" id="excel"  onclick="excelExport()" class="btn btn-sm btn-primary" >Excel </button>
   </div>    
 </div>
 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
