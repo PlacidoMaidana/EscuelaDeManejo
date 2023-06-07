@@ -67,31 +67,39 @@
                           aria-describedby="helpId" placeholder="" value=" {{ $numero_clases[1]->nombre." ".($numero_clases[1]->cantidad_eventos +1) }}">
                         </div>
 
+                        <!-- El select de franjas horarias  -->
                         <div class="form-group">
                           <label for="id">Franjas horarias</label>
-                          <select name="franja_horaria">
+                          <select name="franja_horaria" id="franja_horaria_select">
                             @foreach ($franjasHorarias as $franjaHoraria)
                                 <option value="{{ $franjaHoraria->id }}">{{ $franjaHoraria->descripcion }}</option>
                             @endforeach
                         </select>
                         </div>
 
+                          <!-- El select de franjas horarias  -->
+                          <div class="form-group">
+                            <label for="id">Tipos Eventos</label>
+                            <select name="tipos_eventos" id="tipos_eventos_select">
+                              @foreach ($tipos_eventos as $tipo)
+                                  <option value="{{ $tipo->id }}">{{ $tipo->tipo_evento }}</option>
+                              @endforeach
+                          </select>
+                          </div>
+
                        
 
                         <div class="form-group">
                           <label for="start_date">fecha inicio</label>
-                          <input type="date" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
+                          <input type="text" class="form-control" name="start_date" id="start_date" aria-describedby="helpId" placeholder="" value="">
                         </div>
 
                         <div class="form-group">
                             <label for="end_date"> fecha fin</label>
-                            <input type="date" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
+                            <input type="text" class="form-control" name="end_date" id="end_date" aria-describedby="helpId" placeholder="">
                         </div>
-
-                        <div class="form-group">
-                          <label for="idAlumnoCurso">id alumno curso</label>
-                          <input type="text" class="form-control" name="idAlumnoCurso" id="idAlumnoCurso" aria-describedby="helpId" placeholder="" value="">
-                        </div>
+                        <input type="hidden"  name="idAlumnoCurso" id="idAlumnoCurso" aria-describedby="helpId" placeholder="" value="">
+                       
 
                         <div class="form-group">
                           <label for="idVehiculo">Vehiculo</label>
@@ -105,9 +113,9 @@
 
                         <div class="form-group">
                           <label for="asistencia">asistencia</label>
-                          <input type="text" class="form-control" name="asistencia" id="asistencia" aria-describedby="helpId" placeholder="">
+                          <input type="checkbox"  name="asistencia" id="asistencia" value="1" >
                         </div>
-
+                       
                         <div class="form-group">
                           <label for="descripcion">descripcion</label>
                           <textarea class="form-control" name="descripcion" id="descripcion"
@@ -270,4 +278,40 @@
      
 
 </script>
+
+<script>
+$(document).ready(function() {
+  // Obtener referencia al select de franjas horarias
+  var selectFranjaHoraria = $('#franja_horaria_select');
+
+  // Escuchar el evento 'change' del select de franjas horarias
+  selectFranjaHoraria.on('change', function() {
+  var franjaHorariaSeleccionada = selectFranjaHoraria.val();
+
+  
+// Realizar la solicitud AJAX para obtener los valores de start_date y end_date
+   
+    $.ajax({
+      url: '/calendario/obtener_fechas/' + franjaHorariaSeleccionada,
+      method: 'GET',
+      success: function(response) {
+        // Actualizar los campos de fecha en el formulario del evento
+        
+        $('#start_date').val(response.start_date);
+        $('#end_date').val(response.end_date);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        // Manejar el error de la solicitud AJAX
+        console.log('Error:', errorThrown);
+        
+      }
+    });
+  });
+});
+
+
+</script>
+
+
+
 @stop
