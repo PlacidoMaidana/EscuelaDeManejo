@@ -66,6 +66,9 @@ Route::get('/clases_seguimiento_alumno/{idAlumnoCurso}','App\Http\Controllers\vo
 Route::get('/listas_alumnos_instructor/{idInstructor}','App\Http\Controllers\Calendario_instructorController@lista_alumnos_instructor_fecha');
 Route::get('/alumnos_instructor_por_fecha/{idInstructor}/{from}','App\Http\Controllers\Calendario_instructorController@alumnos_instructor_por_fecha');//ruta que devuelve datos
 
+Route::get('/RegistroAsistencia','App\Http\Controllers\RegistroAsistencia@index');
+Route::get('/asistencia_clases/{franjahoraria}/{from}','App\Http\Controllers\RegistroAsistencia@asistencia_clases_por_fecha');//ruta que devuelve datos
+
 Route::get('/Informeingresossucursal','App\Http\Controllers\informes_tesoreria@index_ing_suc');
 
 Route::get('/Informeingresos','App\Http\Controllers\informes_tesoreria@index_ing');

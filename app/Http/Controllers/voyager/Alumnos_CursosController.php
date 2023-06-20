@@ -210,6 +210,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             'sucursal'
         ));
     }
+     
+
+
     public function lista_clases_alumnos($id_alumno_curso)
     {
 
