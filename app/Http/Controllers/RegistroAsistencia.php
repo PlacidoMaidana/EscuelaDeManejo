@@ -29,7 +29,8 @@ class RegistroAsistencia extends Controller
                 ->leftjoin('franjas_horarias','franjas_horarias.id','=','alumno_evento.id_franja_horaria')
                 ->whereDate('alumno_evento.start_date','=',$from )
                 ->where('alumno_evento.id_franja_horaria','=',$franjahoraria )
-                ->select(['alumnos.nombre',
+                ->select(['alumno_evento.id',
+                          'alumnos.nombre',
                           'cursos.nombre_curso',
                           'alumno_evento.start_date as fecha',
                           'alumno_evento.descripcion as clase',
@@ -39,6 +40,7 @@ class RegistroAsistencia extends Controller
                           'franjas_horarias.descripcion',
                           ]))
                           ->addColumn('accion','vendor/voyager/alumno-evento/acciones_asistencia')
+                          ->rawColumns(['accion'])  
                           ->toJson();  
      }
 

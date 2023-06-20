@@ -67,7 +67,7 @@
      <script>
       function filtrar() {
        var filtro ="{{url('/asistencia_clases/')}}"+"/"+$("#franjahoraria_selected").val()+'/'+$("#fecha").val(); 
-
+      
         $('#example').dataTable( {
              "serverSide": true,
              "ajax":filtro,

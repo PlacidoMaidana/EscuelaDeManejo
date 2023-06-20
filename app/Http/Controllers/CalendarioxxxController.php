@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\AlumnoEvento;
 use App\FranjasHoraria;
-use App\Instructore;
-use App\Vehiculo;
 use Carbon\Carbon;
 
 class CalendarioController extends Controller
@@ -15,7 +13,7 @@ class CalendarioController extends Controller
 
     public function index($idAlumnoCurso)
     {
-      
+       
         $all_events = DB::table('alumno_evento')
         ->join('instructores','alumno_evento.id_instructor','=','instructores.id')
         ->join('vehiculos','alumno_evento.id_vehiculo','=','vehiculos.id')
@@ -35,8 +33,6 @@ class CalendarioController extends Controller
        
         $registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
         $franjasHorarias = DB::table('franjas_horarias')->get();
-        $instructores = DB::table('instructores')->get();
-        $vehiculos = DB::table('vehiculos')->get();
         $tipos_eventos = DB::table('tipos_eventos')->get();
         $numero_clases = DB::table('alumnos_cursos')
         ->select(DB::raw('COUNT(alumno_evento.id) AS cantidad_eventos, alumnos_cursos.id_alumno, alumnos.nombre'))
@@ -64,11 +60,10 @@ class CalendarioController extends Controller
  
         ];
        }
-     
+           
         return view('calendario.calendario', 
         compact('events','AlumnoCursoInfo','idAlumnoCurso',
-        'numero_clases','franjasHorarias','registro_AlumnoCurso','tipos_eventos','instructores','vehiculos'));
-       
+        'numero_clases','franjasHorarias','registro_AlumnoCurso','tipos_eventos'));
     }
 
 

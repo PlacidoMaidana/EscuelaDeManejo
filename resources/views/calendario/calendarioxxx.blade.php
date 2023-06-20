@@ -60,13 +60,13 @@
                           <input type="text" class="form-control" name="alumno" id="alumno" 
                           aria-describedby="helpId" placeholder="" value=" {{ $AlumnoCursoInfo[0]->nombre }}">
                         </div>
-
+{{--  
                         <div class="form-group">
                           <label for="clase"> Descripcion Clase </label>
                           <input type="text" class="form-control" name="clase" id="clase" 
                           aria-describedby="helpId" placeholder="" value=" {{ $numero_clases[1]->nombre." ".($numero_clases[1]->cantidad_eventos +1) }}">
                         </div>
-
+--}}
                         <!-- El select de franjas horarias  -->
                         <div class="form-group">
                           <label for="id">Franjas horarias</label>
@@ -100,24 +100,7 @@
                         </div>
                         <input type="hidden"  name="idAlumnoCurso" id="idAlumnoCurso" aria-describedby="helpId" placeholder="" value="">
                        
-                        <div class="form-group">
-                          <label for="id">Vehiculo</label>
-                          <select name="vehiculos" id="vehiculos_select">
-                            @foreach ($vehiculos as $vehiculo)
-                                <option value="{{ $vehiculo->id }}">{{ $vehiculo->marca_modelo_anio }}</option>
-                            @endforeach
-                        </select>
-                        </div>
 
-                        <div class="form-group">
-                          <label for="id">Instructor</label>
-                          <select name="instructores" id="instructores_select">
-                            @foreach ($instructores as $instructor)
-                                <option value="{{ $instructor->id }}">{{ $instructor->nombre }}</option>
-                            @endforeach
-                        </select>
-                        </div>
- {{-- 
                         <div class="form-group">
                           <label for="idVehiculo">Vehiculo</label>
                           <input type="text" class="form-control" name="idVehiculo" id="idVehiculo" aria-describedby="helpId" placeholder="">
@@ -127,7 +110,7 @@
                           <label for="idInstructor">idInstructor</label>
                           <input type="text" class="form-control" name="idInstructor" id="idInstructor" aria-describedby="helpId" placeholder="">
                         </div>
-                        --}}
+
                         <div class="form-group">
                           <label for="asistencia">asistencia</label>
                           <input type="checkbox"  name="asistencia" id="asistencia" value="1" >
@@ -187,7 +170,7 @@
                 formulario.reset();
                 formulario.start_date.value=info.dateStr;
                 formulario.end_date.value=info.dateStr;
-                formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
+                formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}}; 
                 
               
                  console.log(info);
