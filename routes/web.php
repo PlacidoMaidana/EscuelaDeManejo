@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\AlumnoEvento;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,10 +29,14 @@ Route::get('/Alumnos_curso','App\Http\Controllers\voyager\Alumnos_CursosControll
 Route::get('/calendario/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@index');
 Route::get('/calendario/mostrar','App\Http\Controllers\CalendarioController@show');
 Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@store');
-Route::post('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');
+Route::get('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');
 Route::post('/calendario/actualizar/{evento}','App\Http\Controllers\CalendarioController@update');
 Route::post('/calendario/borrar/{id}','App\Http\Controllers\CalendarioController@destroy');
 Route::get('/calendario/obtener_fechas/{franjaHoraria}','App\Http\Controllers\CalendarioController@obtener_fechas');
+Route::get('/calendario/eventos_alumno/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@eventos_alumno');
+Route::get('/obtener-eventos/{idVehiculo}/{idHorario}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
+
+
 //|##############################################|
 //|           Calendario del Instructor          |
 //|##############################################|

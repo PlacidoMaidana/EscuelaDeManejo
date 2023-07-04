@@ -16,13 +16,14 @@ class CalendarioController extends Controller
     public function index($idAlumnoCurso)
     {
       
-        $all_events = DB::table('alumno_evento')
+        
+      /*  $all_events = DB::table('alumno_evento')
         ->join('instructores','alumno_evento.id_instructor','=','instructores.id')
         ->join('vehiculos','alumno_evento.id_vehiculo','=','vehiculos.id')
         ->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
         ->select(['alumno_evento.id as id', 'id_vehiculo', 'vehiculos.marca_modelo_anio as marca_modelo_anio',
           'id_instructor','instructores.nombre as nombre',
-          'clase','start_date','end_date','asistencia','descripcion'])->get();
+          'clase','start_date','end_date','asistencia','descripcion'])->get();*/
 
         $AlumnoCursoInfo = DB::table('alumnos_cursos')
         //->join('instructores as i','alumno_evento.id_instructor','=','i.id')
@@ -36,7 +37,7 @@ class CalendarioController extends Controller
         $registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
         $franjasHorarias = DB::table('franjas_horarias')->get();
         $instructores = DB::table('instructores')->get();
-        $vehiculos = DB::table('vehiculos')->get();
+        $vehiculos = DB::table('vehiculos')->where('id_vehiculo',)->get();
         $tipos_eventos = DB::table('tipos_eventos')->get();
         $numero_clases = DB::table('alumnos_cursos')
         ->select(DB::raw('COUNT(alumno_evento.id) AS cantidad_eventos, alumnos_cursos.id_alumno, alumnos.nombre'))
@@ -64,13 +65,88 @@ class CalendarioController extends Controller
  
         ];
        }
+
      
         return view('calendario.calendario', 
         compact('events','AlumnoCursoInfo','idAlumnoCurso',
         'numero_clases','franjasHorarias','registro_AlumnoCurso','tipos_eventos','instructores','vehiculos'));
        
     }
+    public function eventos_alumno($idAlumnoCurso)
+        {
+          
+            $all_events = DB::table('alumno_evento')
+            ->join('instructores','alumno_evento.id_instructor','=','instructores.id')
+            ->join('vehiculos','alumno_evento.id_vehiculo','=','vehiculos.id')
+            ->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
+            ->select(['alumno_evento.id as id', 'id_vehiculo', 'vehiculos.marca_modelo_anio as marca_modelo_anio',
+              'id_instructor','instructores.nombre as nombre',
+              'clase','start_date','end_date','asistencia','descripcion'])->get();
+    
+          
+            $events = [];
+           foreach ($all_events as $event) {
+           
+           $events[] = ['id' => $event->id,
+           'title' => $event->clase,
+           'start' => $event->start_date,
+           'end' => $event->end_date,
+           'idAlumnoCurso'=>$idAlumnoCurso,
+           'idVehiculo'=>$event->id_vehiculo,
+           'marca_modelo_anio'=>$event->marca_modelo_anio,
+           'idInstructor'=>$event->id_instructor,
+           'nombre'=>$event->nombre,
+           'asistencia'=>$event->asistencia,
+           'descripcion'=>$event->descripcion
+     
+            ];
+           }
+               
+           return response()->json($events);
+        }
+    
+    public function obtener_eventos($idVehiculo,$idHorario)
+        {
+        
+            $sucursal = auth()->user()->id_sucursal;
 
+
+            $all_events = DB::table('alumno_evento')
+             ->join ('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
+             ->join('instructores','alumno_evento.id_instructor','=','instructores.id')
+             ->join('vehiculos','alumno_evento.id_vehiculo','=','vehiculos.id')
+             //->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
+             ->where('id_vehiculo', $idVehiculo)
+             ->where('id_franja_horaria', $idHorario)
+             ->where('alumnos_cursos.id_sucursal', $sucursal)
+             ->select(['alumno_evento.id as id', 'id_vehiculo', 'vehiculos.marca_modelo_anio as marca_modelo_anio',
+             'id_instructor','instructores.nombre as nombre','alumno_evento.id_alumno_curso',
+             'clase','start_date','end_date','asistencia','descripcion'])->get();
+            
+            
+            $events = [];
+            foreach ($all_events as $event) {
+            $events[] = ['id' => $event->id,
+            'title' => $event->clase,
+            'start' => $event->start_date,
+            'end' => $event->end_date,
+            'idAlumnoCurso'=>$event->id_alumno_curso,
+            'idVehiculo'=>$event->id_vehiculo,
+            'marca_modelo_anio'=>$event->marca_modelo_anio,
+            'idInstructor'=>$event->id_instructor,
+            'nombre'=>$event->nombre,
+            'asistencia'=>$event->asistencia,
+            'descripcion'=>$event->descripcion
+            
+             ];
+            }
+            
+            return response()->json($events);
+            
+
+            
+        }
+        
 
     /**
      * POST BRE(A)D - Store data.
@@ -107,15 +183,18 @@ class CalendarioController extends Controller
           'start_date' => $request['start_date'],
           'end_date' => $request['end_date'] ,  
           'id_alumno_curso' => $request['idAlumnoCurso'] ,
-          'id_vehiculo' => $request['idVehiculo'] ,
-          'id_instructor' => $request['idInstructor'] ,
+          'id_franja_horaria' => $request['franja_horaria'],
+          'id_vehiculo' => $request['vehiculos'] ,
+          'id_instructor' => $request['instructores'] ,
           'asistencia' => $request['asistencia'] ,
           'descripcion' => $request['descripcion'] ,
+          'id_tipo_evento' => $request['tipos_eventos'],
 
         ]);
         
 
         return response()->json([
+                       'request'=> $request->all(),
                        'clase'=>$clase,//$request['nombre_clase'],
                        'message' => 'Success'
           ], 200);

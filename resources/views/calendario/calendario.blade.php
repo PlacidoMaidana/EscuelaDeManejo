@@ -19,7 +19,25 @@
              
               <div class="card">
 
-                <div class="card-header">{{ __('Dashboard') }} </div>
+                <div class="card-header"> 
+               
+                  <select name="id_vehiculo" class="col-md-4" id="id_vehiculo" >
+                    <option selected>Seleccione vehiculo</option>               
+                    @foreach ($vehiculos as $v)
+                    <option value="{{ $v->id }}" >{{ $v->marca_modelo_anio }}</option>
+                    @endforeach
+                   </select>    
+
+                   <select name="id_horario" class="col-md-4 " id="id_horario" >
+                    <option selected>Seleccione franja horaria</option>
+                    @foreach ($franjasHorarias as $f)
+                    <option value="{{ $f->id }}" >{{ $f->descripcion }}</option>
+                    @endforeach
+                   </select>    
+
+
+                
+                </div>
                 <div class="card-body">
                     <div id='calendar'></div>
                 </div>
@@ -55,6 +73,7 @@
                        <form action="" id="FormCalendar" method="post">
                         {!! csrf_field() !!}
                        
+                        <input type="hidden" name="id" value="">
                         <div class="form-group">
                           <label for="clase"> Alumno </label>
                           <input type="text" class="form-control" name="alumno" id="alumno" 
@@ -87,8 +106,7 @@
                               @endforeach
                           </select>
                           </div>
-
-                       
+       
 
                         <div class="form-group">
                           <label for="start_date">fecha inicio</label>
@@ -117,21 +135,6 @@
                                 <option value="{{ $instructor->id }}">{{ $instructor->nombre }}</option>
                             @endforeach
                         </select>
-                        </div>
- {{-- 
-                        <div class="form-group">
-                          <label for="idVehiculo">Vehiculo</label>
-                          <input type="text" class="form-control" name="idVehiculo" id="idVehiculo" aria-describedby="helpId" placeholder="">
-                        </div>
-
-                        <div class="form-group">
-                          <label for="idInstructor">idInstructor</label>
-                          <input type="text" class="form-control" name="idInstructor" id="idInstructor" aria-describedby="helpId" placeholder="">
-                        </div>
-                        --}}
-                        <div class="form-group">
-                          <label for="asistencia">asistencia</label>
-                          <input type="checkbox"  name="asistencia" id="asistencia" value="1" >
                         </div>
                        
                         <div class="form-group">
@@ -169,10 +172,20 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
+
+
+
 <script>
 
         document.addEventListener('DOMContentLoaded', function() {
+          
+          const idVehiculoSelect = document.getElementById('id_vehiculo');
+          const idHorarioSelect = document.getElementById('id_horario');
+          const idVehiculo = idVehiculoSelect.value;
+          const idHorario = idHorarioSelect.value;
 
+          const ruta = "{{url('/obtener-eventos/')}}/" + idVehiculo + "/" + idHorario; 
+         
         let formulario = document.getElementById("FormCalendar");
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -183,7 +196,6 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
             },
-
             dateClick:function(info){
                 formulario.reset();
                 formulario.start_date.value=info.dateStr;
@@ -197,20 +209,23 @@
             },
             eventClick:function(info){
               var evento=info.event;
-              console.log(evento);
-             //  window.location.href = "http://127.0.0.1:8000/calendario/editar/"+info.event.id;
-
-             axios.post("http://127.0.0.1:8000/calendario/editar/"+info.event.id)
+              console.log("la ruta es"+"{{url('/calendario/editar/')}}/" +info.event.id);
+              console.log("Valores del evento:", evento);
+             
+             axios.get("{{url('/calendario/editar/')}}/" +info.event.id)
               .then(
                 (respuesta)=>{
+                  for (var key in respuesta.data) {
+                       console.log(key + ": " + respuesta.data[key]);
+                         }
+                    
                     formulario.id.value=respuesta.data.id;
                     formulario.clase.value=respuesta.data.clase;
                     formulario.start_date.value=respuesta.data.start_date;
                     formulario.end_date.value=respuesta.data.end_date;
                     formulario.idAlumnoCurso.value=respuesta.data.id_alumno_curso;
-                    formulario.idVehiculo.value=respuesta.data.id_vehiculo;
-                    formulario.idInstructor.value=respuesta.data.id_instructor;
-                    formulario.asistencia.value=respuesta.data.asistencia;
+                    formulario.vehiculos.value=respuesta.data.id_vehiculo;
+                    formulario.instructores.value=respuesta.data.id_instructor;
                     formulario.descripcion.value=respuesta.data.descripcion;
 
                     $("#ModCalendario").modal("show");
@@ -223,35 +238,46 @@
                 });
             },
   
-          events: @json($events) 
-        // events: "http://127.0.0.1:8000/calendario/index" ,
+           //events: @json($events) 
+           //  events: "http://127.0.0.1:8000/calendario/eventos_alumno/2",
+               
+             events: ruta,
         });
-        
-
+        console.log("url de los eventos inicio:  "+ruta);
+           
         calendar.setOption('locale','Es');
         calendar.render();
        
         document.getElementById("btn-guardar").addEventListener("click",function(){
             const datos= new FormData(formulario);
-            //console.log(datos.get('start_date'));
-            // console.log(formulario.clase.value);
-           
-            axios.post("http://127.0.0.1:8000/calendario/agregar", datos)
+           /* console.log("Datos del formulario:");
+              for (let pair of datos.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+              }
+            return;*/
+            
+            
+            axios.post("{{url('/calendario/agregar')}}/", datos)
             .then(
                 (respuesta)=>{
-                    console.log(respuesta);
-                    //calendar.refetchEvents();
-                    location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
-                    $("#ModCalendario").modal("hide");
-                }
-            )
-            .catch((error) => {
-               console.log(error);
-               // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
-             });
-        }); 
-        
-        document.getElementById("btn-eliminar").addEventListener("click",function(){
+                  console.log("Luego de volver");
+                  console.log(respuesta.data.request);
+                  console.log(respuesta.data.clase);
+                  console.log(datos);
+                  calendar.refetchEvents();
+                       //calendar.refetchEvents();
+                            //location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+                            $("#ModCalendario").modal("hide");
+
+                        }
+                    )
+                         .catch((error) => {
+                            console.log(error);
+                    // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
+                  });
+             }); 
+
+document.getElementById("btn-eliminar").addEventListener("click",function(){
             const datos= new FormData(formulario);
             // console.log(datos.get('start_date'));
             // console.log(formulario.clase.value);
@@ -263,6 +289,7 @@
                     //calendar.refetchEvents();
                     location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
                     $("#ModCalendario").modal("hide");
+                    calendar.refetchEvents();
                 }
               )
             .catch((error) => {
@@ -270,66 +297,164 @@
                // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
              });
 
-        }); 
-
-        document.getElementById("btn-modificar").addEventListener("click",function(){
-            const datos= new FormData(formulario);
+             }); 
+           
+  document.getElementById("btn-modificar").addEventListener("click",function(){
+          
+           const datos= new FormData(formulario);
             //console.log(datos.get('start_date'));
             //console.log(formulario.clase.value);
+
+            console.log("Datos del formulario:");
+              for (let pair of datos.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+              }
+            
            
             axios.post("http://127.0.0.1:8000/calendario/actualizar/"+formulario.id.value , datos)
-            .then(
-                (respuesta)=>{
-                    console.log(respuesta);
-                   // calendar.refetchEvents();
-                   location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
-                    $("#ModCalendario").modal("hide");
-                }
+             .then(
+              (respuesta)=>{
+                console.log("La respuesta es: ");
+               console.log(respuesta);
+              
+              location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+               $("#ModCalendario").modal("hide");
+               calendar.refetchEvents();
+              }
               )
-            .catch((error) => {
-               console.log(error);
-               // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
+             .catch((error) => {
+             console.log(error);
+             // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
              });
 
-        }); 
-      });
-     
+             
 
+             }); 
+           
+
+       // Obtener referencias a los elementos select
+       //const idVehiculoSelect = document.getElementById('id_vehiculo');
+       document.getElementById('id_horario').addEventListener('change', function() {
+
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    // Obtener referencias a los elementos select
+    const idVehiculoSelect = document.getElementById('id_vehiculo');
+    const idHorarioSelect = document.getElementById('id_horario');
+    // Obtener valores seleccionados
+     const idVehiculo = idVehiculoSelect.value;
+     const idHorario = idHorarioSelect.value;
+    // Verificar si se seleccionaron tanto el horario como el vehículo
+     if (idVehiculo && idHorario) {
+    // Generar la URL con los valores seleccionados
+     const url = "{{url('/obtener-eventos/')}}/" + idVehiculo + "/" + idHorario;
+     // Verificar si se obtuvo la instancia del calendario correctamente
+     // Destruir el calendario existente
+     console.log("url de los eventos: /n"+url);
+     calendar.destroy();    
+     // Inicializar nuevamente el calendario con la nueva fuente de eventos
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        headerToolbar:{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            dateClick:function(info){
+                formulario.reset();
+                formulario.start_date.value=info.dateStr;
+                formulario.end_date.value=info.dateStr;
+                formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
+                             
+                 console.log(info);
+
+                $('#ModCalendario').modal("show");
+            },
+            eventClick:function(info){
+              var evento=info.event;
+              console.log("la ruta es"+"{{url('/calendario/editar/')}}/" +info.event.id);
+              console.log("Valores del evento:", evento);
+             
+             axios.get("{{url('/calendario/editar/')}}/" +info.event.id)
+              .then(
+                (respuesta)=>{
+                  for (var key in respuesta.data) {
+                       console.log(key + ": " + respuesta.data[key]);
+                         }
+                    
+                    formulario.id.value=respuesta.data.id;
+                    formulario.clase.value=respuesta.data.clase;
+                    formulario.start_date.value=respuesta.data.start_date;
+                    formulario.end_date.value=respuesta.data.end_date;
+                    formulario.idAlumnoCurso.value=respuesta.data.id_alumno_curso;
+                    formulario.vehiculos.value=respuesta.data.id_vehiculo;
+                    formulario.instructores.value=respuesta.data.id_instructor;
+                    formulario.descripcion.value=respuesta.data.descripcion;
+
+                    $("#ModCalendario").modal("show");
+                }
+                )
+              .catch((error) =>
+                {
+               console.log(error);
+               // Manejar el error aquí, por ejemplo, mostrar un mensaje de error en la página
+                });
+            },
+  
+        events: url,
+        // Configuración adicional del calendario...
+      });
+    
+      
+     // Renderizar el calendario actualizado
+     calendar.render();    
+     }
+
+
+
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    
+  });
+
+ 
+      });
+
+      
 </script>
 
 <script>
-$(document).ready(function() {
-  // Obtener referencia al select de franjas horarias
-  var selectFranjaHoraria = $('#franja_horaria_select');
-
-  // Escuchar el evento 'change' del select de franjas horarias
-  selectFranjaHoraria.on('change', function() {
-  var franjaHorariaSeleccionada = selectFranjaHoraria.val();
-
+  $(document).ready(function() {
+    // Obtener referencia al select de franjas horarias
+    var selectFranjaHoraria = $('#franja_horaria_select');
   
-// Realizar la solicitud AJAX para obtener los valores de start_date y end_date
-   
-    $.ajax({
-      url: '/calendario/obtener_fechas/' + franjaHorariaSeleccionada,
-      method: 'GET',
-      success: function(response) {
-        // Actualizar los campos de fecha en el formulario del evento
-        
-        $('#start_date').val(response.start_date);
-        $('#end_date').val(response.end_date);
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        // Manejar el error de la solicitud AJAX
-        console.log('Error:', errorThrown);
-        
-      }
+    // Escuchar el evento 'change' del select de franjas horarias
+    selectFranjaHoraria.on('change', function() {
+    var franjaHorariaSeleccionada = selectFranjaHoraria.val();
+  
+    
+  // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
+     
+      $.ajax({
+        url: '/calendario/obtener_fechas/' + franjaHorariaSeleccionada,
+        method: 'GET',
+        success: function(response) {
+          // Actualizar los campos de fecha en el formulario del evento
+          
+          $('#start_date').val(response.start_date);
+          $('#end_date').val(response.end_date);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Manejar el error de la solicitud AJAX
+          console.log('Error:', errorThrown);
+          
+        }
+      });
     });
   });
-});
-
-
-</script>
-
+  
+  
+  </script>
 
 
 @stop
