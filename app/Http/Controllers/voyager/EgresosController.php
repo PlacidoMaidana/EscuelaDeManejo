@@ -15,11 +15,10 @@ use TCG\Voyager\Events\BreadDataUpdated;
 use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
-use App\Curso;
 
-
-class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
+class EgresosController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
+
     use BreadRelationshipParser;
 
     //***************************************
@@ -48,7 +47,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         $getter = $dataType->server_side ? 'paginate' : 'get';
 
         $search = (object) ['value' => $request->get('s'), 'key' => $request->get('key'), 'filter' => $request->get('filter')];
-
+       
         $searchNames = [];
         if ($dataType->server_side) {
             $searchNames = $dataType->browseRows->mapWithKeys(function ($row) {
@@ -65,8 +64,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         if (strlen($dataType->model_name) != 0) {
             $model = app($dataType->model_name);
 
-            $query = $model::select($dataType->name.'.*');
 
+            $query = $model::select($dataType->name.'.*');
+           
             if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
                 $query->{$dataType->scope}();
             }
@@ -133,7 +133,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             $model = false;
         }
 
-        // Check if BREAD is Translatable
+       // Check if BREAD is Translatable
         $isModelTranslatable = is_bread_translatable($model);
 
         // Eagerload Relations
@@ -175,18 +175,18 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             $index = $dataType->browseRows->where('field', $orderBy)->keys()->first() + ($showCheckboxColumn ? 1 : 0);
             $orderColumn = [[$index, $sortOrder ?? 'desc']];
         }
-       //dd('alumnos_cursosss');
+
         // Define list of columns that can be sorted server side
         $sortableColumns = $this->getSortableColumns($dataType->browseRows);
-       //*****************
+      //*****************
        // Averigua sucursal y filtra datos de alumnos por sucursal
        // *************
-        $user = Auth::user();
-        $sucursal=$user->id_sucursal;
-        // ******************
+       $user = Auth::user();
+       $sucursal=$user->id_sucursal;
+       // ******************
 
         $view = 'voyager::bread.browse';
-        
+
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
@@ -209,92 +209,32 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             'showCheckboxColumn',
             'sucursal'
         ));
+       
     }
-     
-
-
-    public function lista_clases_alumnos($id_alumno_curso)
+    public function egresos_por_sucursal($sucursal)
     {
-
-        return view('voyager::alumno-evento.clases_alumno_browse', compact('id_alumno_curso'));
-      
-    }
-    public function seguimiento_clases_alumnos($id_alumno_curso)
-    {
-      return $datos = datatables()->of(DB::table('alumno_evento') 
-     ->join('alumnos_cursos','alumno_evento.id_alumno_curso','=','alumnos_cursos.id')
-     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-     ->leftjoin('instructores','alumno_evento.id_instructor','=','instructores.id')
-     ->leftjoin('tipos_eventos','alumno_evento.id_tipo_evento','=','tipos_eventos.id')
-     ->leftjoin('franjas_horarias','alumno_evento.id_franja_horaria','=','franjas_horarias.id')
-     ->where('alumnos_cursos.activo','=','SI')
-     ->where('alumnos_cursos.id','=', $id_alumno_curso)
-     ->select([ 'alumnos_cursos.id as id_Alumno_Curso',
-                'alumnos.nombre as nombre_alumno',
-                'cursos.nombre_curso',
-                'alumno_evento.start_date as fecha',
-                'alumno_evento.descripcion as clase',
-                'tipos_eventos.tipo_evento',
-                'instructores.nombre as nombre_instructor',
-                'alumno_evento.asistencia',
-                'franjas_horarias.descripcion',
+      return $datos = datatables()->of(DB::table('egresos_gastos')
+    ->leftjoin('tipos_gastos','tipos_gastos.id','=','egresos_gastos.id_tipo_gasto')
+    ->join('users','egresos_gastos.id_empleado','=','users.id')
+    ->where('egresos_gastos.id_sucursal','=', $sucursal)
+    ->select([  'egresos_gastos.id',
+                'egresos_gastos.fecha',
+                'tipos_gastos.tipo1',
+                'tipos_gastos.tipo2',
+                'egresos_gastos.descripcion',
+                'users.name',
+                'egresos_gastos.modalidad_pago',
+                'egresos_gastos.importe',                
               ]))  
-    ->toJson();   
-    }
-
-    public function alumnos_por_sucursal_activos($sucursal)
-    {
-      return $datos = datatables()->of(DB::table('alumnos_cursos')
-    ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
-    ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-    ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-    ->leftjoin('empleados','alumnos_cursos.id_vendedor','=','empleados.id')
-    ->where('alumnos_cursos.activo','=', 'SI')
-    ->where('alumnos_cursos.id_sucursal','=', $sucursal)
-    ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
-    ->select([  'alumnos_cursos.id as idAlumnoCurso',
-                'alumnos_cursos.fecha_inscripcion',
-                'cursos.nombre_curso',
-                'alumnos.nombre as nombre_alumno',
-                'empleados.nombre as nombre_vend',
-                'alumnos_cursos.precio',
-                 DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
-                
-              ]))  
-              ->addColumn('check','vendor/voyager/alumnos-cursos/check')
-              ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_activos')
+              ->addColumn('check','vendor/voyager/egresos-gastos/check')
+              ->addColumn('accion','vendor/voyager/egresos-gastos/acciones_gastos')
               ->rawColumns(['check','accion'])  
                
     ->toJson();   
     }
     
-    public function alumnos_por_sucursal_terminados($sucursal)
-    {
-       
 
-    return $datos = datatables()->of(DB::table('alumnos_cursos')
-    ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
-    ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-    ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-    ->leftjoin('empleados','alumnos_cursos.id_vendedor','=','empleados.id')
-    ->where('alumnos_cursos.activo','=', 'NO')
-    ->where('alumnos_cursos.id_sucursal','=', $sucursal)
-    ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
-    ->select([  'alumnos_cursos.id as idAlumnoCurso',
-                'alumnos_cursos.fecha_inscripcion',
-                'cursos.nombre_curso',
-                'alumnos.nombre as nombre_alumno',
-                'empleados.nombre as nombre_vend',
-                'alumnos_cursos.precio',
-                DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
-              ]))  
-              ->addColumn('check','vendor/voyager/alumnos-cursos/check')
-              ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_terminados')
-              ->rawColumns(['check','accion'])  
-               
-    ->toJson();   
-    }
+
 
     //***************************************
     //                _____
@@ -374,7 +314,6 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
     public function edit(Request $request, $id)
     {
-        $cursos= Curso::all();
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -418,24 +357,20 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             $view = "voyager::$slug.edit-add";
         }
 
-        $datos_alumno= DB::table ('alumnos')
-        -> join ('alumnos_cursos','alumnos.id','=','alumnos_cursos.id_alumno')
-        -> where('alumnos_cursos.id' , '=' ,$id)
-        -> select(['alumnos.id','alumnos.nombre','alumnos_cursos.id_sucursal' ])           
-       ->first();
-       //dd($datos_cliente);
-       $id_alumno = $datos_alumno->id;
-       $nombre_alumno=$datos_alumno->nombre;
-       $sucursal = $datos_alumno->id_sucursal;
-       $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+       
+        $datos_gastos = DB::table('egresos_gastos')->select(['id_sucursal','id_empleado'])->where ('id','=',$id)->get();
+        $sucursal = $datos_gastos[0]->id_sucursal;
+        $operador = $datos_gastos[0]->id_empleado;
+        $nombre_operador = DB::table('users')->select(['name'])->where ('id','=',$operador)->get();
+        $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','nombre_sucursal','nombre_operador','sucursal','operador'));
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno', 'nombre_alumno','cursos','nombre_sucursal','sucursal'));
+       
     }
 
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
-       
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -452,8 +387,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             $query = $query->withTrashed();
         }
 
-        // Check permission
         $data = $query->findOrFail($id);
+
+        // Check permission
         $this->authorize('edit', $data);
 
         // Validate fields with ajax
@@ -500,8 +436,6 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
     public function create(Request $request)
     {
-        $cursos= Curso::all();
-        
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -531,17 +465,13 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         if (view()->exists("voyager::$slug.edit-add")) {
             $view = "voyager::$slug.edit-add";
         }
-
-        $id_alumno=1;
-        $nombre_alumno='';
-        //*****************
-       // Averigua sucursal 
-       // *************
-        $user = Auth::user();
-        $sucursal=$user->id_sucursal;
+        
+        $sucursal = auth()->user()->id_sucursal;
         $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
-        // ******************
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno','nombre_alumno','cursos','sucursal','nombre_sucursal'));
+        $operador = auth()->user()->id;
+        $nombre_operador = DB::table('users')->select(['name'])->where ('id','=',$operador)->get();
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','nombre_sucursal','nombre_operador','sucursal','operador'));
+
     }
 
     /**

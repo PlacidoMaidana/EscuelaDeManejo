@@ -7,9 +7,12 @@
 
 
 
-<table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+<table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
     <thead>
       <tr>
+        <th class="dt-not-orderable">
+          <input type="checkbox" class="select_all">
+        </th>
         <th>Alumno</th>
         <th>Curso</th>
         <th>Fecha</th>
@@ -18,6 +21,7 @@
         <th>Instructor</th>
         <th>Asistencia</th>
         <th>Franja Horaria</th>
+        <th>accion</th>
       </tr>
      </thead>
      
@@ -44,6 +48,7 @@
              "orderCellsTop": true,  
              "ajax":" {{url('clases_seguimiento_alumno/')}}/{{$id_alumno_curso}}",                
              "columns":[
+                     {data: 'check', width: '5%'},
                      {data: 'nombre_alumno', name: 'alumnos.nombre', width: '10%'},
                      {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '10%'},
                      {data: 'fecha', name: 'alumno_evento.start_date', width: '10%'},
@@ -52,6 +57,7 @@
                      {data: 'nombre_instructor', name: 'instructores.nombre', width: '10%'},
                      {data: 'asistencia', name: 'alumno_evento.asistencia', width: '10%'},
                      {data: 'descripcion', name: 'franjas_horarias.descripcion', width: '10%'},
+                     {data: 'accion', width: '10%'},
                       ]           
         } );
     } );

@@ -28,7 +28,7 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-           
+                Sucursal: {{$nombre_sucursal[0]->sucursal}} <br>
                 <div class="panel panel-bordered">
                     <!-- form start -->
                     <form role="form"
@@ -108,7 +108,7 @@
                                    continue;
                                @endphp
                                @endif
-
+{{--  
                                @if ($row->getTranslatedAttribute('display_name')=='sucursales')
                                     @php
                                     $user=auth()->user();
@@ -117,25 +117,32 @@
                                     @endphp    
                                 
                                                   
-                               <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
-                                {{ $row->slugify }}
-                                <label class="control-label" for="name">Sucursal: {{ $registro->sucursal}}
-                                </label>
-                                <div class="form-group  col-md-12 ">     
-                                    <input type="text" class="form-control"  id='sucursal'  name="id_sucursal" placeholder="sucursal" value="{{ $registro->id}}" readonly >
-                                </div>                              
-                                      
-                               </div>
+                                    <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                        {{ $row->slugify }}
+                                        <label class="control-label" for="name">Sucursal: {{ $registro->sucursal}}
+                                        </label>
+                                        <div class="form-group  col-md-12 ">     
+                                            <input type="text" class="form-control"  id='sucursal'  name="id_sucursal" placeholder="sucursal" value="{{ $registro->id}}" readonly >
+                                        </div>                              
+                                            
+                                    </div>
 
-                             @php
-                                continue;
-                             @endphp
+                                        @php
+                                            continue;
+                                        @endphp
                                                               
+                                @endif
+                          --}} 
+                            @if ($add )
+                             @if($row->getTranslatedAttribute('display_name')=='sucursales')
+                               <input type="hidden" name="id_sucursal" value="{{$sucursal}}">
+                                @php
+                                    continue;
+                                @endphp
+                             @endif                      
                             @endif
-                           
-                               
- 
-                                @if ($row->getTranslatedAttribute('display_name')=='alumnos')
+
+                            @if ($row->getTranslatedAttribute('display_name')=='alumnos')
                                                 {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                                                 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      Boton + Alumno          <<<<<<<<<<<<<<<<<<<<<<<<<
                                                 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                              <<<<<<<<<<<<<<<<<<<<<<<<
@@ -181,7 +188,7 @@
                                                 @php
                                                     continue;
                                                 @endphp
-                                @endif
+                            @endif
 
                                        {{--  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
                                        {{-- >>>>>>>>>>>>>>>>>>>>>>   ALUMNOS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
@@ -472,6 +479,4 @@
         }
      </script>
 
-     </script>
-
-     @stop
+@stop

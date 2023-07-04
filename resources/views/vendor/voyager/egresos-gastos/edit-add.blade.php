@@ -1,7 +1,7 @@
 @php
     $edit = !is_null($dataTypeContent->getKey());
     $add  = is_null($dataTypeContent->getKey());
-    
+
 @endphp
 
 @extends('voyager::master')
@@ -14,15 +14,9 @@
 
 @section('page_header')
     <h1 class="page-title">
-        REGISTRO DE ASISTENCIA <br>
-            {{--<i class="{{ $dataType->icon }}"></i>
-            {{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
-            
-             {{$dataTypeContent->id}}<br>  --}}
-             Alumno: {{$datosalumno_curso[0]->nombre}}<br>
-             Curso: {{$datosalumno_curso[0]->nombre_curso}}<br>
+        <i class="{{ $dataType->icon }}"></i>
+        {{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
     </h1>
-  
     @include('voyager::multilingual.language-selector')
 @stop
 
@@ -30,8 +24,9 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-
-                <div class="panel panel-bordered">
+               Operador: {{$nombre_operador[0]->name}} <br>
+               Sucursal: {{$nombre_sucursal[0]->sucursal}} <br>
+               <div class="panel panel-bordered">
                     <!-- form start -->
                     <form role="form"
                             class="form-edit-add"
@@ -60,13 +55,7 @@
                             <!-- Adding / Editing -->
                             @php
                                 $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
-                              
                             @endphp
-{{-- 
-        ALUMNO {{$nombre_alumno}}<br>
-        CURSO {{$nombre_curso}} <br>
-        <br>
---}}        
 
                             @foreach($dataTypeRows as $row)
                                 <!-- GET THE DISPLAY OPTIONS -->
@@ -79,7 +68,24 @@
                                 @if (isset($row->details->legend) && isset($row->details->legend->text))
                                     <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
                                 @endif
-
+                                
+                           
+                                @if ($add )
+                                    @if($row->getTranslatedAttribute('display_name')=='sucursales')
+                                    <input type="hidden" name="id_sucursal" value="{{$sucursal}}">
+                                        @php
+                                            continue;
+                                        @endphp
+                                    @endif
+                                    @if($row->getTranslatedAttribute('display_name')=='users')
+                                    <input type="hidden" name="id_empleado" value="{{$operador}}">
+                                        @php
+                                            continue;
+                                        @endphp
+                                    @endif
+                                @endif
+                           
+        
                                 <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 6 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                     {{ $row->slugify }}
                                     <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
@@ -151,11 +157,12 @@
 @stop
 
 @section('javascript')
-   
     <script>
+
+
         var params = {};
         var $file;
-       
+
         function deleteHandler(tag, isMulti) {
           return function() {
             $file = $(this).siblings(tag);

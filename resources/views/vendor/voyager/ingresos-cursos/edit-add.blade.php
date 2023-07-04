@@ -26,7 +26,8 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-
+                Alumno: {{$alumno}} <br>
+                Sucursal: {{$sucursal}} <br>
                 <div class="panel panel-bordered">
                     <!-- form start -->
                     <form role="form"
@@ -70,25 +71,15 @@
                                     <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
                                 @endif
 
-                                @if($row->getTranslatedAttribute('display_name')=='alumnos_cursos')
-                              
-                                  <select name="id_alumno_curso" class="form-control" id="alumno_curso-select">
-                                    <option value="">Seleccionar alumno curso</option>
-                                    @foreach ($alumnos_curso as $id => $alumno)
-                                      <option value="{{ $id_alumno_curso }}" {{ old('id_alumno_curso', $dataTypeContent->id_alumno_curso) == $id ? 'selected' : '' }}>{{ $id_alumno_curso }}</option>
-                                    @endforeach
-                                  </select>
-                                  @if(isset($id_alumno_curso))
-                                  <input type="hidden" name="pagina_retorno" value="admin/alumnos-cursos">
-                                  @endif
-                               
-                               @php
-                                
-                               continue;
-                               @endphp
-                               @endif
-                                
 
+                                @if ($add )
+                                    @if($row->getTranslatedAttribute('display_name')=='alumnos_cursos')
+                                            <input type="hidden" name="id_alumno_curso" value="{{$id_alumno_curso}}">
+                                            @php
+                                                continue;
+                                            @endphp
+                                    @endif                                    
+                                @endif
                                 <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                     {{ $row->slugify }}
                                     <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>

@@ -325,8 +325,18 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         if (view()->exists("voyager::$slug.edit-add")) {
             $view = "voyager::$slug.edit-add";
         }
+        $datos_alumno = DB::table('ingresos_cursos')
+        ->join('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
+        ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
+        ->join('sucursales','alumnos_cursos.id_sucursal','=','sucursales.id')
+        ->select(['sucursales.sucursal','ingresos_cursos.id_alumno_curso','alumnos.nombre'])
+        ->where ('ingresos_cursos.id','=',$id)->get();
+        $sucursal = $datos_alumno[0]->sucursal;
+        $id_alumno_curso = $datos_alumno[0]->id_alumno_curso;
+        $alumno = $datos_alumno[0]->nombre;
+        
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','sucursal', 'alumno'));
     }
 
     // POST BR(E)AD
@@ -369,7 +379,7 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         $this->deleteBreadImages($original_data, $to_remove);
 
         event(new BreadDataUpdated($dataType, $data));
-
+/*
         if (auth()->user()->can('browse', app($dataType->model_name))) {
             $redirect = redirect()->route("voyager.{$dataType->slug}.index");
         } else {
@@ -380,6 +390,10 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
             'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
             'alert-type' => 'success',
         ]);
+        
+        return redirect('admin/alumnos-cursos');
+        */
+        return redirect('voyager.alumnos-cursos');
     }
 
     //***************************************
@@ -461,15 +475,24 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         if (view()->exists("voyager::$slug.edit-add")) {
             $view = "voyager::$slug.edit-add";
         }
-
-         // código para mostrar la lista de elementos
-         $alumnos_curso = AlumnosCurso::all();
-
+        $datos_alumno = DB::table('alumnos_cursos')
+        ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
+        ->join('sucursales','alumnos_cursos.id_sucursal','=','sucursales.id')
+        ->select(['sucursales.sucursal','alumnos.nombre'])
+        ->where ('alumnos_cursos.id','=',$id_alumno_curso)->get();
+        $sucursal = $datos_alumno[0]->sucursal;
+       // $id_alumno_curso = 
+        $alumno = $datos_alumno[0]->nombre;
+        
+        
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'
-        ,'alumnos_curso','id_alumno_curso'));
+        ,'sucursal','id_alumno_curso','alumno'));
+
+        
+
     }
 
-    /**
+    /*
      * POST BRE(A)D - Store data.
      *
      * @param \Illuminate\Http\Request $request
@@ -478,6 +501,7 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
      */
     public function store(Request $request)
     {
+       
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -491,6 +515,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
 
         event(new BreadDataAdded($dataType, $data));
 
+        return redirect('admin/alumnos-cursos');
+        /*
         if (!$request->has('_tagging')) {
             if (auth()->user()->can('browse', $data)) {
                 $redirect = redirect()->route("voyager.{$dataType->slug}.index");
@@ -515,6 +541,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
 
             return response()->json(['success' => true, 'data' => $data]);
         }
+      */
+      
     }
 
     //***************************************

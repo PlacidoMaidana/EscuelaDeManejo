@@ -56,6 +56,7 @@ Route::group(['prefix' => 'admin'], function () {
 //////////////////////////////////////////////////////////
 
 
+Route::get('/egresos_por_sucursal/{sucursal}', 'App\Http\Controllers\voyager\EgresosController@egresos_por_sucursal');
 Route::get('/cursos_activos/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_activos');
 Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_terminados');
 Route::get('/create_pago_alumno/{id_alumno_curso}', 'App\Http\Controllers\IngresosCursosController@create_pago_cursos');
@@ -66,7 +67,9 @@ Route::get('/clases_seguimiento_alumno/{idAlumnoCurso}','App\Http\Controllers\vo
 Route::get('/listas_alumnos_instructor/{idInstructor}','App\Http\Controllers\Calendario_instructorController@lista_alumnos_instructor_fecha');
 Route::get('/alumnos_instructor_por_fecha/{idInstructor}/{from}','App\Http\Controllers\Calendario_instructorController@alumnos_instructor_por_fecha');//ruta que devuelve datos
 
-Route::get('/RegistroAsistencia','App\Http\Controllers\RegistroAsistencia@index');
+//Route::get('/RegistroAsistencia/','App\Http\Controllers\RegistroAsistencia@index');
+Route::get('/RegistroAsistencia/{fecha}/{horario}','App\Http\Controllers\RegistroAsistencia@index');
+Route::get('/Registra_asistencia_clases/{fecha}/{horario}','App\Http\Controllers\RegistroAsistencia@actualiza_asistencia');
 Route::get('/asistencia_clases/{franjahoraria}/{from}','App\Http\Controllers\RegistroAsistencia@asistencia_clases_por_fecha');//ruta que devuelve datos
 
 Route::get('/Informeingresossucursal','App\Http\Controllers\informes_tesoreria@index_ing_suc');
