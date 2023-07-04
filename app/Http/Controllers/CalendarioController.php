@@ -37,7 +37,7 @@ class CalendarioController extends Controller
         $registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
         $franjasHorarias = DB::table('franjas_horarias')->get();
         $instructores = DB::table('instructores')->get();
-        $vehiculos = DB::table('vehiculos')->where('id_vehiculo',)->get();
+        $vehiculos = DB::table('vehiculos')->get();
         $tipos_eventos = DB::table('tipos_eventos')->get();
         $numero_clases = DB::table('alumnos_cursos')
         ->select(DB::raw('COUNT(alumno_evento.id) AS cantidad_eventos, alumnos_cursos.id_alumno, alumnos.nombre'))
@@ -48,7 +48,7 @@ class CalendarioController extends Controller
         //$resultado
         //dd($numero_clases[1]->nombre." ".($numero_clases[1]->cantidad_eventos +1));
         //dd($franjasHorarias);
-        $events = [];
+       /* $events = [];
        foreach ($all_events as $event) {
        
        $events[] = ['id' => $event->id,
@@ -64,11 +64,11 @@ class CalendarioController extends Controller
        'descripcion'=>$event->descripcion
  
         ];
-       }
+       }*/
 
      
         return view('calendario.calendario', 
-        compact('events','AlumnoCursoInfo','idAlumnoCurso',
+        compact('AlumnoCursoInfo','idAlumnoCurso',
         'numero_clases','franjasHorarias','registro_AlumnoCurso','tipos_eventos','instructores','vehiculos'));
        
     }

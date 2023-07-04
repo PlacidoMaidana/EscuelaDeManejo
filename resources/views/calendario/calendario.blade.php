@@ -238,9 +238,7 @@
                 });
             },
   
-           //events: @json($events) 
-           //  events: "http://127.0.0.1:8000/calendario/eventos_alumno/2",
-               
+                 
              events: ruta,
         });
         console.log("url de los eventos inicio:  "+ruta);
