@@ -41,7 +41,7 @@
     <thead>
       <tr>
         <th class="dt-not-orderable">
-          <input type="checkbox" class="select_all">
+             <input type="checkbox" name="check_lista[]" class="select_all">
         </th>
         <th>Alumno</th>
         <th>Curso</th>
@@ -57,6 +57,8 @@
      
 </table>
   
+
+
 @stop
 
 @section('css')
@@ -64,32 +66,61 @@
 @stop
 
 @section('javascript')
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
   $("#btnLimpiar").click(function(event) {
     $("#formFecha")[0].reset();
   });
 
   // Obtener las variables de Laravel y asignarlas a variables de JavaScript
-  var variable1 = @json($fecha);
-  var variable2 = @json($horario);
-
+  var variable1 = "{{$fecha}}";
+  var variable2 = "{{$horario}}";
+  
   // Construir la URL utilizando las variables de Laravel
-  var url = "{{ url('/asistencia_clases/') }}" + variable1 + "/" + variable2;
+  var url = "{{ url('/asistencia_clases/') }}/" + variable2 + "/" + variable1;
+  
+  function guardarUrl(parametro_url,parametro_fecha,parametro_hora) {
+  
+  // Realizar la solicitud a través de Axios
+  axios.post("{{url('/asistencia_clases_guardarurl/')}}", {
+    url: parametro_url, // Aquí puedes pasar la URL que deseas almacenar en la sesión
+    fecha: parametro_fecha, // Aquí puedes pasar la URL que deseas almacenar en la sesión
+    hora: parametro_hora // Aquí puedes pasar la URL que deseas almacenar en la sesión
+  })
+  .then(function (response) {
+    console.log("volvio del controlador la url llevada es "+ response.data.url);
+    
+    console.log(response.data); // Puedes hacer algo con la respuesta del controlador si es necesario
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
 
-
-  $(document).ready(function() {
-     if (#franjahoraria_selected= "") {
-        #franjahoraria_selected=2;
-      }
-    var filtro = "{{ url('/asistencia_clases/') }}" + "/" + $("#franjahoraria_selected").val() + '/' + $("#fecha").val();
-
-    function filtrar() {
+  function filtrar() {
      
-      if (url != "") {
-        filtro = url;
-      }
-              
+     // Obtener la fecha actual
+     var fechaControl = $("#fecha").val();
+     // Obtener la franja horaria seleccionada
+     var franjaHorariaControl = $("#franjahoraria_selected").val();
+
+     // Verificar si no se ha seleccionado una fecha o franja horaria
+        if (fechaControl === "") {
+        
+          fechaControl="{{$fecha}}" ;
+          franjaHorariaControl="{{$horario}}";
+         // alert(fechaControl+"   "+franjaHorariaControl);
+        }
+      // Verificar si no se ha seleccionado una fecha o franja horaria
+
+      var filtro = "{{ url('/asistencia_clases/') }}/"+franjaHorariaControl+"/"+fechaControl;
+      guardarUrl(filtro,fechaControl,franjaHorariaControl);
+      //alert(filtro);
+
+      // Destruir el DataTable existente
+      $('#example').DataTable().destroy();
+
+
       $('#example').dataTable({
         "serverSide": true,
         "ajax": filtro,
@@ -109,38 +140,49 @@
         ]
       });
 
-    };
+ };
+
+
+
+  $(document).ready(function() {
+        
     filtrar();
   });
 
+</script>
 
-
+<script>
   var button = document.getElementById("lista alumnos" );
   button.addEventListener("click", function() {
+    
     filtrar();
     });
 
+</script>  
 
-  // Obtenemos una referencia al botón
-  var button = document.getElementById("marca_asistencia");
-
-  // Agregamos un event listener para el evento "click"
-  button.addEventListener("click", function() {
-    const fecha = document.getElementById('fecha');
-    const horario = document.getElementById('franjahoraria_selected');
-
-    const fecha_val = fecha.value;
-    const horario_val = horario.value;
-
-    const ruta = '/Registra_asistencia_clases/' + fecha_val + '/' + horario_val;
-    const filtro = "{{ url('') }}" + ruta;
-
-    alert(filtro);
-
-    window.location.href = filtro;
-  });
-</script>
+<script>
+ // Obtenemos una referencia al botón
+ var button = document.getElementById("marca_asistencia");
+ button.addEventListener("click", function() {
 
   
+        let clases_marcadas = [];
+        var table = $("#example").DataTable();
+        var data = table.rows().nodes();
+        data.each(function (value, index) {
+            var valor = value.cells[0].children[0].value;
+            var check = value.cells[0].children[0].checked;
+            if (check)
+            {
+              clases_marcadas.push(valor);
+            }            
+        }); 
+   
+   
+   var url_marca_asistencia = "{{ url('/Registra_asistencia_clases/') }}/"+clases_marcadas;  
+   window.location.href =url_marca_asistencia;
+   
+    });
+</script>
  
 @stop

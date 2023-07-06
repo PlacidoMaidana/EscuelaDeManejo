@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Support\Facades\Session;
 
 class RegistroAsistencia extends Controller
 {
@@ -18,25 +19,45 @@ class RegistroAsistencia extends Controller
         
      }
      */
-     public function index($fecha,$horario)
+     public function index()
      {
-       if ($fecha =0 )
-         {
+
+      if (Session::has('fecha') && Session::has('hora') ) {
+         // La variable de sesión 'miVariable' está configurada
+
+         $fecha=Session::get('fecha');
+         $horario= Session::get('hora');
+
+       }else {
          $fecha=today();
          $horario= 1;
-        }
-       
+       }
+      
+        
+        
 
         $franjasHorarias = DB::table('franjas_horarias')->get();
         return view('informes.asistencia_browse',compact(['franjasHorarias','fecha','horario']));
         
      }
+
+     public function guardarUrl(Request $request)
+       {
+           $url = $request->input('url');
+           $fecha = $request->input('fecha');
+           $hora = $request->input('hora');
+           session(['url' => $url]); // Almacena la URL en la sesión
+           session(['fecha' => $fecha]); // Almacena la URL en la sesión
+           session(['hora' => $hora]); // Almacena la URL en la sesión
+
+           return response()->json(['url'=>$request->input('url'),'success' => true]); // Puedes devolver una respuesta JSON si es necesario
+       }
      
      public function asistencia_clases_por_fecha($franjahoraria, $from)
  //    public function asistencia_clases_por_fecha()
      {
         $sucursal = auth()->user()->id_sucursal;
-        dd($sucursal);
+      
       return $datos = datatables()->of(DB::table('alumno_evento')
                 ->join ('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
                 ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
@@ -63,14 +84,19 @@ class RegistroAsistencia extends Controller
                           ->toJson();  
      }
 
-     public function  actualiza_asistencia($fecha,$horario)
+     public function  actualiza_asistencia($clases_marcadas)
       {
-         
-         DB::table('alumno_evento')
-         ->where('id', '=', 4 )
-         ->update(['asistencia' => 'SI']);
+         if ($clases_marcadas != "") {
+             $lista_id = explode(",",$clases_marcadas);
+             foreach($lista_id as $clase) {
 
-         return redirect('/RegistroAsistencia/'.$fecha.'/'.$horario);
+                  DB::table('alumno_evento')
+                  ->where('id',$clase)
+                  ->update(['asistencia' => 'SI']);
+               }
+            }
+         return redirect('/RegistroAsistencia/');
+        // return redirect('/asistencia_clases/{franjahoraria}/{from});
 
       }
    

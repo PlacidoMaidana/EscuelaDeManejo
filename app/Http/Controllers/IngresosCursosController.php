@@ -470,6 +470,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         // Eagerload Relations
         $this->eagerLoadRelations($dataTypeContent, $dataType, 'add', $isModelTranslatable);
 
+
+       
         $view = 'voyager::bread.edit-add';
 
         if (view()->exists("voyager::$slug.edit-add")) {
@@ -484,9 +486,10 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
        // $id_alumno_curso = 
         $alumno = $datos_alumno[0]->nombre;
         
-        
+        $view = 'vendor/voyager/ingresos-cursos/edit-add_cobranza';
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'
         ,'sucursal','id_alumno_curso','alumno'));
+       
 
         
 
@@ -502,6 +505,7 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
     public function store(Request $request)
     {
        
+        
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -514,7 +518,7 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
 
         event(new BreadDataAdded($dataType, $data));
-
+       
         return redirect('admin/alumnos-cursos');
         /*
         if (!$request->has('_tagging')) {
@@ -606,8 +610,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
                 'message'    => __('voyager::generic.error_deleting')." {$displayName}",
                 'alert-type' => 'error',
             ];
-
-        return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
+          //  return redirect('voyager.alumnos-cursos');
+       return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
     }
 
     public function restore(Request $request, $id)
@@ -643,8 +647,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         if ($res) {
             event(new BreadDataRestored($dataType, $data));
         }
-
-        return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
+       //  return redirect('voyager.alumnos-cursos');
+       return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
     }
 
     //***************************************
@@ -884,7 +888,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         $this->authorize('edit', app($dataType->model_name));
 
         if (empty($dataType->order_column) || empty($dataType->order_display_column)) {
-            return redirect()
+            
+           return redirect()
             ->route("voyager.{$dataType->slug}.index")
             ->with([
                 'message'    => __('voyager::bread.ordering_not_set'),
