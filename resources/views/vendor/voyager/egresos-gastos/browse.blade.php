@@ -4,35 +4,34 @@
 
 @section('page_header')
     <div class="container-fluid">
-        <h1 class="page-title">
-            <i class="{{ $dataType->icon }}"></i> {{ $dataType->getTranslatedAttribute('display_name_plural') }}
-        </h1>
         @can('add', app($dataType->model_name))
             <a href="{{ route('voyager.'.$dataType->slug.'.create') }}" class="btn btn-success btn-add-new">
                 <i class="voyager-plus"></i> <span>{{ __('voyager::generic.add_new') }}</span>
             </a>
         @endcan
+
         @can('delete', app($dataType->model_name))
-            @include('voyager::partials.bulk-delete')
+        @include('voyager::partials.bulk-delete')
+        <a id="operar" href="javascript:;" class="btn btn-danger delete"> Borrar seleccionados</a>
         @endcan
         @can('edit', app($dataType->model_name))
-            @if(!empty($dataType->order_column) && !empty($dataType->order_display_column))
-                <a href="{{ route('voyager.'.$dataType->slug.'.order') }}" class="btn btn-primary btn-add-new">
-                    <i class="voyager-list"></i> <span>{{ __('voyager::bread.order') }}</span>
-                </a>
-            @endif
+        @if(!empty($dataType->order_column) && !empty($dataType->order_display_column))
+            <a href="{{ route('voyager.'.$dataType->slug.'.order') }}" class="btn btn-primary btn-add-new">
+                <i class="voyager-list"></i> <span>{{ __('voyager::bread.order') }}</span>
+            </a>
+        @endif
         @endcan
         @can('delete', app($dataType->model_name))
-            @if($usesSoftDeletes)
-                <input type="checkbox" @if ($showSoftDeleted) checked @endif id="show_soft_deletes" data-toggle="toggle" data-on="{{ __('voyager::bread.soft_deletes_off') }}" data-off="{{ __('voyager::bread.soft_deletes_on') }}">
-            @endif
+        @if($usesSoftDeletes)
+            <input type="checkbox" @if ($showSoftDeleted) checked @endif id="show_soft_deletes" data-toggle="toggle" data-on="{{ __('voyager::bread.soft_deletes_off') }}" data-off="{{ __('voyager::bread.soft_deletes_on') }}">
+        @endif
         @endcan
         @foreach($actions as $action)
-            @if (method_exists($action, 'massAction'))
-                @include('voyager::bread.partials.actions', ['action' => $action, 'data' => null])
-            @endif
+        @if (method_exists($action, 'massAction'))
+            @include('voyager::bread.partials.actions', ['action' => $action, 'data' => null])
+        @endif
         @endforeach
-        @include('voyager::multilingual.language-selector')
+       @include('voyager::multilingual.language-selector') 
     </div>
 @stop
 
@@ -66,16 +65,36 @@
         </div>
     </div>
 
-
+   {{-- Single delete modal --}}
+   <div class="modal modal-danger fade" tabindex="-1" id="delete_modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="voyager-trash"></i> {{ __('voyager::generic.delete_question') }} {{ strtolower($dataType->getTranslatedAttribute('display_name_singular')) }}?</h4>
+            </div>
+            <div class="modal-footer">
+                <form action="#" id="delete_form" method="POST">
+                    {{ method_field('DELETE') }}
+                    {{ csrf_field() }}
+                    <input type="submit" class="btn btn-danger pull-right delete-confirm" value="{{ __('voyager::generic.delete_confirm') }}">
+                </form>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
  
 @stop
 
+@section('css')
+@if(!$dataType->server_side && config('dashboard.data_tables.responsive'))
+    <link rel="stylesheet" href="{{ voyager_asset('lib/css/responsive.dataTables.min.css') }}">
+@endif
 
 @section('javascript')
     <!-- DataTables -->
-    @if(!$dataType->server_side && config('dashboard.data_tables.responsive'))
-        <script src="{{ voyager_asset('lib/js/dataTables.responsive.min.js') }}"></script>
-    @endif
+
     <script>
         $(document).ready(function () {
             $('#egresos_sucursal').dataTable( {

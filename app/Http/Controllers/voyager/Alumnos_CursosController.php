@@ -230,7 +230,8 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
      ->leftjoin('franjas_horarias','alumno_evento.id_franja_horaria','=','franjas_horarias.id')
      ->where('alumnos_cursos.activo','=','SI')
      ->where('alumnos_cursos.id','=', $id_alumno_curso)
-     ->select([ 'alumnos_cursos.id as id_Alumno_Curso',
+     ->select([ 'alumno_evento.id',
+                'alumnos_cursos.id as id_Alumno_Curso',
                 'alumnos.nombre as nombre_alumno',
                 'cursos.nombre_curso',
                 'alumno_evento.start_date as fecha',
@@ -240,6 +241,8 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
                 'alumno_evento.asistencia',
                 'franjas_horarias.descripcion',
               ]))  
+              ->addColumn('check','vendor/voyager/alumno-evento/check')
+              ->rawColumns(['check'])  
     ->toJson();   
     }
 

@@ -21,8 +21,7 @@
         <th>Instructor</th>
         <th>Asistencia</th>
         <th>Franja Horaria</th>
-        <th>accion</th>
-      </tr>
+        </tr>
      </thead>
      
 </table>
@@ -57,8 +56,7 @@
                      {data: 'nombre_instructor', name: 'instructores.nombre', width: '10%'},
                      {data: 'asistencia', name: 'alumno_evento.asistencia', width: '10%'},
                      {data: 'descripcion', name: 'franjas_horarias.descripcion', width: '10%'},
-                     {data: 'accion', width: '10%'},
-                      ]           
+                        ]           
         } );
     } );
 
