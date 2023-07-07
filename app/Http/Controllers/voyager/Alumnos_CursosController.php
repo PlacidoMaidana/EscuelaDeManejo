@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Voyager;
 
 use Exception;
+use App\Alumno;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -211,7 +212,28 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         ));
     }
      
+    public function alta_alumno(Request $request)
+    {
 
+    $data = $request->all(); // Obtener todos los datos de la solicitud
+
+    $alumno = new Alumno;
+    $alumno->nombre = $data['nombre'];
+    $alumno->direccion = $data['direccion'];
+    $alumno->mail = $data['mail'];
+    $alumno->telefono = $data['telefono'];
+                          
+    $alumno->save();
+
+
+        // Imprimir información utilizando var_dump()
+    var_dump($request->all());
+        return response()->json([
+            'request' => $request->input(),
+            'message' => 'Success'
+        ], 200);
+
+    }
 
     public function lista_clases_alumnos($id_alumno_curso)
     {

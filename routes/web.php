@@ -64,6 +64,7 @@ Route::group(['prefix' => 'admin'], function () {
 Route::get('/egresos_por_sucursal/{sucursal}', 'App\Http\Controllers\voyager\EgresosController@egresos_por_sucursal');
 Route::get('/cursos_activos/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_activos');
 Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_terminados');
+Route::post('/alta_alumno', 'App\Http\Controllers\voyager\Alumnos_CursosController@alta_alumno');
 Route::get('/create_pago_alumno/{id_alumno_curso}', 'App\Http\Controllers\IngresosCursosController@create_pago_cursos');
 
 

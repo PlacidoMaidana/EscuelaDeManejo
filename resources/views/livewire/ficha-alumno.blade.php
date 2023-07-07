@@ -28,7 +28,7 @@
         @endforeach
         <input wire:model="alumno_curso_id" class="form-control" type="hidden" name="alumno_curso_id" value="2">
              
-         <button type="button" wire:click="guardar" id="guardar_alumno"class="btn btn-primary">Guardar </button>
+        <button type="button" wire:click="guardar" id="guardar_alumno"class="btn btn-primary">Guardar </button>
     </div>
 </div>
 
