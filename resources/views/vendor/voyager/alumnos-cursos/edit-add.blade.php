@@ -156,7 +156,39 @@
                                                                            <h4 class="modal-title">Nuevo alumno</h4>
                                                                        </div>
                                                                        <div id="x34" class="modal-body">
-                                                                           <livewire:ficha-alumno /> 
+                                                                           {{--  <livewire:ficha-alumno /> --}}
+
+                                                                          
+
+                                                                           {{--<<<<<<<<<<<<<<   EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
+                                                                           <form method="POST" action="/guardar"  id="form_alumno">
+                                                                            @csrf
+                                                                            <div class="form-group">
+                                                                                <label for="my-input">Nombre</label>
+                                                                                <input  class="form-control" type="text" id="nombre" name="nombre">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="my-input">Direccion</label>
+                                                                                <input  class="form-control" type="text" id="direccion" name="direccion">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="my-input">Mail</label>
+                                                                                <input  class="form-control" type="text"  id="mail" name="mail">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="my-input">Telefono</label>
+                                                                                <input  class="form-control" type="text" id="telefono" name="telefono">
+                                                                            </div>
+                                                                            <input  class="form-control" type="hidden" id="alumno_curso_id" name="alumno_curso_id" value="2">
+                                                                            <button type="button" id="guardar_alumno"class="btn btn-primary">Guardar </button>
+                                                                        
+                                                                          
+                                                                           </form>
+                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
+
+
+
+
                                                                        </div>
                                                                        <div class="modal-footer">
                                                                            <button type="button" id="salir" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -312,6 +344,8 @@
 @stop
 
 @section('javascript')
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
         var params = {};
         var $file;
@@ -385,14 +419,7 @@
         });
     </script>
 
-<script>
-    $('#alumno').on('click',function(){
-        $('#modal_alumno').modal({show:true});
-    });
-    $('#guardar_alumno').on('click',function(){
-        $('#modal_alumno').modal('hide');
-    });
-   </script>
+
 
  <script>
     $('#boton_elegir_alumno').on('click',function(){
@@ -478,5 +505,60 @@
     
         }
      </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById('modal_alumno');
+
+        // Obtener el botón que abre el modal
+        var btnAbrirModal = document.getElementById('alumno');
+
+        // Escuchar el evento clic en el botón que abre el modal
+        btnAbrirModal.addEventListener('click', function() {
+            // Mostrar el modal utilizando el método "show" del modal de Bootstrap
+            $('#modal_alumno').modal({ show: true });
+        });
+
+        // Escuchar el evento clic en el botón "Guardar"
+        $('#guardar_alumno').on('click', function() {
+
+          // Obtener los valores de los campos utilizando jQuery
+var nombre = $('#nombre').val();
+var direccion = $('#direccion').val();
+var mail = $('#mail').val();
+var telefono = $('#telefono').val();
+
+// Crear un objeto FormData y agregar los valores obtenidos
+var formData = new FormData();
+formData.append('nombre', nombre);
+formData.append('direccion', direccion);
+formData.append('mail', mail);
+formData.append('telefono', telefono);
+
+            // Obtener los datos del formulario utilizando jQuery
+            //var formData = $('#form_alumno').serialize();
+
+            // Enviar los datos por Axios
+            axios.post('/alta_alumno', formData)
+                .then(function(response) {
+                 // Manejar la respuesta del servidor
+                 for (var key in response.data) {
+                     console.log(key + ": " + response.data[key]);
+                 }
+                 console.log(response.data);
+                 debugger;
+                        // Cerrar el modal después de enviar los datos
+                        $('#modal_alumno').modal('hide');
+                    })
+                .catch(function(error) {
+                    // Manejar errores de la solicitud
+                    console.error(error);
+                });
+        });
+    });
+</script>
+
+
+
 
 @stop
