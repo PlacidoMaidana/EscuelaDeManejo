@@ -9,6 +9,6 @@ class Alumno extends Model
 {
 
     protected $table = 'alumnos';    
-    protected $fillable=['nombre','direccion','mail','telefono'
+    protected $fillable=['nombre','direccion','mail','telefono','id_localidad'
     ];
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Voyager;
 
 use Exception;
 use App\Alumno;
+use App\Localidad;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -222,6 +223,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
     $alumno->direccion = $data['direccion'];
     $alumno->mail = $data['mail'];
     $alumno->telefono = $data['telefono'];
+    $alumno->telefono = $data['telefono'];
+    $alumno->id_localidad = $data['localidad'];
+
                           
     $alumno->save();
 
@@ -400,6 +404,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
     public function edit(Request $request, $id)
     {
         $cursos= Curso::all();
+        $localidades=Localidad::all();
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -454,7 +459,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
        $sucursal = $datos_alumno->id_sucursal;
        $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno', 'nombre_alumno','cursos','nombre_sucursal','sucursal'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent',
+         'isModelTranslatable','id_alumno', 'nombre_alumno','cursos','localidades',
+         'nombre_sucursal','sucursal'));
     }
 
     // POST BR(E)AD
@@ -526,6 +533,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
     public function create(Request $request)
     {
         $cursos= Curso::all();
+        $localidades=Localidad::all();
         
         $slug = $this->getSlug($request);
 
@@ -566,7 +574,8 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         $sucursal=$user->id_sucursal;
         $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
         // ******************
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','id_alumno','nombre_alumno','cursos','sucursal','nombre_sucursal'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable',
+        'id_alumno','nombre_alumno','cursos','sucursal','localidades','nombre_sucursal'));
     }
 
     /**
