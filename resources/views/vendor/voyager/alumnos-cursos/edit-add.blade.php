@@ -31,7 +31,7 @@
                 Sucursal: {{$nombre_sucursal[0]->sucursal}} <br>
                 <div class="panel panel-bordered">
                     <!-- form start -->
-                    <form role="form"
+                    <form role="form" id="form_alumno"
                             class="form-edit-add"
                             action="{{ $edit ? route('voyager.'.$dataType->slug.'.update', $dataTypeContent->getKey()) : route('voyager.'.$dataType->slug.'.store') }}"
                             method="POST" enctype="multipart/form-data">
@@ -298,7 +298,8 @@
 
                         <div class="panel-footer">
                             @section('submit-buttons')
-                                <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
+                            <h1>este quiero modificar</h1>
+                                <button id="guardar_alumno_evento" type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
                             @stop
                             @yield('submit-buttons')
                         </div>
@@ -556,6 +557,15 @@ formData.append('telefono', telefono);
                 });
         });
     });
+</script>
+
+<script>
+    $(document).ready(function() {
+    $('#guardar_alumno_evento').on('click', function() {
+        alert('Clic en el botón de submit'); // Verifica si se muestra el alert
+        $('#form_alumno').submit(); // Intenta ejecutar el submit
+    });
+});
 </script>
 
 
