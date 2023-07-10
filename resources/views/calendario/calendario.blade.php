@@ -28,12 +28,12 @@
                     @endforeach
                    </select>    
 
-                   <select name="id_horario" class="col-md-4 " id="id_horario" >
+                   {{--<select name="id_horario" class="col-md-4 " id="id_horario" >
                     <option selected>Seleccione franja horaria</option>
                     @foreach ($franjasHorarias as $f)
                     <option value="{{ $f->id }}" >{{ $f->descripcion }}</option>
                     @endforeach
-                   </select>    
+                   </select>  --}}  
 
 
                 
@@ -180,11 +180,12 @@
         document.addEventListener('DOMContentLoaded', function() {
           
           const idVehiculoSelect = document.getElementById('id_vehiculo');
-          const idHorarioSelect = document.getElementById('id_horario');
+          //const idHorarioSelect = document.getElementById('id_horario');
           const idVehiculo = idVehiculoSelect.value;
-          const idHorario = idHorarioSelect.value;
+          //const idHorario = idHorarioSelect.value;
 
-          const ruta = "{{url('/obtener-eventos/')}}/" + idVehiculo + "/" + idHorario; 
+          //const ruta = "{{url('/obtener-eventos/')}}/" + idVehiculo + "/" + idHorario; 
+          const ruta = "{{url('/obtener-eventos/')}}/" + idVehiculo; 
          
         let formulario = document.getElementById("FormCalendar");
         var calendarEl = document.getElementById('calendar');
@@ -201,8 +202,7 @@
                 formulario.start_date.value=info.dateStr;
                 formulario.end_date.value=info.dateStr;
                 formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
-                
-              
+                            
                  console.log(info);
 
                 $('#ModCalendario').modal("show");
@@ -332,20 +332,23 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
 
        // Obtener referencias a los elementos select
        //const idVehiculoSelect = document.getElementById('id_vehiculo');
-       document.getElementById('id_horario').addEventListener('change', function() {
+      // document.getElementById('id_horario').addEventListener('change', function() {
+       document.getElementById('id_vehiculo').addEventListener('change', function() {
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     // Obtener referencias a los elementos select
     const idVehiculoSelect = document.getElementById('id_vehiculo');
-    const idHorarioSelect = document.getElementById('id_horario');
+    //const idHorarioSelect = document.getElementById('id_horario');
     // Obtener valores seleccionados
      const idVehiculo = idVehiculoSelect.value;
-     const idHorario = idHorarioSelect.value;
+     //const idHorario = idHorarioSelect.value;
     // Verificar si se seleccionaron tanto el horario como el vehículo
-     if (idVehiculo && idHorario) {
+    // if (idVehiculo && idHorario) {
+     if (idVehiculo) {
     // Generar la URL con los valores seleccionados
-     const url = "{{url('/obtener-eventos/')}}/" + idVehiculo + "/" + idHorario;
+     //const url = "{{url('/obtener-eventos/')}}/" + idVehiculo + "/" + idHorario;
+     const url = "{{url('/obtener-eventos/')}}/" + idVehiculo;
      // Verificar si se obtuvo la instancia del calendario correctamente
      // Destruir el calendario existente
      console.log("url de los eventos: /n"+url);
@@ -425,7 +428,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
   $(document).ready(function() {
     // Obtener referencia al select de franjas horarias
     var selectFranjaHoraria = $('#franja_horaria_select');
-  
+    
     // Escuchar el evento 'change' del select de franjas horarias
     selectFranjaHoraria.on('change', function() {
     var franjaHorariaSeleccionada = selectFranjaHoraria.val();

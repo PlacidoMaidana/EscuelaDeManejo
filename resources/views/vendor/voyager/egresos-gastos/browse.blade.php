@@ -10,10 +10,7 @@
             </a>
         @endcan
 
-        @can('delete', app($dataType->model_name))
-        @include('voyager::partials.bulk-delete')
-        <a id="operar" href="javascript:;" class="btn btn-danger delete"> Borrar seleccionados</a>
-        @endcan
+       
         @can('edit', app($dataType->model_name))
         @if(!empty($dataType->order_column) && !empty($dataType->order_display_column))
             <a href="{{ route('voyager.'.$dataType->slug.'.order') }}" class="btn btn-primary btn-add-new">
@@ -122,5 +119,13 @@
         } );
     } );
  </script> 
+<script>
+    function borrar(id) {
+        $('#delete_form')[0].action = '{{ route('voyager.'.$dataType->slug.'.destroy', '__id') }}'.replace('__id', id);
+        $('#delete_modal').modal('show');
+    }
+    </script>
+
+
 @stop
 

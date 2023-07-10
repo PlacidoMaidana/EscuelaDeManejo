@@ -92,6 +92,7 @@
                                     @endphp
                                        
                                    <select name="id_curso" class="form-control " id="id_curso" onchange="actualizarPrecio()">
+                                    <option value="">Seleccionar curso</option>
                                     @if($edit)
                                     <option selected value ="{{$dataTypeContent->id_curso}}">{{$nombrecurso}} </option>
                                         
@@ -541,7 +542,7 @@ var nombre = $('#nombre').val();
 var direccion = $('#direccion').val();
 var mail = $('#mail').val();
 var telefono = $('#telefono').val();
-var telefono = $('#localidad').val();
+var localidad = $('#localidad').val();
 
 // Crear un objeto FormData y agregar los valores obtenidos
 var formData = new FormData();
@@ -549,7 +550,7 @@ formData.append('nombre', nombre);
 formData.append('direccion', direccion);
 formData.append('mail', mail);
 formData.append('telefono', telefono);
-formData.append('localidad', telefono);
+formData.append('localidad', localidad);
 
             // Obtener los datos del formulario utilizando jQuery
             //var formData = $('#form_alumno').serialize();

@@ -34,7 +34,8 @@ Route::post('/calendario/actualizar/{evento}','App\Http\Controllers\CalendarioCo
 Route::post('/calendario/borrar/{id}','App\Http\Controllers\CalendarioController@destroy');
 Route::get('/calendario/obtener_fechas/{franjaHoraria}','App\Http\Controllers\CalendarioController@obtener_fechas');
 Route::get('/calendario/eventos_alumno/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@eventos_alumno');
-Route::get('/obtener-eventos/{idVehiculo}/{idHorario}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
+//Route::get('/obtener-eventos/{idVehiculo}/{idHorario}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
+Route::get('/obtener-eventos/{idVehiculo}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
 
 
 //|##############################################|

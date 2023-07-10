@@ -1,4 +1,5 @@
-@extends('voyager::master')
+ {{--@extends('voyager::master') --}}
+ @extends('layouts.voyager2')
 
 @section('page_title', __('voyager::generic.viewing').' '.$dataType->getTranslatedAttribute('display_name_plural'))
 
@@ -38,6 +39,7 @@
 @stop
 
 @section('content')
+
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
         <div class="row">
@@ -76,6 +78,8 @@
                             </form>
                         @endif
                         <div class="table-responsive">
+
+                            
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                     <tr>

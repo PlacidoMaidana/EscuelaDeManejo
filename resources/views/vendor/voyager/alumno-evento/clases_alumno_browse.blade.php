@@ -1,12 +1,13 @@
-{{-- @extends('voyager::master') --}}
-@extends('layouts.voyager2')
+ {{--@extends('voyager::master') --}}
+  @extends('layouts.voyager2')
+
 
 @section('page_title', __('voyager::generic.viewing').' '.'Informe de Movimientos Financieros')
 
 @section('content')
 
 
-
+                 
 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
     <thead>
       <tr>

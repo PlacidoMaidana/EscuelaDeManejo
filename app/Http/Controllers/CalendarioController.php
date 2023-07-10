@@ -105,7 +105,8 @@ class CalendarioController extends Controller
            return response()->json($events);
         }
     
-    public function obtener_eventos($idVehiculo,$idHorario)
+    //public function obtener_eventos($idVehiculo,$idHorario)
+    public function obtener_eventos($idVehiculo)
         {
         
             $sucursal = auth()->user()->id_sucursal;
@@ -117,7 +118,7 @@ class CalendarioController extends Controller
              ->join('vehiculos','alumno_evento.id_vehiculo','=','vehiculos.id')
              //->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
              ->where('id_vehiculo', $idVehiculo)
-             ->where('id_franja_horaria', $idHorario)
+             //->where('id_franja_horaria', $idHorario)
              ->where('alumnos_cursos.id_sucursal', $sucursal)
              ->select(['alumno_evento.id as id', 'id_vehiculo', 'vehiculos.marca_modelo_anio as marca_modelo_anio',
              'id_instructor','instructores.nombre as nombre','alumno_evento.id_alumno_curso',

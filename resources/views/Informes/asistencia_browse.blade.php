@@ -37,7 +37,7 @@
  
 
 
-<table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+<table id="example" class="table table-bordered dt-responsive nowrap" style="width:60%">
     <thead>
       <tr>
         <th class="dt-not-orderable">
