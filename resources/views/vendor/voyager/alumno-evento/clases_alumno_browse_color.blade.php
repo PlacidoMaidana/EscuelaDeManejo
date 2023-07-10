@@ -35,8 +35,7 @@
 @section('javascript')
 
 <script>
-    $(document).ready(function() {
-        $('#example').dataTable( {
+         var table =  $('#example').dataTable( {
              "serverSide": true,
              "scrollCollapse": true,
              "paging": true,
@@ -57,10 +56,16 @@
                      {data: 'asistencia', name: 'alumno_evento.asistencia', width: '10%'},
                      {data: 'descripcion', name: 'franjas_horarias.descripcion', width: '10%'},
                         ]           
-        } );
-
-    } );
-
+              } );
+                    table on("init", function() {
+                      for(var i = 0 : i < table.rows().coun(); i++){
+                        var row = table.row(i);
+                        var asistencia = row.data().asistencia;
+                        if (asistentecia =="SI") {
+                          $(row.node()).css("backgground-color", "#fs4e18")
+                        }
+                        }
+                    });
    
 </script> 
 

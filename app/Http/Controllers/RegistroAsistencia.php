@@ -76,8 +76,25 @@ class RegistroAsistencia extends Controller
                           'tipos_eventos.tipo_evento',
                           'instructores.nombre as nombre_instructor',
                           'alumno_evento.asistencia',
-                          'franjas_horarias.descripcion',
+                          'franjas_horarias.descripcion'
                           ]))
+                          ->setRowAttr([
+                           'style' => 'background-color: #EFEE06;',      
+                            ]) 
+                     ->setRowAttr([
+                           'style' => function($item){          
+                             switch ($item->asistencia) {
+                               
+                               case 'SI':
+                                 return 'background-color: #EFBB07;color:#000000';
+                                 break; 
+                                                           
+                               default:
+                                 # code...
+                                 break;
+                             }
+                           }
+                       ])   
                           ->addColumn('check','vendor/voyager/alumno-evento/check')
                           ->addColumn('accion','vendor/voyager/alumno-evento/acciones_asistencia')
                           ->rawColumns(['check','accion'])  
