@@ -31,7 +31,7 @@
                 Sucursal: {{$nombre_sucursal[0]->sucursal}} <br>
                 <div class="panel panel-bordered">
                     <!-- form start -->
-                    <form role="form"
+                    <form role="form" id="form_alumno"
                             class="form-edit-add"
                             action="{{ $edit ? route('voyager.'.$dataType->slug.'.update', $dataTypeContent->getKey()) : route('voyager.'.$dataType->slug.'.store') }}"
                             method="POST" enctype="multipart/form-data">
@@ -179,11 +179,24 @@
                                                                                 <label for="my-input">Telefono</label>
                                                                                 <input  class="form-control" type="text" id="telefono" name="telefono">
                                                                             </div>
+                                                                            <div class="form-group">
+                                                                                <label for="localidad">Localidad</label>
+                                                                                <select class="form-control" id="localidad" name="localidad">
+                                                                                  <option value="">Seleccionar localidad</option>
+                                                                                  @foreach ($localidades as $localidad)
+                                                                                  <option value="{{ $localidad['id'] }}">{{ $localidad['localidad'] }}</option>
+                                                                                  @endforeach
+                                                                                </select>
+                                                                              </div>
                                                                             <input  class="form-control" type="hidden" id="alumno_curso_id" name="alumno_curso_id" value="2">
                                                                             <button type="button" id="guardar_alumno"class="btn btn-primary">Guardar </button>
                                                                         
                                                                           
                                                                            </form>
+                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
+                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
+                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
+                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
                                                                            {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
 
 
@@ -298,7 +311,8 @@
 
                         <div class="panel-footer">
                             @section('submit-buttons')
-                                <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
+                           
+                                <button id="guardar_alumno_evento" type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
                             @stop
                             @yield('submit-buttons')
                         </div>
@@ -527,6 +541,7 @@ var nombre = $('#nombre').val();
 var direccion = $('#direccion').val();
 var mail = $('#mail').val();
 var telefono = $('#telefono').val();
+var telefono = $('#localidad').val();
 
 // Crear un objeto FormData y agregar los valores obtenidos
 var formData = new FormData();
@@ -534,11 +549,13 @@ formData.append('nombre', nombre);
 formData.append('direccion', direccion);
 formData.append('mail', mail);
 formData.append('telefono', telefono);
+formData.append('localidad', telefono);
 
             // Obtener los datos del formulario utilizando jQuery
             //var formData = $('#form_alumno').serialize();
 
             // Enviar los datos por Axios
+            //Debido a la configuración del servidor virtual de la escuela de manejo, es importante agregar "index.php" a las rutas al realizar solicitudes por Axios.
             axios.post('/alta_alumno', formData)
                 .then(function(response) {
                  // Manejar la respuesta del servidor
@@ -546,7 +563,7 @@ formData.append('telefono', telefono);
                      console.log(key + ": " + response.data[key]);
                  }
                  console.log(response.data);
-                 debugger;
+                 //debugger;
                         // Cerrar el modal después de enviar los datos
                         $('#modal_alumno').modal('hide');
                     })
@@ -558,6 +575,14 @@ formData.append('telefono', telefono);
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+    $('#guardar_alumno_evento').on('click', function() {
+        //alert('Clic en el botón de submit'); // Verifica si se muestra el alert
+        $('#form_alumno').submit(); // Intenta ejecutar el submit
+    });
+});
+</script>
 
 
 
