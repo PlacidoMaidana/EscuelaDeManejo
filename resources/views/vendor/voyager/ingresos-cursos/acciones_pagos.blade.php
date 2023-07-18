@@ -1,0 +1,18 @@
+
+<td class="no-sort no-click bread-actions">
+                                                                                   
+<a href="javascript:;" title="Delete" class="btn btn-sm btn-danger delete pato" onclick="borrar({{$id}})" data-id="{{$id}}" id="delete-{{$id}}">
+<i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Delete</span>
+</a> 
+                                                                                                                                                                                              
+<a href="{{url('admin/ingresos-cursos/'.$id.'/edit')}}" title="Edit" class="btn btn-sm btn-primary  edit">
+<i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Edit</span>
+</a>
+
+<a href="{{url('/admin/ingresos-cursos/'.$id.'/recibo_cobranza')}}" title="Pagar" class="btn btn-primary ">Recibo</a>
+
+
+
+</td>
+
+

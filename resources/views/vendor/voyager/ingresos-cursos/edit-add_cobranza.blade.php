@@ -17,7 +17,7 @@
         Recibo Cobranza 
         
     </h1>
-    
+  
       
 
     @include('voyager::multilingual.language-selector')
@@ -27,6 +27,8 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-4">
+                
+                
                 Alumno: {{$alumno}} <br>
                 Sucursal: {{$sucursal}} <br>
               
@@ -155,6 +157,7 @@
 
 @section('javascript')
     <script>
+     
         var params = {};
         var $file;
 

@@ -190,13 +190,19 @@
         let formulario = document.getElementById("FormCalendar");
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
+          initialView: 'timeGridWeek',
           
             headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
             },
+            businessHours: {
+              start: '7:00', // hora final
+              end: '14:30', // hora inicial
+              dow: [ 1, 2, 3, 4, 5 , 6 ] // dias de semana, 0=Domingo
+            },
+         
             dateClick:function(info){
                 formulario.reset();
                 formulario.start_date.value=info.dateStr;
@@ -437,7 +443,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
   // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
      
       $.ajax({
-        url: '/calendario/obtener_fechas/' + franjaHorariaSeleccionada,
+        url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada,
         method: 'GET',
         success: function(response) {
           // Actualizar los campos de fecha en el formulario del evento

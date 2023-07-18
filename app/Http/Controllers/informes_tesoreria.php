@@ -10,7 +10,6 @@ use App\Exports\informe_egresosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-
 class informes_tesoreria extends Controller
 {
     
@@ -30,8 +29,53 @@ class informes_tesoreria extends Controller
         $total=' ';
         return view('informes.informes_egresos', compact('total'));
      }
- 
-   
+     public function index_caja_diaria()
+     {
+        
+        $operadores = DB::table('users')->get();
+        return view('informes.informes_caja_diaria', compact('operadores'));
+     }
+     
+     
+     public function cajadiaria_fecha_operador_egr($fecha,$operador)
+     {
+      
+        return $egresos = datatables()->of(DB::table('egresos_gastos')
+            ->leftjoin ('tipos_gastos','egresos_gastos.id_tipo_gasto','=','tipos_gastos.id')
+            ->join('sucursales','sucursales.id','=','egresos_gastos.id_sucursal')
+            ->where('egresos_gastos.fecha','=',$fecha)
+            ->where('egresos_gastos.id_empleado','=',$operador) 
+            ->select(['egresos_gastos.fecha',
+                      'sucursales.sucursal',
+                      'egresos_gastos.descripcion',
+                      'egresos_gastos.modalidad_pago',
+                      'egresos_gastos.importe',
+                      'tipos_gastos.tipo1',
+                      'tipos_gastos.tipo2'                     
+                        ]))
+             ->toJson(); 
+     }
+      public function cajadiaria_fecha_operador_ing($fecha,$operador)
+     {
+             return $ingresos = datatables()->of(DB::table('ingresos_cursos')
+             ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
+             ->join('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
+             ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
+             ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
+             ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
+             ->where('ingresos_cursos.fecha','=',$fecha)
+             //->where('ingresos_cursos.','=',$operador )
+             ->select(['ingresos_cursos.fecha',
+                       'sucursales.sucursal',
+                       'alumnos.nombre as nombre_alumno',
+                       'cursos.nombre_curso',
+                       'empleados.nombre',
+                       'ingresos_cursos.modalidad_pago',
+                       'ingresos_cursos.importe']))
+              ->toJson();
+             
+     }
+
     public function egr_en_rango_de_fechas($from,$to)
     {
      

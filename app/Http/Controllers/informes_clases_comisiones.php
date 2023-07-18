@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Exports\Informe_ventasExportComisiones;
+use App\Exports\Informe_clasesExportComisiones;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
@@ -57,13 +57,12 @@ class informes_clases_comisiones extends Controller
  
 
     }
-    public function export($desde,$hasta,$vendedor) 
+    public function export($desde,$hasta) 
     {
       $aa = new Informe_clasesExportComisiones();
       $aa->desde=$desde;
       $aa->hasta=$hasta;
-      $aa->vendedor=$vendedor;
-       return Excel::download($aa, 'informe_clases_comisiones.xlsx');
+      return Excel::download($aa, 'informe_clases_comisiones.xlsx');
      // dd($aa)  ;
 
     } 

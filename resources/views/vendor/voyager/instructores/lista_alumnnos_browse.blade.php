@@ -82,8 +82,8 @@
 </script>
 
 <script>
-   function excelExport()   {
-    window.location.href = '/alumnos_instructor/'+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
+    function excelExport()   {
+    window.location.href = '/alumnos_instructor/export/'+{{$idInstructor}}+'/'+$("#fecha").val();
    }
 </script>
 @stop

@@ -8,25 +8,24 @@ class Informe_ventasExportComisiones implements FromCollection
 {
     public $desde;
     public $hasta;
-    public $vendedor;
- 
+    
     
     public function collection()
     {
-       
-       return DB::table('nota_pedidos')
-          ->join('clientes as c','c.id','=','nota_pedidos.id_cliente')
-           ->leftjoin('empleados as v','v.id','=','nota_pedidos.id_vendedor')
-           ->whereBetween('nota_pedidos.fecha',array($this->desde,$this->hasta)  )
-           ->where('nota_pedidos.id_vendedor','=',$this->vendedor)
-          ->select(['nota_pedidos.fecha',
-                    'nota_pedidos.tipo_presupuesto', 
-                    'c.nombre',
-                    'c.cuit',
-                    'nota_pedidos.estado',
-                    'v.apellidoynombre',
-                    'nota_pedidos.totalgravado'  ])
-           ->get()  ;
-  
+        return DB::table('alumnos_cursos')
+        ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
+        ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
+        ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
+        ->whereBetween('alumnos_cursos.fecha_inscripcion',array($this->desde,$this->hasta)  )
+        ->select(['alumnos_cursos.fecha_inscripcion',
+        'alumnos.nombre',
+        'cursos.nombre_curso',
+        'empleados.nombre as vendedor',
+        'alumnos_cursos.precio',
+        'cursos.monto_comision'  ])
+        ->get()  ;
+
+
+        
     }
 }

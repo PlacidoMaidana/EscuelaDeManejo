@@ -15,7 +15,7 @@ class Informe_egresosExport implements FromCollection
        return DB::table('egresos_gastos')
        ->leftjoin ('tipos_gastos','egresos_gastos.id_tipo_gasto','=','tipos_gastos.id')
        ->join('sucursales','sucursales.id','=','egresos_gastos.id_sucursal')
-       ->whereBetween('mov_financieros.fecha', array($this->desde,$this->hasta) )
+       ->whereBetween('egresos_gastos.fecha', array($this->desde,$this->hasta) )
        ->select(['egresos_gastos.fecha',
                  'sucursales.sucursal',
                  'egresos_gastos.descripcion',

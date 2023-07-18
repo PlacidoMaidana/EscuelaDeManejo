@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,9 @@ use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use App\AlumnosCurso;
+use App\Exports\Informe_clasesExportComisiones;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 
 class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBaseController

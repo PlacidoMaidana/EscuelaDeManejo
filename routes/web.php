@@ -68,9 +68,17 @@ Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumno
 Route::post('/alta_alumno', 'App\Http\Controllers\voyager\Alumnos_CursosController@alta_alumno');
 Route::get('/create_pago_alumno/{id_alumno_curso}', 'App\Http\Controllers\IngresosCursosController@create_pago_cursos');
 
+///  pagos de alumnos  
+Route::get('/pagos_alumno/{idAlumnoCurso}','App\Http\Controllers\voyager\Alumnos_CursosController@lista_pagos_alumnos'); // va la grilla
+Route::get('/datos_pagos_alumno/{idAlumnoCurso}','App\Http\Controllers\voyager\Alumnos_CursosController@pagos_alumnos'); // devuelve datos
+Route::get('/admin/ingresos-cursos/{id}/recibo_cobranza', 'App\Http\Controllers\Voyager\Alumnos_CursosController@recibo_cobranza'); 
 
+
+////
+///  clases de alumnos
 Route::get('/seguimiento_alumno/{idAlumnoCurso}','App\Http\Controllers\voyager\Alumnos_CursosController@lista_clases_alumnos'); // va la grilla
 Route::get('/clases_seguimiento_alumno/{idAlumnoCurso}','App\Http\Controllers\voyager\Alumnos_CursosController@seguimiento_clases_alumnos'); // devuelve datos
+/////
 Route::get('/listas_alumnos_instructor/{idInstructor}','App\Http\Controllers\Calendario_instructorController@lista_alumnos_instructor_fecha');
 Route::get('/alumnos_instructor_por_fecha/{idInstructor}/{from}','App\Http\Controllers\Calendario_instructorController@alumnos_instructor_por_fecha');//ruta que devuelve datos
 
@@ -84,12 +92,15 @@ Route::post('/asistencia_clases_guardarurl/','App\Http\Controllers\RegistroAsist
 
 Route::get('/Informeingresossucursal','App\Http\Controllers\informes_tesoreria@index_ing_suc');
 
+Route::get('/Informe_cajadiaria','App\Http\Controllers\informes_tesoreria@index_caja_diaria');
 Route::get('/Informeingresos','App\Http\Controllers\informes_tesoreria@index_ing');
 Route::get('/Informeegresos','App\Http\Controllers\informes_tesoreria@index_egr');
 Route::get('/Informecomisiones','App\Http\Controllers\informes_ventas_comisiones@index');
 Route::get('/Informeclasescomisiones','App\Http\Controllers\informes_clases_comisiones@index');
 Route::get('/informe_flujofinanciero', 'App\Http\Controllers\informes_flujofinancieroController@index');
 
+Route::get('/informe_cajadiaria_fecha_operador_egr/{fecha}/{operador}','App\Http\Controllers\informes_tesoreria@cajadiaria_fecha_operador_egr');//ruta que devuelve datos
+Route::get('/informe_cajadiaria_fecha_operador_ing/{fecha}/{operador}','App\Http\Controllers\informes_tesoreria@cajadiaria_fecha_operador_ing');//ruta que devuelve datos
 Route::get('/informeingresos_suc_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_suc_en_rango_de_fechas');//ruta que devuelve datos
 Route::get('/totalesingresos_suc_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_suc_totales_en_rango_de_fechas');//ruta que devuelve datos
 Route::get('/informeingresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_en_rango_de_fechas');//ruta que devuelve datos
@@ -109,3 +120,5 @@ Route::get('informes_tesoreria/egr_export/{from}/{to}', 'App\Http\Controllers\in
 Route::get('informes_flujofinanciero/export/{anio}', 'App\Http\Controllers\informes_flujofinancieroController@export');
 Route::get('informes_ventasComisiones/export/{from}/{to}', 'App\Http\Controllers\informes_ventas_comisiones@export');
 Route::get('informes_clasesComisiones/export/{from}/{to}', 'App\Http\Controllers\informes_clases_comisiones@export');
+Route::get('alumnos_instructor/export/{instructor}/{fecha}', 'App\Http\Controllers\Calendario_instructorController@export');
+Route::get('seguimiento_alumno_export/{id_alumno_curso}' , 'App\Http\Controllers\voyager\Alumnos_CursosController@export');

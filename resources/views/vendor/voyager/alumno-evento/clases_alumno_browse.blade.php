@@ -6,7 +6,11 @@
 
 @section('content')
 
-
+<div class="row ">
+  <div class="col-md-2  ">
+    <button  type="button" id="ver tesoreria"  onclick="excelExport()" class="btn btn-sm btn-primary" >Excel</button>
+  </div>    
+</div>
                  
 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
     <thead>
@@ -65,6 +69,13 @@
    
 </script> 
 
+
+<script>
+  function excelExport()   {
+   window.location.href = '/seguimiento_alumno_export/'+{{$id_alumno_curso}};
+   //alert(window.location.href);
+  }
+</script>
 
 
 @stop

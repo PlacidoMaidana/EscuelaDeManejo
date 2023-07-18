@@ -18,6 +18,11 @@ use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use App\Curso;
+use PDF;
+use App\Exports\seguimiento_clasesExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+
 
 
 class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
@@ -239,6 +244,79 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
     }
 
+    /////////////////////
+    public function lista_pagos_alumnos($id_alumno_curso)
+    {
+
+        return view('voyager::ingresos-cursos.pagos_alumno_browse', compact('id_alumno_curso'));
+      
+    }
+    public function pagos_alumnos($id_alumno_curso)
+    {
+      return $datos = datatables()->of(DB::table('ingresos_cursos') 
+     ->join('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
+     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
+     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
+     ->where('alumnos_cursos.id','=', $id_alumno_curso)
+     ->select([ 'ingresos_cursos.id',
+                'alumnos_cursos.id as id_Alumno_Curso',
+                'alumnos.nombre as nombre_alumno',
+                'cursos.nombre_curso',
+                'ingresos_cursos.fecha',
+                'ingresos_cursos.modalidad_pago',
+                'ingresos_cursos.importe',
+                'ingresos_cursos.detalle',
+                 ]))  
+                 ->addColumn('accion','vendor/voyager/ingresos-cursos/acciones_pagos')
+                 ->rawColumns(['accion'])  
+    ->toJson();   
+    }
+
+////////////////
+public function recibo_cobranza($id){
+
+    //$texto="esto es el texto de la nota";
+    $datoscobranza= (DB::table('ingresos_cursos') 
+    ->join('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
+    ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
+    ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
+    ->where('ingresos_cursos.id','=', $id)
+    ->select([ 'ingresos_cursos.id',
+               'alumnos_cursos.id as id_Alumno_Curso',
+               'alumnos_cursos.precio',
+               'alumnos.nombre as nombre_alumno',
+               'alumnos.DNI',
+               'alumnos.direccion',
+               'cursos.nombre_curso',
+               'cursos.caracteristicas',
+               'ingresos_cursos.fecha',
+               'ingresos_cursos.modalidad_pago',
+               'ingresos_cursos.importe',
+               'ingresos_cursos.detalle',
+                ]))        
+    ->first();
+    
+    $id_sucursal = auth()->user()->id_sucursal;
+    $datossucursal= (DB::table('sucursales') 
+    ->where('sucursales.id','=', $id_sucursal)
+    ->select([ 'sucursales.id',
+               'sucursales.direccion',
+               'sucursales.telefono',
+               'sucursales.celular',
+               ]))        
+    ->first();
+   
+    // $nombre_sucursal = DB::table('')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+
+     
+      $pdf = PDF::loadView("vendor.voyager.ingresos-cursos.recibo",
+      compact('id','datoscobranza','datossucursal'));
+      return $pdf->stream('recibo.pdf');
+
+ }
+
+    //////////////////////
+
     public function lista_clases_alumnos($id_alumno_curso)
     {
 
@@ -271,6 +349,15 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
               ->rawColumns(['check'])  
     ->toJson();   
     }
+
+    public function export($id_alumno_curso) 
+    {
+      $aa = new seguimiento_clasesExport();
+      $aa->id_alumno_curso=$id_alumno_curso;
+      return Excel::download($aa, 'seguimiento_clases_programadas.xlsx');
+     // dd($aa)  ;
+
+    } 
 
     public function alumnos_por_sucursal_activos($sucursal)
     {

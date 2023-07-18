@@ -53,13 +53,12 @@ class informes_ventas_comisiones extends Controller
  
 
     }
-    public function export($desde,$hasta,$vendedor) 
+    public function export($desde,$hasta) 
     {
       $aa = new Informe_ventasExportComisiones();
       $aa->desde=$desde;
       $aa->hasta=$hasta;
-      $aa->vendedor=$vendedor;
-       return Excel::download($aa, 'informe_ventas_comisiones.xlsx');
+      return Excel::download($aa, 'informe_ventas_comisiones.xlsx');
      // dd($aa)  ;
 
     } 

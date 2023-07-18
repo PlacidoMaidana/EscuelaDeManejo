@@ -11,7 +11,10 @@
 
 <a href="{{url('/calendario/'.$idAlumnoCurso)}}" title="Clases" class="btn btn-primary ">Programar Clases</a>
 
+<a href="{{url('/pagos_alumno/'.$idAlumnoCurso)}}" title="Pagar" class="btn btn-primary ">Pagos</a>
+{{-- 
 <a href="{{url('/create_pago_alumno/'.$idAlumnoCurso)}}" title="Pagar" class="btn btn-primary ">Pagos</a>
+--}}
 
 <a href="{{url('/seguimiento_alumno/'.$idAlumnoCurso)}}" title="Seguimiento" class="btn btn-primary ">Seguimiento</a>
 

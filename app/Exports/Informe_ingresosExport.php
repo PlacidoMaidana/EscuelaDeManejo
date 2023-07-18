@@ -19,7 +19,7 @@ class Informe_ingresosExport implements FromCollection
        ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
        ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
        ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
-       ->whereBetween('mov_financieros.fecha',array($this->desde,$this->hasta) )
+       ->whereBetween('ingresos_cursos.fecha',array($this->desde,$this->hasta) )
        ->select(['ingresos_cursos.fecha',
                  'sucursales.sucursal',
                  'alumnos.nombre as nombre_alumno',

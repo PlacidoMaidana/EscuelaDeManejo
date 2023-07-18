@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use App\AlumnoEvento;
 use App\Instructore;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+
+use App\Exports\Planilla_alumnosExport;
 
 class Calendario_instructorController extends Controller
 {
@@ -183,7 +187,16 @@ class Calendario_instructorController extends Controller
         return response()->json($evento);
     }
 
+    public function export($instructor,$fecha) 
+    {
+       
+      $aa = new Planilla_alumnosExport();
+      $aa->fecha=$fecha;
+      $aa->instructor=$instructor;
+       return Excel::download($aa, 'planilla_alumnos_profesor.xlsx');
+     // dd($aa)  ;
 
+    } 
 
 
 }

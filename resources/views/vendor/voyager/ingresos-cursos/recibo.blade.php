@@ -38,35 +38,45 @@
 
       <div class="filas">
           <div class="cabeza">
-
+            <div align = "center">
+              <h1>AUTOESCUELA CHACO</h1>
+              <h1>Escuela de Conducción</h1>
+               <h1>Recibo Nro {{$datoscobranza->id}}</h1> 
+              </ div> 
           </div>
           <div class="cuerpo">
-               <h1>RECIBO</h1> 
+             
                
-               <h1>Recibo Nro: {{$datoscobranza->id}}</h1> 
                <hr />
                <h3>Fecha: {{$datoscobranza->fecha}} </h3> 
-               <h3>Alumno: {{$datoscobranza->nombre_alumno}}</h3> 
-               <h3>Curso: {{$datoscobranza->nombre_curso}}</h3>
-              
+               <h3>Alumno: {{$datoscobranza->nombre_alumno}}</h3>
+               <h3>DNI: {{$datoscobranza->DNI}}</h3>
+               <h3>Domicilio: {{$datoscobranza->direccion}}</h3>
+               <h3>Curso: {{$datoscobranza->nombre_curso}} </h3>
+               <h3>  {{$datoscobranza->caracteristicas}} </h3>  
                <br>
                <br>  
                <hr style="color: rgb(84, 83, 83); background-color: rgb(101, 100, 100); width:100% higth:2px ;" />
                <br>
                <br>
                <h4 >
-                 Importe: {{number_format($datoscobranza->importe_ingreso, 2, '.', ',')}} <br>
+                 Total Curso: {{number_format($datoscobranza->precio, 2, '.', ',')}} <br>
+                 Importe recibido: {{number_format($datoscobranza->importe, 2, '.', ',')}} <br>
                  Modalidad de Pago:  {{$datoscobranza->modalidad_pago}}  <br>
-                 Detalle.: {{$datoscobranza->detalle}}  <br>
+                 Observaciones: {{$datoscobranza->detalle}}  <br>
              
                <br>
                </h4>
                <hr />
+               <div align = "right">
+               Direccion: {{$datossucursal->direccion}}  <br>
+               Telefono: {{$datossucursal->telefono}}  <br>
+               Celular: {{$datossucursal->celular}}  <br>
+               </ div> 
                <br>
                <p>
                <br>
                <br>
-               <hr />
                </p>
                
               
