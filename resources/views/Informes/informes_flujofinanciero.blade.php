@@ -74,7 +74,7 @@
   function filtrar() {
    
     var filtro ="{{url('/informeflujofinanciero_rango_de_fechas/')}}"+"/"+ $("#anio").val();
-        
+    $('#movimientos').DataTable().destroy();
     $('#movimientos').dataTable( {
     "serverSide": true,
     "ajax":filtro,

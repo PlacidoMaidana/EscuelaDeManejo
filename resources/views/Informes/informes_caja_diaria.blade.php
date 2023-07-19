@@ -31,11 +31,12 @@
     <button  type="button" id="ver tesoreria"  onclick="excelExport()" class="btn btn-sm btn-primary" >Excel</button>
   </div>    
 </div>
-<table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+  <table id="egresos" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
     <thead>
       <tr>
         <th>Fecha</th>
         <th>Sucursal</th>
+        <th>operador</th>
         <th>Detalle</th>
         <th>modalidad_pago</th>
         <th>importe</th>
@@ -44,16 +45,32 @@
       </tr>
      </thead>
      
-    </table>
-  
+  </table>
+  <table id="ingresos" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Sucursal</th>
+          <th>operador</th>
+          <th>modalidad_pago</th>
+          <th>importe</th>
+          <th>Alumno</th>
+          <th>Curso</th>
+        </tr>
+       </thead>
+       
+      </table>
     
     <table id="totales" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
       <thead>
         <tr>
-          <th>Sucursal</th> 
-          <th>Operador</th>
-          <th>Total Gastos</th>
-        </tr>
+          <th>Ingreso - Egreso</th>
+          <th>Efectivo</th>
+          <th>Transferencias</th>
+          <th>Tarjetas Debito</th> 
+          <th>Tarjetas Credito</th> 
+          <th>Mercado Pago</th>
+          </tr>
        </thead>
       </table>
 @stop
@@ -82,8 +99,8 @@
   function filtrar() {
    
     var filtro_egr="{{url('/informe_cajadiaria_fecha_operador_egr/')}}"+"/"+$("#fecha").val()+'/'+$("#operador_selected").val();
-
-    $('#example').dataTable( {
+    $('#egresos').DataTable().destroy();
+    $('#egresos').dataTable( {
     "serverSide": true,
     "ajax":filtro_egr,
     "paging": true,
@@ -91,24 +108,46 @@
     "columns":[
             {data: 'fecha', name: 'egresos_gastos.fecha', width: '5%'},
             {data: 'sucursal', name: 'sucursales.sucursal', width: '5%'},
+            {data: 'name', name:'user.name', width: '10%'},
             {data: 'descripcion', name:'egresos_gastos.descripcion', width: '10%'},
             {data: 'modalidad_pago', name: 'egresos_gastos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'egresos_gastos.importe', width: '10%'},
             {data: 'tipo1', name: 'tipos_gastos.tipo1', width: '10%'},
             {data: 'tipo2', name: 'tipos_gastos.tipo2', width: '10%'},
           ]        
-});
+     });
 
+     var filtro_ing="{{url('/informe_cajadiaria_fecha_operador_ing/')}}"+"/"+$("#fecha").val()+'/'+$("#operador_selected").val();
+    $('#ingresos').DataTable().destroy();
+    $('#ingresos').dataTable( {
+    "serverSide": true,
+    "ajax":filtro_ing,
+    "paging": true,
+    "searching": true,
+    "columns":[
+            {data: 'fecha', name: 'ingresos_cursos.fecha', width: '5%'},
+            {data: 'sucursal', name: 'sucursales.sucursal', width: '5%'},
+            {data: 'name', name:'user.name', width: '10%'},
+            {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
+            {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+            {data: 'nombre', name: 'alumnos.nombre', width: '10%'},
+            {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '10%'},
+          ]        
+     });
 
-var filtrototales ="{{url('/totalesegresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-  
+var filtrototales ="{{url('/totales_caja_diaria/')}}"+"/"+$("#fecha").val()+'/'+$("#operador_selected").val();
+$('#totales').DataTable().destroy();
 $('#totales').dataTable( {
     "serverSide": true,
     "ajax":filtrototales,
     "paging": false,
     "searching": false,
-    "columns":[{data: 'sucursal', name: 'sucursales.sucursal', width: '10%'},
-               {data: 'total_gastos', name: 'total_gastos', width: '10%'},
+    "columns":[{data: 'tipo',name: 'tipo', width: '5%'},
+            {data: 'Efectivo',name: 'Efectivo', width: '5%'},
+            {data: 'Transferencia',name: 'Transferencia', width: '5%'},
+            {data: 'Debito',name: 'Debito', width: '5%'},
+            {data: 'Credito',name: 'Credito', width: '5%'},
+            {data: 'MPago',name: 'MPago', width: '5%'},
              ]        
 });
 

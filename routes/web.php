@@ -101,6 +101,8 @@ Route::get('/informe_flujofinanciero', 'App\Http\Controllers\informes_flujofinan
 
 Route::get('/informe_cajadiaria_fecha_operador_egr/{fecha}/{operador}','App\Http\Controllers\informes_tesoreria@cajadiaria_fecha_operador_egr');//ruta que devuelve datos
 Route::get('/informe_cajadiaria_fecha_operador_ing/{fecha}/{operador}','App\Http\Controllers\informes_tesoreria@cajadiaria_fecha_operador_ing');//ruta que devuelve datos
+Route::get('/totales_caja_diaria/{fecha}/{operador}','App\Http\Controllers\informes_tesoreria@cajadiaria_fecha_operador_totales');//ruta que devuelve datos
+
 Route::get('/informeingresos_suc_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_suc_en_rango_de_fechas');//ruta que devuelve datos
 Route::get('/totalesingresos_suc_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_suc_totales_en_rango_de_fechas');//ruta que devuelve datos
 Route::get('/informeingresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_en_rango_de_fechas');//ruta que devuelve datos

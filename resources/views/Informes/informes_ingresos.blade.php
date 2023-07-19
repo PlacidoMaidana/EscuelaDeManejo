@@ -83,7 +83,7 @@
   function filtrar() {
    
     var filtro ="{{url('/informeingresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-  
+    $('#example').DataTable().destroy();
     $('#example').dataTable( {
     "serverSide": true,
     "ajax":filtro,
@@ -101,7 +101,7 @@
 });
 
 var filtrototales ="{{url('/totalesingresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-  
+$('#totales').DataTable().destroy();
 $('#totales').dataTable( {
     "serverSide": true,
     "ajax":filtrototales,

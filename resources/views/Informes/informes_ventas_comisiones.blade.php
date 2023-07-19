@@ -80,7 +80,7 @@
   function filtrar() {
 
     var filtro ="{{url('/informevtasComisiones_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-      
+    $('#example').DataTable().destroy();
     $('#example').dataTable( {
     "serverSide": true,
     "ajax":filtro,
@@ -98,7 +98,7 @@
 
 var filtrototales ="{{url('/totalesvtasComisiones_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
   
- 
+$('#totales').DataTable().destroy();
 $('#totales').dataTable( {
     "serverSide": true,
     "ajax":filtrototales,

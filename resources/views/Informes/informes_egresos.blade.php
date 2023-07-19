@@ -77,7 +77,7 @@
   function filtrar() {
    
     var filtro ="{{url('/informeegresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-
+    $('#example').DataTable().destroy();
     $('#example').dataTable( {
     "serverSide": true,
     "ajax":filtro,
@@ -96,7 +96,7 @@
 
 
 var filtrototales ="{{url('/totalesegresos_rango_de_fechas/')}}"+"/"+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
-  
+$('#totales').DataTable().destroy();
 $('#totales').dataTable( {
     "serverSide": true,
     "ajax":filtrototales,

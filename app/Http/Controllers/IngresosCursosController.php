@@ -487,12 +487,13 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         ->select(['sucursales.sucursal','alumnos.nombre'])
         ->where ('alumnos_cursos.id','=',$id_alumno_curso)->get();
         $sucursal = $datos_alumno[0]->sucursal;
-       // $id_alumno_curso = 
+       
         $alumno = $datos_alumno[0]->nombre;
-        
+        $operador=auth()->user()->id;
+       
         $view = 'vendor/voyager/ingresos-cursos/edit-add_cobranza';
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'
-        ,'sucursal','id_alumno_curso','alumno'));
+        ,'sucursal','id_alumno_curso','alumno','operador'));
        
 
         

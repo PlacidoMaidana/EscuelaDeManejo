@@ -43,10 +43,12 @@ class informes_tesoreria extends Controller
         return $egresos = datatables()->of(DB::table('egresos_gastos')
             ->leftjoin ('tipos_gastos','egresos_gastos.id_tipo_gasto','=','tipos_gastos.id')
             ->join('sucursales','sucursales.id','=','egresos_gastos.id_sucursal')
+            ->join('users','users.id','=','egresos_gastos.id_empleado')
             ->where('egresos_gastos.fecha','=',$fecha)
             ->where('egresos_gastos.id_empleado','=',$operador) 
             ->select(['egresos_gastos.fecha',
                       'sucursales.sucursal',
+                      'users.name',
                       'egresos_gastos.descripcion',
                       'egresos_gastos.modalidad_pago',
                       'egresos_gastos.importe',
@@ -60,21 +62,56 @@ class informes_tesoreria extends Controller
              return $ingresos = datatables()->of(DB::table('ingresos_cursos')
              ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
              ->join('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
+             ->join('users','users.id','=','ingresos_cursos.id_usuario')
              ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
              ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
-             ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
              ->where('ingresos_cursos.fecha','=',$fecha)
-             //->where('ingresos_cursos.','=',$operador )
+             ->where('ingresos_cursos.id_usuario','=',$operador )
              ->select(['ingresos_cursos.fecha',
                        'sucursales.sucursal',
-                       'alumnos.nombre as nombre_alumno',
-                       'cursos.nombre_curso',
-                       'empleados.nombre',
+                       'users.name',
                        'ingresos_cursos.modalidad_pago',
-                       'ingresos_cursos.importe']))
+                       'ingresos_cursos.importe',
+                       'alumnos.nombre',
+                       'cursos.nombre_curso'
+                       ]))
               ->toJson();
              
      }
+
+     public function cajadiaria_fecha_operador_totales($fecha,$operador)
+     {
+      
+      
+      $total_ingresos= DB::table('ingresos_cursos')
+              ->whereDate('ingresos_cursos.fecha','=', $fecha) 
+              ->where('ingresos_cursos.id_usuario','=', $operador)
+                    ->select([DB::raw('"INGRESOS" as tipo'),
+                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Efectivo", importe, NULL)) AS Efectivo'),
+                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Transferencia", importe, NULL)) AS Transferencia'),
+                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Débito" , importe, NULL)) AS Debito'),
+                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS Credito'), 
+                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Mercado Pago", importe, NULL)) AS MPago'),  ])
+                    ->groupBy('tipo');
+         
+
+      $egresosingresos= DB::table('egresos_gastos')
+                    ->whereDate('egresos_gastos.fecha','=', $fecha) 
+                    ->where('egresos_gastos.id_empleado','=', $operador)
+                    ->select([DB::raw('"EGRESOS" as tipo'),
+                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Efectivo" , importe, NULL)) AS Efectivo'),
+                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Transferencia", importe, NULL)) AS Transferencia'),
+                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Tarjeta Débito" , importe, NULL)) AS Debito'),
+                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS Credito'),
+                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Mercado Pago", importe, NULL)) AS MPago'), ] )
+                    ->groupBy('tipo')
+                    ->union($total_ingresos);
+   
+      return $egresosingresos = datatables()->of($egresosingresos)
+      ->toJson();  
+      
+     }
+
 
     public function egr_en_rango_de_fechas($from,$to)
     {
@@ -94,7 +131,7 @@ class informes_tesoreria extends Controller
                        ]))
             ->toJson();  
             $total=DB::table ('egresos_gastos') ->sum('importe') ->whereBetween('egresos_gastos.fecha',array($from,$to) );
-             //dd($total);
+            
     }
     public function ing_en_rango_de_fechas($from,$to)
     {
