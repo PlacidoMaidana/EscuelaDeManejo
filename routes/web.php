@@ -32,7 +32,7 @@ Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@sto
 Route::get('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');
 Route::post('/calendario/actualizar/{evento}','App\Http\Controllers\CalendarioController@update');
 Route::post('/calendario/borrar/{id}','App\Http\Controllers\CalendarioController@destroy');
-Route::get('/calendario/obtener_fechas/{franjaHoraria}','App\Http\Controllers\CalendarioController@obtener_fechas');
+Route::get('/calendario/obtener_fechas/{franjaHoraria}/{diaEvento}','App\Http\Controllers\CalendarioController@obtener_fechas');
 Route::get('/calendario/eventos_alumno/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@eventos_alumno');
 //Route::get('/obtener-eventos/{idVehiculo}/{idHorario}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
 Route::get('/obtener-eventos/{idVehiculo}', 'App\Http\Controllers\CalendarioController@obtener_eventos');

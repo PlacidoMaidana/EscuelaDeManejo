@@ -434,16 +434,22 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
   $(document).ready(function() {
     // Obtener referencia al select de franjas horarias
     var selectFranjaHoraria = $('#franja_horaria_select');
+    var date = $('#start_date');
+
+    
     
     // Escuchar el evento 'change' del select de franjas horarias
     selectFranjaHoraria.on('change', function() {
     var franjaHorariaSeleccionada = selectFranjaHoraria.val();
+    var diaDelEvento = date.val();
   
+    var fechaEvento = encodeURIComponent(diaDelEvento); // Codificar la fecha antes de agregarla a la URL
+
     
   // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
      
       $.ajax({
-        url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada,
+        url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
         method: 'GET',
         success: function(response) {
           // Actualizar los campos de fecha en el formulario del evento
