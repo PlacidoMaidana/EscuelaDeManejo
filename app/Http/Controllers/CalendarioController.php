@@ -209,14 +209,12 @@ class CalendarioController extends Controller
         $franjaHoraria1 = FranjasHoraria::find($franjaHoraria);
     
         // Convertir la fecha del evento en un objeto Carbon
-    $fechaEventoCarbon = Carbon::parse($diaEvento);
-    
-    // Establecer la hora de inicio y fin de acuerdo a la franja horaria
-    $startDateTime = $fechaEventoCarbon->copy()->setTimeFromTimeString($franjaHoraria1->start_time);
-    $endDateTime = $fechaEventoCarbon->copy()->setTimeFromTimeString($franjaHoraria1->end_time);
-
-    
-        // Formatear las fechas como strings en el formato deseado
+        $fechaEventoCarbon = Carbon::parse($diaEvento);
+           
+        // Establecer la hora de inicio y fin de acuerdo a la franja horaria
+        $startDateTime = $fechaEventoCarbon->copy()->setTimeFromTimeString($franjaHoraria1->start_time);
+        $endDateTime = $fechaEventoCarbon->copy()->setTimeFromTimeString($franjaHoraria1->end_time);
+            // Formatear las fechas como strings en el formato deseado
         $start_date = $startDateTime->format('Y-m-d H:i:s');
         $end_date = $endDateTime->format('Y-m-d H:i:s');
     
