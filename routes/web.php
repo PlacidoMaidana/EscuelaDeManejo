@@ -71,7 +71,7 @@ Route::get('/create_pago_alumno/{id_alumno_curso}', 'App\Http\Controllers\Ingres
 ///  pagos de alumnos  
 Route::get('/pagos_alumno/{idAlumnoCurso}','App\Http\Controllers\voyager\Alumnos_CursosController@lista_pagos_alumnos'); // va la grilla
 Route::get('/datos_pagos_alumno/{idAlumnoCurso}','App\Http\Controllers\voyager\Alumnos_CursosController@pagos_alumnos'); // devuelve datos
-Route::get('/admin/ingresos-cursos/{id}/recibo_cobranza', 'App\Http\Controllers\Voyager\Alumnos_CursosController@recibo_cobranza'); 
+Route::get('/admin/ingresos-cursos/{id}/recibo_cobranza', 'App\Http\Controllers\voyager\Alumnos_CursosController@recibo_cobranza'); 
 
 
 ////
@@ -119,6 +119,7 @@ Route::get('/totalesclasesComisiones_rango_de_fechas/{from}/{to}','App\Http\Cont
 
 Route::get('informes_tesoreria/ing_export/{from}/{to}', 'App\Http\Controllers\informes_tesoreria@ing_export');
 Route::get('informes_tesoreria/egr_export/{from}/{to}', 'App\Http\Controllers\informes_tesoreria@egr_export');
+Route::get('informes_tesoreria/caja_export/{fecha}/{operador}', 'App\Http\Controllers\informes_tesoreria@caja_export');
 Route::get('informes_flujofinanciero/export/{anio}', 'App\Http\Controllers\informes_flujofinancieroController@export');
 Route::get('informes_ventasComisiones/export/{from}/{to}', 'App\Http\Controllers\informes_ventas_comisiones@export');
 Route::get('informes_clasesComisiones/export/{from}/{to}', 'App\Http\Controllers\informes_clases_comisiones@export');

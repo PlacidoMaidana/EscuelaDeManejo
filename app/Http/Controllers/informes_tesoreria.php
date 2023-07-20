@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Exports\informe_ingresosExport;
-use App\Exports\informe_egresosExport;
+use App\Exports\Informe_ingresosExport;
+use App\Exports\Informe_egresosExport;
+use App\Exports\Informe_cajaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
@@ -243,6 +244,16 @@ class informes_tesoreria extends Controller
       $aa = new informe_egresosExport();
       $aa->desde=$desde;
       $aa->hasta=$hasta;
+       return Excel::download($aa, 'informe_caja_diaria.xlsx');
+      //dd($aa)  ;
+
+    } 
+
+    public function caja_export($fecha,$operador) 
+    {
+      $aa = new Informe_cajaExport();
+      $aa->fecha=$fecha;
+      $aa->operador=$operador;
        return Excel::download($aa, 'informe_egresos.xlsx');
       //dd($aa)  ;
 

@@ -191,17 +191,16 @@
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'timeGridWeek',
-          
+          slotMinTime: "07:00:00",
+          slotMaxTime: "21:00:00",
+          height: 'auto',
             headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
             },
-            businessHours: {
-              start: '7:00', // hora final
-              end: '14:30', // hora inicial
-              dow: [ 1, 2, 3, 4, 5 , 6 ] // dias de semana, 0=Domingo
-            },
+          
+         
          
             dateClick:function(info){
                 formulario.reset();
