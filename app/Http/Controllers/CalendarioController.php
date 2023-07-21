@@ -7,6 +7,7 @@ use App\AlumnoEvento;
 use App\FranjasHoraria;
 use App\Instructore;
 use App\Vehiculo;
+use App\Horario;
 use Carbon\Carbon;
 
 class CalendarioController extends Controller
@@ -66,9 +67,9 @@ class CalendarioController extends Controller
         ];
        }*/
 
-     
+        $horarios=Horario::all();
         return view('calendario.calendario', 
-        compact('AlumnoCursoInfo','idAlumnoCurso',
+        compact('AlumnoCursoInfo','idAlumnoCurso','horarios',
         'numero_clases','franjasHorarias','registro_AlumnoCurso','tipos_eventos','instructores','vehiculos'));
        
     }

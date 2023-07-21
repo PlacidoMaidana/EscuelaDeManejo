@@ -225,7 +225,7 @@
 
                 // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
                  for (var i = 0; i < franjasHorarias.length; i++) {
-                   if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time >= horaEvento) {
+                   if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time > horaEvento) {
                      selectFranjaHoraria.value = franjasHorarias[i].id;
                      break; // Detener el bucle una vez que se encuentra una coincidencia
                    }
@@ -415,7 +415,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
               
                 // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
                  for (var i = 0; i < franjasHorarias.length; i++) {
-                   if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time >= horaEvento) {
+                   if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time > horaEvento) {
                      selectFranjaHoraria.value = franjasHorarias[i].id;
                      break; // Detener el bucle una vez que se encuentra una coincidencia
                    }
@@ -518,6 +518,42 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
   
   
   </script>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  var horarios = {!! json_encode($horarios) !!};
+  var vehiculoSelect = document.getElementById('vehiculos_select');
+  var franjaHorariaSelect = document.getElementById('franja_horaria_select');
+  var instructorSelect = document.getElementById('instructores_select');
+
+  // Escuchar el evento 'change' en los select de vehículo y franja horaria
+  vehiculoSelect.addEventListener('change', actualizarInstructorSelect);
+  franjaHorariaSelect.addEventListener('change', actualizarInstructorSelect);
+
+  function actualizarInstructorSelect() {
+    alert("Hay cambios que atender");
+    var vehiculoSeleccionado = vehiculoSelect.value;
+    var franjaHorariaSeleccionada = franjaHorariaSelect.value;
+
+    // Buscar el horario que coincide con el vehículo y franja horaria seleccionados
+    var horarioSeleccionado = $horarios.find(function(horario) {
+      return horario.vehiculo.id === parseInt(vehiculoSeleccionado) &&
+             horario.franjaHoraria.id === parseInt(franjaHorariaSeleccionada);
+    });
+
+    // Si se encuentra un horario que coincide, seleccionar automáticamente el instructor en el select
+    if (horarioSeleccionado) {
+      instructorSelect.value = horarioSeleccionado.instructor.id;
+    }
+  }
+});
+
+
+</script>
+
 
 
 @stop
