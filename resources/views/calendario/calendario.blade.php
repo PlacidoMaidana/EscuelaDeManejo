@@ -383,6 +383,10 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
      calendar.destroy();    
      // Inicializar nuevamente el calendario con la nueva fuente de eventos
       calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        slotMinTime: "07:00:00",
+        slotMaxTime: "21:00:00",
+        height: 'auto',
         headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',

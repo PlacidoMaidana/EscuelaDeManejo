@@ -108,9 +108,7 @@ class CalendarioController extends Controller
     //public function obtener_eventos($idVehiculo,$idHorario)
     public function obtener_eventos($idVehiculo)
         {
-        
             $sucursal = auth()->user()->id_sucursal;
-
 
             $all_events = DB::table('alumno_evento')
              ->join ('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
@@ -144,7 +142,6 @@ class CalendarioController extends Controller
             
             return response()->json($events);
             
-
             
         }
         
@@ -182,7 +179,7 @@ class CalendarioController extends Controller
         $clase = AlumnoEvento::create([
           'clase' => $request['clase'],
           'start_date' => $request['start_date'],
-          'end_date' => $request['end_date'] ,  
+          'end_date' => $request['end_date'] , 
           'id_alumno_curso' => $request['idAlumnoCurso'] ,
           'id_franja_horaria' => $request['franja_horaria'],
           'id_vehiculo' => $request['vehiculos'] ,
@@ -190,15 +187,15 @@ class CalendarioController extends Controller
           'asistencia' => $request['asistencia'] ,
           'descripcion' => $request['descripcion'] ,
           'id_tipo_evento' => $request['tipos_eventos'],
-
         ]);
-        
+      
 
         return response()->json([
                        'request'=> $request->all(),
                        'clase'=>$clase,//$request['nombre_clase'],
                        'message' => 'Success'
           ], 200);
+
        
     }
 
