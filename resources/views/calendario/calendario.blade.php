@@ -27,7 +27,7 @@
                     <option value="{{ $v->id }}" >{{ $v->marca_modelo_anio }}</option>
                     @endforeach
                    </select>    
-
+v
                    {{--<select name="id_horario" class="col-md-4 " id="id_horario" >
                     <option selected>Seleccione franja horaria</option>
                     @foreach ($franjasHorarias as $f)

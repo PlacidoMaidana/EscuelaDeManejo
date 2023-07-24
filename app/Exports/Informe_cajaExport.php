@@ -28,7 +28,7 @@ class Informe_cajaExport implements FromCollection
                    'ingresos_cursos.importe',
                    'alumnos.nombre as detalle1',
                    'cursos.nombre_curso as detalle2',
-                   '"" as detalle3'   ]);
+                   '"-" as detalle3'   ]);
         //dd($ingresos);
        $egresosingresos= DB::table('egresos_gastos')
        ->leftjoin ('tipos_gastos','egresos_gastos.id_tipo_gasto','=','tipos_gastos.id')
