@@ -26,14 +26,7 @@
                     @foreach ($vehiculos as $v)
                     <option value="{{ $v->id }}" >{{ $v->marca_modelo_anio }}</option>
                     @endforeach
-                   </select>   --}}  
-
-                   <select name="instructores" id="filtrar_por_instructor">
-                    <option selected>Seleccione el instructor</option>
-                    @foreach ($instructores as $instructor)
-                        <option value="{{ $instructor->id }}">{{ $instructor->nombre }}</option>
-                    @endforeach
-                   </select>
+                   </select>    
 
                    {{--<select name="id_horario" class="col-md-4 " id="id_horario" >
                     <option selected>Seleccione franja horaria</option>
@@ -410,11 +403,7 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
      calendar.destroy();    
      // Inicializar nuevamente el calendario con la nueva fuente de eventos
       calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
-          slotMinTime: "07:00:00",
-          slotMaxTime: "21:00:00",
-          height: 'auto',
-            headerToolbar:{
+        headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
