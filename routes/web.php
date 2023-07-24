@@ -36,6 +36,7 @@ Route::get('/calendario/obtener_fechas/{franjaHoraria}/{diaEvento}','App\Http\Co
 Route::get('/calendario/eventos_alumno/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@eventos_alumno');
 //Route::get('/obtener-eventos/{idVehiculo}/{idHorario}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
 Route::get('/obtener-eventos/{idVehiculo}', 'App\Http\Controllers\CalendarioController@obtener_eventos');
+Route::get('/obtener-eventos-por-instructor/{idInstructor}', 'App\Http\Controllers\CalendarioController@obtener_eventos_por_instructor');
 
 
 //|##############################################|
