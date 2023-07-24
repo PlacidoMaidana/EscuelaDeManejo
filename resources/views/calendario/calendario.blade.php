@@ -34,7 +34,12 @@
                     <option value="{{ $f->id }}" >{{ $f->descripcion }}</option>
                     @endforeach
                    </select>  --}}  
-
+                   <select name="instructores" id="filtrar_por_instructor">
+                    <option selected>Seleccione el instructor</option>
+                    @foreach ($instructores as $instructor)
+                        <option value="{{ $instructor->id }}">{{ $instructor->nombre }}</option>
+                    @endforeach
+                   </select>
 
                 
                 </div>
@@ -403,7 +408,11 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
      calendar.destroy();    
      // Inicializar nuevamente el calendario con la nueva fuente de eventos
       calendar = new FullCalendar.Calendar(calendarEl, {
-        headerToolbar:{
+        initialView: 'timeGridWeek',
+          slotMinTime: "07:00:00",
+          slotMaxTime: "21:00:00",
+          height: 'auto',
+            headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
