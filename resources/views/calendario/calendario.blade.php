@@ -99,6 +99,7 @@
                         <div class="form-group">
                           <label for="id">Franjas horarias</label>
                           <select name="franja_horaria" id="franja_horaria_select">
+                           
                             @foreach ($franjasHorarias as $franjaHoraria)
                                 <option value="{{ $franjaHoraria->id }}">{{ $franjaHoraria->descripcion }}</option>
                             @endforeach
@@ -221,39 +222,71 @@
           
          
          
-            dateClick:function(info){
-                formulario.reset();
-                formulario.start_date.value=info.dateStr;
-                formulario.end_date.value=info.dateStr;
-                formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
-                            
+            dateClick:function(info){               
 
-                // Convertir la cadena de fecha y hora en un objeto Date
-                var fechaHoraEvento = new Date(info.dateStr);
-                // Obtener la hora seleccionada en el calendario
-                console.log("Solo la hora seleccionada:");
-                var horaEvento = fechaHoraEvento.getHours() + ':' + fechaHoraEvento.getMinutes(); // Formato HH:mm
-                console.log(horaEvento);
+              formulario.reset();
+              formulario.start_date.value=info.dateStr;
+              formulario.end_date.value=info.dateStr;
+              formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
 
-                console.log("Longitud de la tabla de franjas horarias");
-                var franjasHorarias = {!! json_encode($franjasHorarias) !!};
+              var dateStr = $('#start_date');
+              var dateEND = $('#end_date');
+              var instructor = $('#instructores_select');
+              var instructor_seleccionado = $('#filtrar_por_instructor');
+              instructor.val(instructor_seleccionado.val());
+              var Clase = $('#clase');
+              var Alumno = $('#alumno');
+              Clase.val(Alumno.val());
 
-                // Obtener el select de franjas horarias y su valor seleccionado
-                var selectFranjaHoraria = document.getElementById('franja_horaria_select');
-                var franjaHorariaSeleccionada = selectFranjaHoraria.value;
+              // Convertir la cadena de fecha y hora en un objeto Date
+              var fechaHoraEvento = new Date(info.dateStr);
+              // Obtener la hora seleccionada en el calendario
+              console.log("Solo la hora seleccionada:");
+              var horaEvento = fechaHoraEvento.getHours() + ':' + fechaHoraEvento.getMinutes()+ ':' + fechaHoraEvento.getSeconds()+2; // Formato HH:mm
+              console.log(horaEvento);
 
-                // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
-                 for (var i = 0; i < franjasHorarias.length; i++) {
-                   if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time > horaEvento) {
-                     selectFranjaHoraria.value = franjasHorarias[i].id;
-                     break; // Detener el bucle una vez que se encuentra una coincidencia
-                   }
+              console.log("Longitud de la tabla de franjas horarias");
+              var franjasHorarias = {!! json_encode($franjasHorarias) !!};
+
+              // Obtener el select de franjas horarias y su valor seleccionado
+              var selectFranjaHoraria = document.getElementById('franja_horaria_select');
+              var franjaHorariaSeleccionada = selectFranjaHoraria.value;
+              // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
+               for (var i = 0; i < franjasHorarias.length; i++) {
+                console.log("El valor de i:"+i);
+                console.log("Estart time:"+ franjasHorarias[i].start_time);
+                console.log("EndTime :"+ franjasHorarias[i].end_time);
+                console.log("horaEvento:"+ horaEvento);
+                 if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time > horaEvento) {
+                   selectFranjaHoraria.value = franjasHorarias[i].id;
+                   console.log("entro al if");
+                   // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
+                
+                             $.ajax({
+                               url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
+                               method: 'GET',
+                               success: function(response) {
+                                 // Actualizar los campos de fecha en el formulario del evento
+                              
+                                 $('#start_date').val(response.start_date);
+                                 $('#end_date').val(response.end_date);
+                              
+                               },
+                               error: function(jqXHR, textStatus, errorThrown) {
+                                 // Manejar el error de la solicitud AJAX
+                                 console.log('Error:', errorThrown);
+                              
+                               }
+                             });
+                           
+                   break; // Detener el bucle una vez que se encuentra una coincidencia
                  }
-
-                console.log(franjasHorarias);
-
-                $('#ModCalendario').modal("show");
-            },
+               }
+             
+              console.log(franjasHorarias);
+             
+              $('#ModCalendario').modal("show");
+              },
             eventClick:function(info){
               var evento=info.event;
               console.log("la ruta es"+"{{url('/calendario/editar/')}}/" +info.event.id);
@@ -424,39 +457,71 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
 //+=====================================================================================================
 
            
-            dateClick:function(info){
-                formulario.reset();
-                formulario.start_date.value=info.dateStr;
-                formulario.end_date.value=info.dateStr;
-                formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
-                formulario.instructores_select.value= idInstructor;
-                
-                  // Convertir la cadena de fecha y hora en un objeto Date
-                  var fechaHoraEvento = new Date(info.dateStr);
-                // Obtener la hora seleccionada en el calendario
-                console.log("Solo la hora seleccionada:");
-                var horaEvento = fechaHoraEvento.getHours() + ':' + fechaHoraEvento.getMinutes(); // Formato HH:mm
-                console.log(horaEvento);
+dateClick:function(info){               
 
-                console.log("Longitud de la tabla de franjas horarias");
-                var franjasHorarias = {!! json_encode($franjasHorarias) !!};
+            formulario.reset();
+            formulario.start_date.value=info.dateStr;
+            formulario.end_date.value=info.dateStr;
+            formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
 
-                // Obtener el select de franjas horarias y su valor seleccionado
-                var selectFranjaHoraria = document.getElementById('franja_horaria_select');
-                var franjaHorariaSeleccionada = selectFranjaHoraria.value;
+            var instructor = $('#instructores_select');
+              var instructor_seleccionado = $('#filtrar_por_instructor');
+              instructor.val(instructor_seleccionado.val());
+
+            var dateStr = $('#start_date');
+            var dateEND = $('#end_date');
+            var Clase = $('#clase');
+            var Alumno = $('#alumno');
+            Clase.val(Alumno.val());
+
+            // Convertir la cadena de fecha y hora en un objeto Date
+            var fechaHoraEvento = new Date(info.dateStr);
+            // Obtener la hora seleccionada en el calendario
+            console.log("Solo la hora seleccionada:");
+            var horaEvento = fechaHoraEvento.getHours() + ':' + fechaHoraEvento.getMinutes()+ ':' + fechaHoraEvento.getSeconds()+2; // Formato HH:mm
+            console.log(horaEvento);
+
+            console.log("Longitud de la tabla de franjas horarias");
+            var franjasHorarias = {!! json_encode($franjasHorarias) !!};
+
+            // Obtener el select de franjas horarias y su valor seleccionado
+            var selectFranjaHoraria = document.getElementById('franja_horaria_select');
+            var franjaHorariaSeleccionada = selectFranjaHoraria.value;
+            // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
+             for (var i = 0; i < franjasHorarias.length; i++) {
+              console.log("El valor de i:"+i);
+              console.log("Estart time:"+ franjasHorarias[i].start_time);
+              console.log("EndTime :"+ franjasHorarias[i].end_time);
+              console.log("horaEvento:"+ horaEvento);
+               if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time > horaEvento) {
+                 selectFranjaHoraria.value = franjasHorarias[i].id;
+                 console.log("entro al if");
+                 // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
               
-                // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
-                 for (var i = 0; i < franjasHorarias.length; i++) {
-                   if (franjasHorarias[i].start_time <= horaEvento && franjasHorarias[i].end_time > horaEvento) {
-                     selectFranjaHoraria.value = franjasHorarias[i].id;
-                     break; // Detener el bucle una vez que se encuentra una coincidencia
-                   }
-                 }
+                           $.ajax({
+                             url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
+                             method: 'GET',
+                             success: function(response) {
+                               // Actualizar los campos de fecha en el formulario del evento
 
-                console.log(franjasHorarias);
+                               $('#start_date').val(response.start_date);
+                               $('#end_date').val(response.end_date);
 
+                             },
+                             error: function(jqXHR, textStatus, errorThrown) {
+                               // Manejar el error de la solicitud AJAX
+                               console.log('Error:', errorThrown);
 
-                $('#ModCalendario').modal("show");
+                             }
+                           });
+                         
+                 break; // Detener el bucle una vez que se encuentra una coincidencia
+               }
+             }
+           
+            console.log(franjasHorarias);
+           
+            $('#ModCalendario').modal("show");
             },
 //<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>><<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<><<>>>>>>>>>>>>>>>>
 //+-----------------------------------------------------------------------------------------------------
@@ -557,6 +622,52 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
   
   </script>
 
+<script>
+
+  function actualizaFranjasHorarias() {
+    
+   
+    // Obtener referencia al select de franjas horarias
+    var selectFranjaHoraria = $('#franja_horaria_select');
+   
+    var date = $('#start_date');
+
+    
+    
+    
+    // Escuchar el evento 'change' del select de franjas horarias
+    selectFranjaHoraria.on('change', function() {
+    var franjaHorariaSeleccionada = selectFranjaHoraria.val();
+    var diaDelEvento = date.val();
+  
+    var fechaEvento = encodeURIComponent(diaDelEvento); // Codificar la fecha antes de agregarla a la URL
+
+    
+  // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
+     
+      $.ajax({
+        url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
+        method: 'GET',
+        success: function(response) {
+          // Actualizar los campos de fecha en el formulario del evento
+          
+          $('#start_date').val(response.start_date);
+          $('#end_date').val(response.end_date);
+         
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Manejar el error de la solicitud AJAX
+          console.log('Error:', errorThrown);
+          
+        }
+      });
+    });
+ 
+
+
+
+  }
+</script>
 
 <script>
 //<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>><<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<><<>>>>>>>>>>>>>>>>
