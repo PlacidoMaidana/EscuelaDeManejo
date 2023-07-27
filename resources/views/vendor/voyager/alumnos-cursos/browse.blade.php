@@ -30,7 +30,8 @@
                   
                   <div class="tab-content">
                     <div id="home" class="tab-pane fade in active">
-                        <table id="cursos_activos" class="table table-striped table-bordered dt-responsive nowrap"  style="width:100%;" >
+                       
+<table id="cursos_activos" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th class="dt-not-orderable">
@@ -42,13 +43,30 @@
                                     <th>vendedor</th>
                                     <th>precio curso</th>
                                     <th>Cobrado</th>
+                                    <th>Saldo</th>
                                     <th>accion</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Contenido de la tabla -->
                             </tbody>
-                        </table>                                                                                                                                                                                                                       
+                            <tfoot>
+                                <tr>
+                                    <th >
+                                        
+                                    </th>                      
+                                    <th>fecha inscripcion</th>
+                                    <th>curso</th>
+                                    <th>alumno</th>
+                                    <th>vendedor</th>
+                                    <th>precio curso</th>
+                                    <th>Cobrado</th>
+                                    <th>Saldo</th>
+                                    <th>accion</th>
+                                </tr>
+                            </tfoot>
+                        </table>                   
+                                                                                                                                                                                                                           
                     </div>
                     <div id="menu1" class="tab-pane fade">
                         <table id="cursos_terminados" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%;"  >
@@ -108,6 +126,13 @@
 @section('javascript')
  
 <script>
+//+-----------------------------------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------
+//+                  Cursos Activos
+//+
+//+=====================================================================================================
+//+=====================================================================================================
+
     $(document).ready(function() {
         $('#cursos_activos').dataTable( {
              "serverSide": true,
@@ -127,8 +152,18 @@
                      {data: 'nombre_vend', name: 'empleados.nombre', width: '10%'},
                      {data: 'precio', name: 'alumnos_cursos.precio', width: '10%'},
                      {data: 'cobrado', name: 'cobrado', width: '10%'},
+                     {data: 'saldo', name: 'saldo', width: '10%'},
                      {data: 'accion', width: '10%'},
-                      ]           
+                      ],
+            "footerCallback": function(row, data, start, end, display) {
+                         var api = this.api();
+                         var totalSaldos = api.column(7, {page: 'current'}).data().reduce(function(a, b) {
+                             return a + parseFloat(b);
+                         }, 0);
+                     
+                         $(api.column(7).footer()).html('Total Saldos: ' + totalSaldos.toFixed(2));
+                     }    
+               
         } );
     } );
 

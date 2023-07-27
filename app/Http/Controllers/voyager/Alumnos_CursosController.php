@@ -383,8 +383,20 @@ public function recibo_cobranza($id){
                 'empleados.nombre as nombre_vend',
                 'alumnos_cursos.precio',
                  DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
+                 DB::raw('alumnos_cursos.precio - SUM(ingresos_cursos.importe) AS saldo'),
                 
               ]))  
+              ->setRowAttr([
+                'style' => 'background-color: #EFEE06;',      
+                 ]) 
+              ->setRowAttr([
+                    'style' => function($item){          
+                      if ($item->saldo>0) {
+                          return 'background-color: #EFBB07;color:#000000';
+                          
+                      }
+                    }
+                ])   
               ->addColumn('check','vendor/voyager/alumnos-cursos/check')
               ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_activos')
               ->rawColumns(['check','accion'])  
@@ -396,7 +408,7 @@ public function recibo_cobranza($id){
     {
        
 
-    return $datos = datatables()->of(DB::table('alumnos_cursos')
+  return $datos = datatables()->of(DB::table('alumnos_cursos')
     ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
@@ -417,6 +429,8 @@ public function recibo_cobranza($id){
               ->rawColumns(['check','accion'])  
                
     ->toJson();   
+
+
     }
 
     //***************************************
