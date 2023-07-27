@@ -65,7 +65,9 @@
                                     <th>accion</th>
                                 </tr>
                             </tfoot>
-                        </table>                   
+                        </table>                
+                        
+                        <h3 id="SaldoTotal"></h3>
                                                                                                                                                                                                                            
                     </div>
                     <div id="menu1" class="tab-pane fade">
@@ -157,11 +159,20 @@
                       ],
             "footerCallback": function(row, data, start, end, display) {
                          var api = this.api();
+                          // Remove the formatting to get integer data for summation
+                            let intVal = function (i) {
+                                return typeof i === 'string'
+                                    ? i.replace(/[\$,]/g, '') * 1
+                                    : typeof i === 'number'
+                                    ? i
+                                    : 0;
+                            };
                          var totalSaldos = api.column(7, {page: 'current'}).data().reduce(function(a, b) {
-                             return a + parseFloat(b);
+                             return intVal(a) + intVal(b);
                          }, 0);
                      
-                         $(api.column(7).footer()).html('Total Saldos: ' + totalSaldos.toFixed(2));
+                         $("#SaldoTotal").html('Total Saldos: ' + totalSaldos.toFixed(2));
+                         //$(api.column(7).footer()).html('Total Saldos: ' + totalSaldos.toFixed(2));
                      }    
                
         } );
