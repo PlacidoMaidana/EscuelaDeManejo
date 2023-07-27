@@ -247,8 +247,14 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
     /////////////////////
     public function lista_pagos_alumnos($id_alumno_curso)
     {
+        // GET THE SLUG, ex. 'posts', 'pages', etc.
+        $slug = "ingresos-cursos";
 
-        return view('voyager::ingresos-cursos.pagos_alumno_browse', compact('id_alumno_curso'));
+        // GET THE DataType based on the slug
+        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+
+
+        return view('voyager::ingresos-cursos.pagos_alumno_browse', compact(['id_alumno_curso','slug','dataType']));
       
     }
     public function pagos_alumnos($id_alumno_curso)
