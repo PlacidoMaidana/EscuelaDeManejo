@@ -34,7 +34,7 @@
         <th>Sucursal</th>
         <th>Alumno</th> 
         <th>Curso</th> 
-        <th>Vendedor</th> 
+        <th>Operador caja</th> 
         <th>Modalidad Pago</th>
         <th>Importe</th>  
       </tr>
@@ -94,7 +94,7 @@
             {data: 'sucursal', name: 'sucursales.sucursal', width: '5%'},
             {data: 'nombre_alumno', name: 'alumnos.nombre', width: '10%'},
             {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '10%'},
-            {data: 'nombre', name:'empleados.nombre', width: '10%'},
+            {data: 'name', name:'users.name', width: '10%'},
             {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
              ]        
@@ -107,7 +107,7 @@ $('#totales').dataTable( {
     "ajax":filtrototales,
     "paging": false,
     "searching": false,
-    "columns":[{data: 'sucursal', name: 's.sucursal', width: '10%'},
+    "columns":[{data: 'sucursal', name: 'sucursales.sucursal', width: '10%'},
             {data: 'efectivo', name: 'efectivo', width: '10%'},
             {data: 'cheque', name: 'cheque', width: '10%'},
             {data: 'transferencia', name: 'transferencia', width: '10%'},

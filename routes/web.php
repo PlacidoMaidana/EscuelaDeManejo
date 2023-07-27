@@ -93,6 +93,7 @@ Route::post('/asistencia_clases_guardarurl/','App\Http\Controllers\RegistroAsist
 
 Route::get('/Informeingresossucursal','App\Http\Controllers\informes_tesoreria@index_ing_suc');
 
+Route::get('/Cajadiaria','App\Http\Controllers\informes_tesoreria@index_caja_diaria_operador');
 Route::get('/Informe_cajadiaria','App\Http\Controllers\informes_tesoreria@index_caja_diaria');
 Route::get('/Informeingresos','App\Http\Controllers\informes_tesoreria@index_ing');
 Route::get('/Informeegresos','App\Http\Controllers\informes_tesoreria@index_egr');
