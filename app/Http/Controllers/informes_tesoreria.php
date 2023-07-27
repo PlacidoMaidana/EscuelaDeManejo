@@ -37,6 +37,12 @@ class informes_tesoreria extends Controller
         return view('informes.informes_caja_diaria', compact('operadores'));
      }
      
+     public function index_caja_diaria_operador()
+     {
+        $operador = auth()->user()->id;
+        
+        return view('informes.informes_caja_diaria_operador', compact('operador'));
+     }
      
      public function cajadiaria_fecha_operador_egr($fecha,$operador)
      {
@@ -139,16 +145,16 @@ class informes_tesoreria extends Controller
 
       return $datos = datatables()->of(DB::table('ingresos_cursos')
            ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
-           ->join('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
            ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
            ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
-           ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
+           ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
+           ->join('sucursales','sucursales.id','=','users.id_sucursal')
            ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
            ->select(['ingresos_cursos.fecha',
                      'sucursales.sucursal',
                      'alumnos.nombre as nombre_alumno',
                      'cursos.nombre_curso',
-                     'empleados.nombre',
+                     'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe']))
             ->toJson();   
@@ -158,11 +164,11 @@ class informes_tesoreria extends Controller
     public function ing_totales_en_rango_de_fechas($from,$to)
     {
         return $datos = datatables()->of(DB::table('ingresos_cursos')
-             ->join('alumnos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso') 
-             ->join('sucursales as s','s.id','=','alumnos_cursos.id_sucursal')
+            ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
+            ->join('sucursales','sucursales.id','=','users.id_sucursal')
              ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
-             ->groupBy('s.sucursal')
-               ->select([ 's.sucursal',
+             ->groupBy('sucursales.sucursal')
+               ->select([ 'sucursales.sucursal',
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Efectivo", importe, NULL)) AS efectivo'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Cheque", importe, NULL)) AS cheque'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Transferencia", importe, NULL)) AS transferencia'),
@@ -177,19 +183,21 @@ class informes_tesoreria extends Controller
     /////////////// Ingresos por sucursal/////////////////
     public function ing_suc_en_rango_de_fechas($from,$to)
     {
-
+      $sucursal = auth()->user()->id_sucursal;
+     
       return $datos = datatables()->of(DB::table('ingresos_cursos')
            ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
-           ->join('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
            ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
            ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
-           ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
+           ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
+           ->join('sucursales','sucursales.id','=','users.id_sucursal')
            ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
+           ->where('users.id_sucursal','=',$sucursal)
            ->select(['ingresos_cursos.fecha',
                      'sucursales.sucursal',
                      'alumnos.nombre as nombre_alumno',
                      'cursos.nombre_curso',
-                     'empleados.nombre',
+                     'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe']))
             ->toJson();   
@@ -198,12 +206,14 @@ class informes_tesoreria extends Controller
 
     public function ing_suc_totales_en_rango_de_fechas($from,$to)
     {
+        $sucursal = auth()->user()->id_sucursal;
         return $datos = datatables()->of(DB::table('ingresos_cursos')
-             ->join('alumnos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso') 
-             ->join('sucursales as s','s.id','=','alumnos_cursos.id_sucursal')
+        ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
+        ->join('sucursales','sucursales.id','=','users.id_sucursal')
              ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
-             ->groupBy('s.sucursal')
-               ->select([ 's.sucursal',
+             ->where('users.id_sucursal','=',$sucursal)
+             ->groupBy('sucursales.sucursal')
+               ->select([ 'sucursales.sucursal',
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Efectivo", importe, NULL)) AS efectivo'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Cheque", importe, NULL)) AS cheque'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Transferencia", importe, NULL)) AS transferencia'),

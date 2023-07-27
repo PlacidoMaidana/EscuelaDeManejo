@@ -25,7 +25,7 @@
 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
     <thead>
       <tr>
-        <th>Fecha</th>
+        <th>Fecha y horario</th>
         <th>Alumno</th>
         <th>Telefono</th>
         <th>Curso</th>
