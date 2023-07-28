@@ -376,6 +376,7 @@ public function recibo_cobranza($id){
     ->where('alumnos_cursos.activo','=', 'SI')
     ->where('alumnos_cursos.id_sucursal','=', $sucursal)
     ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
+    ->orderBy('idAlumnoCurso','DESC')
     ->select([  'alumnos_cursos.id as idAlumnoCurso',
                 'alumnos_cursos.fecha_inscripcion',
                 'cursos.nombre_curso',
@@ -384,8 +385,14 @@ public function recibo_cobranza($id){
                 'alumnos_cursos.precio',
                  DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
                  DB::raw('alumnos_cursos.precio - SUM(ingresos_cursos.importe) AS saldo'),
-                
+                             
               ]))  
+              ->filterColumn('cobrado', function($query, $keyword) {
+                $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
+                 }) 
+                 ->filterColumn('saldo', function($query, $keyword) {
+                    $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
+                     }) 
               ->setRowAttr([
                 'style' => 'background-color: #EFEE06;',      
                  ]) 
@@ -401,8 +408,10 @@ public function recibo_cobranza($id){
               ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_activos')
               ->rawColumns(['check','accion'])  
                
-    ->toJson();   
+    ->toJson();  
+   
     }
+    
     
     public function alumnos_por_sucursal_terminados($sucursal)
     {
@@ -416,6 +425,7 @@ public function recibo_cobranza($id){
     ->where('alumnos_cursos.activo','=', 'NO')
     ->where('alumnos_cursos.id_sucursal','=', $sucursal)
     ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
+    ->orderBy('idAlumnoCurso','DESC')
     ->select([  'alumnos_cursos.id as idAlumnoCurso',
                 'alumnos_cursos.fecha_inscripcion',
                 'cursos.nombre_curso',
@@ -424,6 +434,10 @@ public function recibo_cobranza($id){
                 'alumnos_cursos.precio',
                 DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
               ]))  
+              ->filterColumn('cobrado', function($query, $keyword) {
+                $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
+                 }) 
+            
               ->addColumn('check','vendor/voyager/alumnos-cursos/check')
               ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_terminados')
               ->rawColumns(['check','accion'])  

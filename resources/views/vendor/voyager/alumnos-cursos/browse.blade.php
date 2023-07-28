@@ -36,7 +36,8 @@
                                 <tr>
                                     <th class="dt-not-orderable">
                                         <input type="checkbox" class="select_all">
-                                    </th>                      
+                                    </th>  
+                                    <th>id</th>                    
                                     <th>fecha inscripcion</th>
                                     <th>curso</th>
                                     <th>alumno</th>
@@ -54,7 +55,8 @@
                                 <tr>
                                     <th >
                                         
-                                    </th>                      
+                                    </th>       
+                                    <th>id</th>               
                                     <th>fecha inscripcion</th>
                                     <th>curso</th>
                                     <th>alumno</th>
@@ -77,6 +79,7 @@
                                     <th class="dt-not-orderable">
                                         <input type="checkbox" class="select_all">
                                     </th>
+                                    <th>id</th> 
                                     <th>fecha inscripcion</th>
                                     <th>curso</th>
                                     <th>alumno</th>
@@ -148,6 +151,7 @@
              "ajax":" {{url('cursos_activos/')}}/{{$sucursal}}",                
              "columns":[
                      {data: 'check', width: '5%'},
+                     {data: 'idAlumnoCurso', name: 'alumnos_cursos.id', width: '10%'},
                      {data: 'fecha_inscripcion', name: 'alumnos_cursos.fecha_inscripcion', width: '5%'},
                      {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '5%'},
                      {data: 'nombre_alumno', name: 'alumnos.nombre', width: '10%'},
@@ -194,6 +198,7 @@
              "ajax":"{{url('cursos_terminados/')}}/{{$sucursal}}",                
              "columns":[
                      {data: 'check', width: '5%'},
+                     {data: 'idAlumnoCurso', name: 'alumnos_cursos.id', width: '10%'},
                      {data: 'fecha_inscripcion', name: 'alumnos_cursos.fecha_inscripcion', width: '5%'},
                      {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '5%'},
                      {data: 'nombre_alumno', name: 'alumnos.nombre', width: '10%'},
