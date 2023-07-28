@@ -214,11 +214,13 @@
           slotMinTime: "07:00:00",
           slotMaxTime: "21:00:00",
           height: 'auto',
+          locales: 'es',
             headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
             },
+            
          dateClick:function(info){               
 
               formulario.reset();
@@ -494,6 +496,7 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
             },
+            locales: 'es',
 
 //<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>><<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<><<>>>>>>>>>>>>>>>>
 //+-----------------------------------------------------------------------------------------------------
