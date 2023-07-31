@@ -229,6 +229,8 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
     $alumno->mail = $data['mail'];
     $alumno->telefono = $data['telefono'];
     $alumno->telefono = $data['telefono'];
+    $alumno->DNI = $data['DNI'];
+    $alumno->fecha_nacimiento = $data['fecha_nacimiento'];
     $alumno->id_localidad = $data['localidad'];
 
                           

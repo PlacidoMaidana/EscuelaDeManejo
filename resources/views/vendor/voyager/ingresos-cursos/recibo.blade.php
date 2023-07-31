@@ -8,25 +8,75 @@
     <title>Recibo</title>
     
     <style>
-		table {
-			border:1px solid #b3adad;
-			border-collapse:collapse;
-			padding:5px;
-		}
-		table th {
-			border:1px solid #b3adad;
-			padding:5px;
-			background: #f0f0f0;
-			color: #313030;
-		}
-		table td {
-			border:1px solid #b3adad;
-			text-align:center;
-			padding:5px;
-			background: #ffffff;
-			color: #313030;
-		}
-	</style>
+      /* Estilos CSS para el recibo */
+      body {
+          font-family: Arial, sans-serif;
+      }
+
+      .header {
+          text-align: center;
+          font-size: 24px;
+          margin-bottom: 20px;
+      }
+
+      .recipient-info {
+          margin-bottom: 10px;
+      }
+
+      .table {
+        background-image: url('img/reciboFondo.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+       }
+     
+       .table th, .table td {
+           border: 1px solid #000;
+           padding: 8px;
+          /* background-color: rgba(255, 255, 255, 0.8);  Color de fondo transparente para hacer legible el contenido */
+       }
+
+       /* Estilos para la cabecera de la tabla */
+       .table thead {
+            background-color: #595959;
+            color: #fff;
+        }
+
+        /* Estilos para la caja gris */
+        .gray-box {
+            background-color: #595959;
+            color: #fff;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+      .total {
+          font-weight: bold;
+          text-align: right;
+      }
+
+       /* Estilos para el recuadro */
+       .recuadro {
+            border: 1px solid #000;
+            padding: 10px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 35px;
+        }
+
+         /* Estilos para el contenido con imagen de fondo */
+         .content-with-background {
+            background-image: url('img/reciboFondo.jpg'); /* Ruta de la imagen de fondo */
+            background-size: cover;
+            background-repeat: no-repeat;
+            padding: 20px;
+            color: #0f0f0f;
+        }
+
+
+  </style>
+
+   
 
 </head>
 <body>
@@ -37,34 +87,58 @@
     <div class="container">
 
       <div class="filas">
-          <div class="cabeza">
+          <div class="header">
             <div align = "center">
-              <h1>AUTOESCUELA CHACO</h1>
-              <h1>Escuela de Conducción</h1>
-               <h1>Recibo Nro {{$datoscobranza->id}}</h1> 
-              </ div> 
+              <h1><div class="recuadro">AUTOESCUELA CHACO</div></h1>
+               <h5>Escuela de conducción</h5>
+               <h5>Recibo Nro {{$datoscobranza->id}}</h5> 
+               <h5>Resistencia: {{$datoscobranza->fecha}} </h5> 
+              </div> 
+            </div> 
           </div>
+         
+
           <div class="cuerpo">
              
-               
+         
+            <div class="content-with-background">
                <hr />
-               <h3>Fecha: {{$datoscobranza->fecha}} </h3> 
-               <h3>Alumno: {{$datoscobranza->nombre_alumno}}</h3>
-               <h3>DNI: {{$datoscobranza->DNI}}</h3>
-               <h3>Domicilio: {{$datoscobranza->direccion}}</h3>
-               <h3>Curso: {{$datoscobranza->nombre_curso}} </h3>
-               <h3>  {{$datoscobranza->caracteristicas}} </h3>  
-               <br>
-               <br>  
-               <hr style="color: rgb(84, 83, 83); background-color: rgb(101, 100, 100); width:100% higth:2px ;" />
-               <br>
-               <br>
+               
+               <h5>Alumno: {{$datoscobranza->nombre_alumno}}</h5>
+               <h5>DNI: {{$datoscobranza->DNI}}</h5>
+               <h5>Domicilio: {{$datoscobranza->direccion}}</h5>
+                          
+               <div class="table">
+                <table>
+                    <thead >
+                        <tr>
+                        <!-- Caja gris para otra sección del recibo -->
+                         <div class="gray-box">
+                             Detalles del curso
+                         </div>         
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr><td>Curso: {{$datoscobranza->nombre_curso}}</td></tr>
+                        <tr><td> {{$datoscobranza->caracteristicas}} </td></tr>
+                        
+                    </tbody>
+                   
+                </table>
+            </div>
+           
+           <!-- Caja gris para otra sección del recibo -->
+           <div class="gray-box">
+               Datos del pago
+           </div>
                <h4 >
                  Total Curso: {{number_format($datoscobranza->precio, 2, '.', ',')}} <br>
                  Importe recibido: {{number_format($datoscobranza->importe, 2, '.', ',')}} <br>
                  Modalidad de Pago:  {{$datoscobranza->modalidad_pago}}  <br>
                  Observaciones: {{$datoscobranza->detalle}}  <br>
              
+         
                <br>
                </h4>
                <hr />
@@ -79,10 +153,16 @@
                <br>
                </p>
                
-              
+       
+                <!-- La tabla y el resto del contenido de ejemplo pueden quedar después del contenido del documento de Word o ajustarlo según tus necesidades -->
+
+    
+
+
 
           </div>
           <div class="pie"></div>
+        </div>       {{-- Termina el contenido con background--}}
       </div>
       </div>
 

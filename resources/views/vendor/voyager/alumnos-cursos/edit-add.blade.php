@@ -144,10 +144,10 @@
                             @endif
 
                             @if ($row->getTranslatedAttribute('display_name')=='alumnos')
-                                                {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                                                <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      Boton + Alumno          <<<<<<<<<<<<<<<<<<<<<<<<<
-                                                <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                              <<<<<<<<<<<<<<<<<<<<<<<<
-                                                <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< --}}
+ {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      Boton + Alumno          <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                              <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< --}}
                                                           <!-- Modal -->
                                                              <div class="modal fade modal-warning" id="modal_alumno" v-if="allowCrop">
                                                                <div class="modal-dialog"  style="min-width: 50%">
@@ -181,6 +181,18 @@
                                                                                 <input  class="form-control" type="text" id="telefono" name="telefono">
                                                                             </div>
                                                                             <div class="form-group">
+                                                                                <label for="DNI">DNI</label>
+                                                                                <input  class="form-control" type="text" id="DNI" name="DNI">
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                                                                                <input  class="form-control" type="date" id="fecha_nacimiento" name="fecha_nacimiento">
+                                                                            </div>
+
+
+
+
+                                                                            <div class="form-group">
                                                                                 <label for="localidad">Localidad</label>
                                                                                 <select class="form-control" id="localidad" name="localidad">
                                                                                   <option value="">Seleccionar localidad</option>
@@ -194,11 +206,9 @@
                                                                         
                                                                           
                                                                            </form>
-                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
-                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
-                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
-                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
-                                                                           {{--<<<<<<<<<<<<<<  CIERRA EL FORMULARIO DE ALUMNO      >>>>>>>>>>>>>>>>--}}
+ {{--************************************      FIN FORMULARIO MODAL       **************************************
+ ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+  --}} 
 
 
 
@@ -347,6 +357,7 @@
                     <h4>{{ __('voyager::generic.are_you_sure_delete') }} '<span class="confirm_delete_name"></span>'</h4>
                 </div>
 
+           
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                     <button type="button" class="btn btn-danger" id="confirm_delete">{{ __('voyager::generic.delete_confirm') }}</button>
@@ -521,7 +532,16 @@
         }
      </script>
 
+
+
 <script>
+//+-----------------------------------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------
+//+                             Nuevo alumno usando AXIOS
+//+
+//+=====================================================================================================
+//+=====================================================================================================
+
     document.addEventListener('DOMContentLoaded', function() {
         var modal = document.getElementById('modal_alumno');
 
@@ -543,6 +563,8 @@
             var mail = $('#mail').val();
             var telefono = $('#telefono').val();
             var localidad = $('#localidad').val();
+            var DNI = $('#DNI').val();
+            var fecha_nacimiento = $('#fecha_nacimiento').val();
                     
             // Crear un objeto FormData y agregar los valores obtenidos
             var formData = new FormData();
@@ -551,7 +573,15 @@
             formData.append('mail', mail);
             formData.append('telefono', telefono);
             formData.append('localidad', localidad);
+            formData.append('DNI', DNI);
+            formData.append('fecha_nacimiento', fecha_nacimiento);
 
+           // Mostrar los valores del formulario en la consola
+            console.log("El formulario que enviaremos:");
+            for (const [key, value] of formData.entries()) {
+              console.log(key, value);
+            }
+    
             // Obtener los datos del formulario utilizando jQuery
             //var formData = $('#form_alumno').serialize();
 
@@ -574,6 +604,9 @@
                 });
         });
     });
+//+=====================================================================================================
+//+=====================================================================================================
+
 </script>
 
 <script>
