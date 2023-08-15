@@ -123,9 +123,13 @@ return [
     | Here you can modify some aspects of your dashboard
     |
     */
+   
+    
 
     'dashboard' => [
+        'view' => 'vendor.voyager.dashboard.custom_dashboard',
         // Add custom list items to navbar's dropdown
+       
         'navbar_items' => [
             'voyager::generic.profile' => [
                 'route'      => 'voyager.profile',
@@ -133,7 +137,7 @@ return [
                 'icon_class' => 'voyager-person',
             ],
             'voyager::generic.home' => [
-                'route'        => '/',
+                'route'        => 'vendor.voyager.dashboard.custom_dashboard',
                 'icon_class'   => 'voyager-home',
                 'target_blank' => true,
             ],

@@ -23,11 +23,11 @@
           margin-bottom: 10px;
       }
 
-      .table {
+      /*.table {
         background-image: url('img/reciboFondo.jpg');
         background-size: cover;
         background-repeat: no-repeat;
-       }
+       }*/
      
        .table th, .table td {
            border: 1px solid #000;
@@ -67,7 +67,8 @@
          /* Estilos para el contenido con imagen de fondo */
          .content-with-background {
             background-image: url('img/reciboFondo.jpg'); /* Ruta de la imagen de fondo */
-            background-size: cover;
+            background-position: center; 
+            background-size: contain;
             background-repeat: no-repeat;
             padding: 20px;
             color: #0f0f0f;
@@ -87,17 +88,15 @@
     <div class="container">
 
       <div class="filas">
-          <div class="header">
-            <div align = "center">
-              <h1><div class="recuadro">AUTOESCUELA CHACO</div></h1>
-               <h5>Escuela de conducción</h5>
-               <h5>Recibo Nro {{$datoscobranza->id}}</h5> 
-               <h5>Resistencia: {{$datoscobranza->fecha}} </h5> 
-              </div> 
-            </div> 
-          </div>
-         
-
+        <div class="header">
+            <div align="center">
+                <h1 style="margin: 0;"><div class="recuadro">AUTOESCUELA CHACO</div></h1>
+                <h5 style="margin: 5px 0;">Escuela de conducción</h5>
+                <h5 style="margin: 5px 0;">Recibo Nro {{$datoscobranza->id}}</h5>
+                <h5 style="margin: 5px 0;">Resistencia: {{$datoscobranza->fecha}}</h5>
+            </div>
+        </div>
+       
           <div class="cuerpo">
              
          

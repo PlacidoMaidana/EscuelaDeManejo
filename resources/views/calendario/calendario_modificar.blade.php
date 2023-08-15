@@ -85,7 +85,7 @@
                         <div class="form-group">
                           <label for="clase"> Alumno </label>
                           <input type="text" class="form-control" name="alumno" id="alumno" 
-                          aria-describedby="helpId" placeholder="" value=" {{ $AlumnoCursoInfo[0]->nombre }}">
+                          aria-describedby="helpId" placeholder="" value=" ">
                         </div>
  
                         <div class="form-group">
@@ -226,7 +226,7 @@
               formulario.reset();
               formulario.start_date.value=info.dateStr;
               formulario.end_date.value=info.dateStr;
-              formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
+              formulario.idAlumnoCurso.value="AlumnoCursoInfo";
 
               var instructor = $('#instructores_select');
                 var instructor_seleccionado = $('#filtrar_por_instructor');
@@ -390,7 +390,7 @@
                   console.log(datos);
                   calendar.refetchEvents();
                        //calendar.refetchEvents();
-                            //location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+                          
                             $("#ModCalendario").modal("hide");
 
                         }
@@ -411,7 +411,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
                 (respuesta)=>{  
                     calendar.refetchEvents();
                     console.log(respuesta);
-                    //location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+                  
                     $("#ModCalendario").modal("hide");
                   
                 }
@@ -440,7 +440,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
                console.log("La respuesta es: ");
                console.log(respuesta);
                calendar.refetchEvents();
-               // location.href = "http://127.0.0.1:8000/calendario/"+{{$idAlumnoCurso}};
+               
                $("#ModCalendario").modal("hide");
                calendar.refetchEvents();
               }
@@ -502,12 +502,14 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
 //+=====================================================================================================
 
            
-dateClick:function(info){               
+dateClick:function(info){      
+  
+            console.log(info);debugger;
 
             formulario.reset();
             formulario.start_date.value=info.dateStr;
             formulario.end_date.value=info.dateStr;
-            formulario.idAlumnoCurso.value={{$AlumnoCursoInfo[0]->id}};
+            formulario.idAlumnoCurso.value="AlumnoCursoInfo";
 
             var instructor = $('#instructores_select');
               var instructor_seleccionado = $('#filtrar_por_instructor');

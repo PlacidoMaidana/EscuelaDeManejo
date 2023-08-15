@@ -67,13 +67,43 @@ class CalendarioController extends Controller
         ];
        }*/
 
+       
         $horarios=Horario::all();
         return view('calendario.calendario', 
         compact('AlumnoCursoInfo','idAlumnoCurso','horarios',
         'numero_clases','franjasHorarias','registro_AlumnoCurso','tipos_eventos','instructores','vehiculos'));
        
     }
-    public function eventos_alumno($idAlumnoCurso)
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    CALENDARIO MODIFICAR   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+public function calendario_modificar()
+{
+    //$registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
+    $franjasHorarias = DB::table('franjas_horarias')->get();
+    $instructores = DB::table('instructores')->get();
+    $vehiculos = DB::table('vehiculos')->get();
+    $tipos_eventos = DB::table('tipos_eventos')->get();
+    
+
+    $horarios=Horario::all();
+    return view('calendario.calendario_modificar', compact( 'horarios',
+    'tipos_eventos','vehiculos','instructores','franjasHorarias'));
+   
+}
+
+
+
+
+
+
+
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        public function eventos_alumno($idAlumnoCurso)
         {
           
             $all_events = DB::table('alumno_evento')
@@ -150,6 +180,7 @@ class CalendarioController extends Controller
         public function obtener_eventos_por_instructor($idInstructor)
         {
         
+            
             $sucursal = auth()->user()->id_sucursal;
 
 

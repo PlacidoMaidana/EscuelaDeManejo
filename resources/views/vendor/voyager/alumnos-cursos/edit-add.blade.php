@@ -445,15 +445,6 @@
         });
     </script>
 
-
-
- <script>
-    $('#boton_elegir_alumno').on('click',function(){
-      $('#modal_alumno_elegir').modal({show:true});
-                });
- </script> 
-
-
 <script>
     // Escuchar el evento personalizado alumnoAgregado y actualizar el datatable
     Livewire.on('alumnoAgregado', function() {
@@ -463,6 +454,14 @@
        // window.livewire.find('tablaAlumnos').call('actualizarDatos');
     });
 </script>
+
+
+ <script>
+    $('#boton_elegir_alumno').on('click',function(){
+      $('#modal_alumno_elegir').modal({show:true});
+                });
+ </script> 
+
 
 <script>
     function actualizarDatos() {
@@ -488,11 +487,7 @@
 
  </script>
 
-
-
-
-
-<script>
+ <script>
     $(document).ready(function() {
         $('#AlumnosTable').dataTable( {
              "serverSide": true,
@@ -510,6 +505,7 @@
     } );
 
  </script>
+
 
 
      <script>
