@@ -89,8 +89,8 @@
       <div class="filas">
           <div class="header">
             <div align = "center">
-              <h1><div class="recuadro">AUTOESCUELA CHACO</div></h1>
-               <h5>Escuela de conducción</h5>
+              <h1><div class="recuadro">AUTOESCUELA CHACO SAS</div></h1>
+               <h3>Escuela de conducción</h3>
                <h5>Recibo Nro {{$datoscobranza->id}}</h5> 
                <h5>Resistencia: {{$datoscobranza->fecha}} </h5> 
               </div> 
@@ -135,6 +135,8 @@
                <h4 >
                  Total Curso: {{number_format($datoscobranza->precio, 2, '.', ',')}} <br>
                  Importe recibido: {{number_format($datoscobranza->importe, 2, '.', ',')}} <br>
+                 Total cobrado a la fecha {{number_format($Total_cobrado, 2, '.', ',')}} <br>
+                 Saldo restante:{{number_format($saldo, 2, '.', ',')}} <br>
                  Modalidad de Pago:  {{$datoscobranza->modalidad_pago}}  <br>
                  Observaciones: {{$datoscobranza->detalle}}  <br>
              

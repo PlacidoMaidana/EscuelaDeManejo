@@ -18,6 +18,7 @@ use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use App\Curso;
+use App\IngresosCurso;
 use PDF;
 use App\Exports\seguimiento_clasesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -313,12 +314,15 @@ public function recibo_cobranza($id){
                'sucursales.celular',
                ]))        
     ->first();
-   
+    $Total_cobrado = IngresosCurso::where('id_alumno_curso', $datoscobranza->id_Alumno_Curso)
+             ->sum('importe');
+    
+    $saldo = $datoscobranza->precio - $Total_cobrado;
     // $nombre_sucursal = DB::table('')->select(['sucursal'])->where ('id','=',$sucursal)->get();
 
      
       $pdf = PDF::loadView("vendor.voyager.ingresos-cursos.recibo",
-      compact('id','datoscobranza','datossucursal'));
+      compact('id','datoscobranza','datossucursal','saldo','Total_cobrado'));
       return $pdf->stream('recibo.pdf');
 
  }
