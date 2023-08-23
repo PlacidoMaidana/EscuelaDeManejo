@@ -27,7 +27,7 @@ Route::get('/Alumnos_curso','App\Http\Controllers\voyager\Alumnos_CursosControll
 //|           Calendario del alumno              |
 //|##############################################|
 Route::get('/calendario/{idAlumnoCurso}','App\Http\Controllers\CalendarioController@index');
-Route::get('/calendario_modificar/','App\Http\Controllers\CalendarioController@calendario_modificar');
+Route::get('/calendario_modificar/','App\Http\Controllers\CalendarioController@calendario_modificar')->name('calendario.modificar');;
 Route::get('/calendario/mostrar','App\Http\Controllers\CalendarioController@show');
 Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@store');
 Route::get('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');

@@ -127,7 +127,7 @@ return [
     
 
     'dashboard' => [
-        'view' => 'vendor.voyager.dashboard.custom_dashboard',
+       
         // Add custom list items to navbar's dropdown
        
         'navbar_items' => [
@@ -148,8 +148,10 @@ return [
         ],
 
         'widgets' => [
-
+            
+            'App\\Widgets\\eventosPorInstructor',
         ],
+        
 
     ],
 

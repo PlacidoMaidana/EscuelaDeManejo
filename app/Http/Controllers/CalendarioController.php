@@ -183,6 +183,8 @@ public function calendario_modificar()
             
             $sucursal = auth()->user()->id_sucursal;
 
+           
+
 
             $all_events = DB::table('alumno_evento')
              ->join ('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
@@ -191,7 +193,8 @@ public function calendario_modificar()
              //->where('alumno_evento.id_alumno_curso','=', $idAlumnoCurso)
              ->where('alumno_evento.id_instructor', $idInstructor)
              //->where('id_franja_horaria', $idHorario)
-             ->where('alumnos_cursos.id_sucursal', $sucursal)
+             //->where('alumnos_cursos.id_sucursal', $sucursal)
+             ->where('alumnos_cursos.id_sucursal','=', $sucursal)
              ->select(['alumno_evento.id as id', 'id_vehiculo', 'vehiculos.marca_modelo_anio as marca_modelo_anio',
              'id_instructor','instructores.nombre as nombre','alumno_evento.id_alumno_curso',
              'clase','start_date','end_date','asistencia','descripcion'])->get();
