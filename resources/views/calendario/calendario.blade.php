@@ -215,6 +215,7 @@
           slotMaxTime: "21:00:00",
           height: 'auto',
           locales: 'es',
+         
             headerToolbar:{
                 left: 'prev,next today',
                 center: 'title',

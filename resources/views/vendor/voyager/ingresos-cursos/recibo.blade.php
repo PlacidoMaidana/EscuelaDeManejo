@@ -134,6 +134,8 @@
                <h4 >
                  Total Curso: {{number_format($datoscobranza->precio, 2, '.', ',')}} <br>
                  Importe recibido: {{number_format($datoscobranza->importe, 2, '.', ',')}} <br>
+                 Total cobrado a la fecha {{number_format($Total_cobrado, 2, '.', ',')}} <br>
+                 Saldo restante:{{number_format($saldo, 2, '.', ',')}} <br>
                  Modalidad de Pago:  {{$datoscobranza->modalidad_pago}}  <br>
                  Observaciones: {{$datoscobranza->detalle}}  <br>
              
