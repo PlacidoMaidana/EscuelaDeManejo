@@ -77,7 +77,7 @@
                     </div>
                     <div class="modal-body">
                          
-
+                      
                        <form action="" id="FormCalendar" method="post">
                         {!! csrf_field() !!}
                        
