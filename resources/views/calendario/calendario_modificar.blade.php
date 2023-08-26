@@ -221,113 +221,8 @@
                 right: 'dayGridMonth,timeGridWeek,listWeek'
             },
             
-         dateClick:function(info){               
-
-              formulario.reset();
-              formulario.start_date.value=info.dateStr;
-              formulario.end_date.value=info.dateStr;
-              formulario.idAlumnoCurso.value="AlumnoCursoInfo";
-
-              var instructor = $('#instructores_select');
-                var instructor_seleccionado = $('#filtrar_por_instructor');
-                instructor.val(instructor_seleccionado.val());
-
-              var dateStr = $('#start_date');
-              var dateEND = $('#end_date');
-              var Clase = $('#clase');
-              var Alumno = $('#alumno');
-              Clase.val(Alumno.val());
-
-              // Convertir la cadena de fecha y hora en un objeto Date
-              var fechaHoraEvento = new Date(info.dateStr);
-
-              // Obtener la hora seleccionada en el calendario
-              console.log("Solo la hora seleccionada:");
-              var horaEvento = fechaHoraEvento.getHours() + ':' + fechaHoraEvento.getMinutes()+ ':' + fechaHoraEvento.getSeconds()+2; // Formato HH:mm
-              console.log(horaEvento);
-
-
-              console.log("Longitud de la tabla de franjas horarias");
-              var franjasHorarias = {!! json_encode($franjasHorarias) !!};
-
-              // Obtener el select de franjas horarias y su valor seleccionado
-              var selectFranjaHoraria = document.getElementById('franja_horaria_select');
-              var franjaHorariaSeleccionada = selectFranjaHoraria.value;
-
-              // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
-               for (var i = 0; i < franjasHorarias.length; i++) {
-
-                var franjaStartTime = new Date('1970-01-01T' + franjasHorarias[i].start_time );
-                var franjaEndTime = new Date('1970-01-01T' + franjasHorarias[i].end_time );
-              
-                // Comparar solo las horas y minutos
-                   var franjaStartHour = franjaStartTime.getHours();
-                   var franjaStartMinute = franjaStartTime.getMinutes();
-                   var franjaEndHour = franjaEndTime.getHours();
-                   var franjaEndMinute = franjaEndTime.getMinutes();
-              
-                   var eventoHour = fechaHoraEvento.getHours();
-                   var eventoMinute = fechaHoraEvento.getMinutes();
-                //Prueba de escritorio >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                console.log("("+eventoHour +">"+franjaStartHour +"|| (" + eventoHour +"==="+ franjaStartHour +" && "+ eventoMinute +">=" + franjaStartMinute +")) &&"
-                   +" ("+ eventoHour +" < "+ franjaEndHour +" || (" + eventoHour + "===" + franjaEndHour +" && " + eventoMinute +" < " + franjaEndMinute +")) ");
-                console.log("El valor de i:"+i);
-                console.log("Franja horaria starTime en  i:"+franjasHorarias[i].start_time );
-                console.log("Franja horaria endTime en  i:"+franjasHorarias[i].end_time );
-
-              
-                console.log("Estart time hora:"+ franjaStartHour);
-                console.log("Estart time minuto:"+ franjaStartMinute);
-                console.log("End time hora:"+ franjaEndHour);
-                console.log("End time minuto:"+ franjaEndMinute);
-                console.log("horaEvento:"+ eventoHour);
-                console.log("minutoEvento:"+ eventoMinute);
-              
-              
-              
-                if (
-                     (eventoHour > franjaStartHour || (eventoHour === franjaStartHour && eventoMinute >= franjaStartMinute)) &&
-                     (eventoHour < franjaEndHour || (eventoHour === franjaEndHour && eventoMinute < franjaEndMinute))
-                   ) {
-                   selectFranjaHoraria.value = franjasHorarias[i].id;
-                   console.log("entro al if");
-                   // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
-                  
-                             $.ajax({
-                               url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
-                               method: 'GET',
-                               success: function(response) {
-                                 // Actualizar los campos de fecha en el formulario del evento
-                              
-                                  console.log("volviendo del ayax");
-                                  console.log("el id de la franja horaria "+  franjasHorarias[i].id );
-                                  console.log("start date "+response.start_date);
-                                  console.log("end date "+response.end_date);
-
-                                 $('#start_date').val(response.start_date);
-                                 $('#end_date').val(response.end_date);
-                              
-                               },
-                               error: function(jqXHR, textStatus, errorThrown) {
-                                 // Manejar el error de la solicitud AJAX
-                                 console.log('Error:', errorThrown);
-                              
-                               }
-                             });
-                           
-                   break; // Detener el bucle una vez que se encuentra una coincidencia
-                 }
-               }
-             
-              console.log(franjasHorarias);
-             
-              $('#ModCalendario').modal("show");
-              },
-
          
-         
- 
-            eventClick:function(info){
+        eventClick:function(info){
               var evento=info.event;
               console.log("la ruta es"+"{{url('/calendario/editar/')}}/" +info.event.id);
               console.log("Valores del evento:", evento);
@@ -498,126 +393,16 @@ document.getElementById('filtrar_por_instructor').addEventListener('change', fun
 
 //<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>><<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<><<>>>>>>>>>>>>>>>>
 //+-----------------------------------------------------------------------------------------------------
-//+                   dateClick
-//+=====================================================================================================
-
-           
-dateClick:function(info){      
-  
-            console.log(info);debugger;
-
-            formulario.reset();
-            formulario.start_date.value=info.dateStr;
-            formulario.end_date.value=info.dateStr;
-            formulario.idAlumnoCurso.value="AlumnoCursoInfo";
-
-            var instructor = $('#instructores_select');
-              var instructor_seleccionado = $('#filtrar_por_instructor');
-              instructor.val(instructor_seleccionado.val());
-
-            var dateStr = $('#start_date');
-            var dateEND = $('#end_date');
-            var Clase = $('#clase');
-            var Alumno = $('#alumno');
-            Clase.val(Alumno.val());
-
-            // Convertir la cadena de fecha y hora en un objeto Date
-            var fechaHoraEvento = new Date(info.dateStr);
-            
-            // Obtener la hora seleccionada en el calendario
-            console.log("Solo la hora seleccionada:");
-            var horaEvento = fechaHoraEvento.getHours() + ':' + fechaHoraEvento.getMinutes()+ ':' + fechaHoraEvento.getSeconds()+2; // Formato HH:mm
-            console.log(horaEvento);
-
-
-            console.log("Longitud de la tabla de franjas horarias");
-            var franjasHorarias = {!! json_encode($franjasHorarias) !!};
-
-            // Obtener el select de franjas horarias y su valor seleccionado
-            var selectFranjaHoraria = document.getElementById('franja_horaria_select');
-            var franjaHorariaSeleccionada = selectFranjaHoraria.value;
-
-            // Recorrer las franjas horarias y seleccionar automáticamente la coincidente
-             for (var i = 0; i < franjasHorarias.length; i++) {
-              
-              var franjaStartTime = new Date('1970-01-01T' + franjasHorarias[i].start_time );
-              var franjaEndTime = new Date('1970-01-01T' + franjasHorarias[i].end_time );
-
-              // Comparar solo las horas y minutos
-                 var franjaStartHour = franjaStartTime.getHours();
-                 var franjaStartMinute = franjaStartTime.getMinutes();
-                 var franjaEndHour = franjaEndTime.getHours();
-                 var franjaEndMinute = franjaEndTime.getMinutes();
-
-                 var eventoHour = fechaHoraEvento.getHours();
-                 var eventoMinute = fechaHoraEvento.getMinutes();
-              //Prueba de escritorio >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-              console.log("("+eventoHour +">"+franjaStartHour +"|| (" + eventoHour +"==="+ franjaStartHour +" && "+ eventoMinute +">=" + franjaStartMinute +")) &&"
-                 +" ("+ eventoHour +" < "+ franjaEndHour +" || (" + eventoHour + "===" + franjaEndHour +" && " + eventoMinute +" < " + franjaEndMinute +")) ");
-              console.log("El valor de i:"+i);
-              console.log("Franja horaria starTime en  i:"+franjasHorarias[i].start_time );
-              console.log("Franja horaria endTime en  i:"+franjasHorarias[i].end_time );
-              
-
-              console.log("Estart time hora:"+ franjaStartHour);
-              console.log("Estart time minuto:"+ franjaStartMinute);
-              console.log("End time hora:"+ franjaEndHour);
-              console.log("End time minuto:"+ franjaEndMinute);
-              console.log("horaEvento:"+ eventoHour);
-              console.log("minutoEvento:"+ eventoMinute);
-
-
-
-              if (
-                   (eventoHour > franjaStartHour || (eventoHour === franjaStartHour && eventoMinute >= franjaStartMinute)) &&
-                   (eventoHour < franjaEndHour || (eventoHour === franjaEndHour && eventoMinute < franjaEndMinute))
-                 ) {
-                 selectFranjaHoraria.value = franjasHorarias[i].id;
-                 console.log("entro al if");
-                 // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
-              
-                           $.ajax({
-                             url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
-                             method: 'GET',
-                             success: function(response) {
-                               // Actualizar los campos de fecha en el formulario del evento
-
-                                console.log("volviendo del ayax");
-                                console.log("el id de la franja horaria "+  franjasHorarias[i].id );
-                                console.log("start date "+response.start_date);
-                                console.log("end date "+response.end_date);
-                               
-                               $('#start_date').val(response.start_date);
-                               $('#end_date').val(response.end_date);
-
-                             },
-                             error: function(jqXHR, textStatus, errorThrown) {
-                               // Manejar el error de la solicitud AJAX
-                               console.log('Error:', errorThrown);
-
-                             }
-                           });
-                         
-                 break; // Detener el bucle una vez que se encuentra una coincidencia
-               }
-             }
-           
-            console.log(franjasHorarias);
-           
-            $('#ModCalendario').modal("show");
-            },
-//<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>><<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<><<>>>>>>>>>>>>>>>>
-//+-----------------------------------------------------------------------------------------------------
 //+                   Event click
 //+=====================================================================================================
 
 
-            eventClick:function(info){
+eventClick:function(info){
               var evento=info.event;
               console.log("la ruta es"+"{{url('/calendario/editar/')}}/" +info.event.id);
               console.log("Valores del evento:", evento);
              
-             axios.get("{{url('/calendario/editar/')}}/" +info.event.id)
+             axios.get("{{url('/calendario/editar_calendario/')}}/" +info.event.id)
               .then(
                 (respuesta)=>{
                   for (var key in respuesta.data) {
@@ -632,6 +417,7 @@ dateClick:function(info){
                     FranjaHoraria.val(respuesta.data.id_franja_horaria);
 
                     formulario.id.value=respuesta.data.id;
+                    formulario.alumno.value=respuesta.data.nombre;
                     formulario.clase.value=respuesta.data.clase;
                     formulario.start_date.value=respuesta.data.start_date;
                     formulario.end_date.value=respuesta.data.end_date;
@@ -659,9 +445,7 @@ dateClick:function(info){
      calendar.render();    
      }
 
-
-
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< fin event click  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
     

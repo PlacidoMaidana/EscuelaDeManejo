@@ -31,6 +31,7 @@ Route::get('/calendario_modificar/','App\Http\Controllers\CalendarioController@c
 Route::get('/calendario/mostrar','App\Http\Controllers\CalendarioController@show');
 Route::post('/calendario/agregar','App\Http\Controllers\CalendarioController@store');
 Route::get('/calendario/editar/{id}','App\Http\Controllers\CalendarioController@edit');
+Route::get('/calendario/editar_calendario/{id}','App\Http\Controllers\CalendarioController@edit_calendario_por_instructor');
 Route::post('/calendario/actualizar/{evento}','App\Http\Controllers\CalendarioController@update');
 Route::post('/calendario/borrar/{id}','App\Http\Controllers\CalendarioController@destroy');
 Route::get('/calendario/obtener_fechas/{franjaHoraria}/{diaEvento}','App\Http\Controllers\CalendarioController@obtener_fechas');

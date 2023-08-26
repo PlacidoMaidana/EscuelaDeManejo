@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\AlumnoEvento;
+use App\AlumnosCurso;
 use App\FranjasHoraria;
 use App\Instructore;
 use App\Vehiculo;
@@ -302,8 +303,49 @@ public function calendario_modificar()
        $evento=AlumnoEvento::find($id);
        $evento->start_date = Carbon::createFromFormat('Y-m-d H:i:s', $evento->start_date)->Format('Y-m-d H:i') ;
        $evento->end_date = Carbon::createFromFormat('Y-m-d H:i:s', $evento->end_date)->Format('Y-m-d H:i') ;
+
        return response()->json($evento);   
     }
+
+    public function edit_calendario_por_instructor($id)
+    {
+        $evento = DB::table('alumno_evento')
+        ->select(
+            'alumno_evento.id',
+            'alumno_evento.clase',
+            'alumno_evento.start_date',
+            'alumno_evento.end_date',       
+            'alumno_evento.created_at',
+            'alumno_evento.updated_at',
+            'alumno_evento.id_alumno_curso',
+            'alumno_evento.id_vehiculo',
+            'alumno_evento.id_instructor',
+            'alumno_evento.asistencia',
+            'alumno_evento.descripcion',
+            'alumno_evento.id_franja_horaria',
+            'alumno_evento.id_tipo_evento',
+            // ... otras columnas que deseas seleccionar
+            'alumnos_cursos.id as ac_id',
+            'alumnos_cursos.id_curso',
+            // ... otras columnas de la tabla alumnos_cursos
+            'alumnos.id as alumno_id',
+            'alumnos.nombre',
+            // ... otras columnas de la tabla alumnos
+        )
+        ->join('alumnos_cursos', 'alumno_evento.id_alumno_curso', '=', 'alumnos_cursos.id')
+        ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+        ->where('alumno_evento.id', $id)
+        ->first(); // Obtén el primer resultado
+
+    
+       $evento->start_date = Carbon::createFromFormat('Y-m-d H:i:s', $evento->start_date)->Format('Y-m-d H:i') ;
+       $evento->end_date = Carbon::createFromFormat('Y-m-d H:i:s', $evento->end_date)->Format('Y-m-d H:i') ;
+
+    
+       return response()->json($evento);
+        
+    }
+
 
     public function destroy($id)
     {

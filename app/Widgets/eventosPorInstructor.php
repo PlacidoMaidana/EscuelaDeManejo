@@ -26,10 +26,10 @@ class eventosPorInstructor extends AbstractWidget
 
         return view('voyager::dimmer', array_merge($this->config, [
             'icon'   => 'voyager-file-text',
-            'title'  => "Mi primer widget",
-            'text'   => "Este es un texto que ira en el widget",
+            'title'  => "Gestión de Eventos por Instructor",
+            'text'   => "Explora y modifica los eventos programados en el calendario, organizados por instructor.",
             'button' => [
-                'text' => "Titulo del enlace",
+                'text' => "Acceder al Calendario",
                 'link' => route('calendario.modificar'),
             ],
             'image' => voyager_asset('images/widget-backgrounds/03.jpg'),
