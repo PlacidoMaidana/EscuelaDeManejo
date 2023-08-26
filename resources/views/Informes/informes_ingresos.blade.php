@@ -37,6 +37,7 @@
         <th>Operador caja</th> 
         <th>Modalidad Pago</th>
         <th>Importe</th>  
+        <th>Detalle</th> 
       </tr>
      </thead>
     </table>
@@ -54,9 +55,18 @@
           <th>Total Cobrado</th>
         </tr>
        </thead>
-      
-       
       </table>
+
+      <table id="saldos" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
+        <thead>
+          <tr>
+            <th>Sucursal</th> 
+            <th>Saldo pendiente de Cobro</th>
+          </tr>
+         </thead>
+        
+         
+        </table>
 @stop
 
 @section('css')
@@ -97,6 +107,7 @@
             {data: 'name', name:'users.name', width: '10%'},
             {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+            {data: 'detalle', name: 'ingresos_cursos.detalle', width: '10%'},
              ]        
 });
 
@@ -115,6 +126,19 @@ $('#totales').dataTable( {
             {data: 'tarjeta_credito', name: 'tarjeta_credito', width: '10%'},
             {data: 'retenciones', name: 'retenciones', width: '10%'},
             {data: 'total_cobrado', name: 'total_cobrado', width: '10%'},
+                     ]        
+});
+
+var filtrosaldos_sucursal ="{{url('/informe_saldos_sucursal/')}}";
+    $('#saldos').DataTable().destroy();
+    $('#saldos').dataTable( {
+    "serverSide": true,
+    "ajax":filtrosaldos_sucursal,
+    "paging": true,
+    "searching": true,
+    "columns":[
+            {data: 'sucursal', name: 'sucursales.sucursal', width: '5%'},
+            {data: 'saldosuc', name: 'saldosuc', width: '10%'},
              ]        
 });
 

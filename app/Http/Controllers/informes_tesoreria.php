@@ -156,7 +156,9 @@ class informes_tesoreria extends Controller
                      'cursos.nombre_curso',
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
-                     'ingresos_cursos.importe']))
+                     'ingresos_cursos.importe',
+                     'ingresos_cursos.detalle'
+                     ]))
             ->toJson();   
     }        
     
@@ -176,10 +178,43 @@ class informes_tesoreria extends Controller
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS tarjeta_credito'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Retenciones", importe, NULL)) AS retenciones'),
             DB::raw('SUM(ingresos_cursos.importe) AS total_cobrado'),
+            
               ]))
              ->toJson();  
            
     }
+
+    public function saldos_acobrar_porsucursal()
+    {
+     $saldos_alumnos= DB::table('ingresos_cursos as i')
+              ->join('alumnos_cursos as a', 'a.id', '=', 'i.id_alumno_curso')
+              ->join('users', 'users.id', '=', 'i.id_usuario')
+              ->select('users.id_sucursal', 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
+              ->groupBy('users.id_sucursal', 'a.id','a.precio')
+              ->havingRaw('a.precio - SUM(i.importe) > 0');
+
+    return $resultado = datatables()->of( DB::table('sucursales')
+      ->joinSub($saldos_alumnos, 'b' , function ($join) {
+        $join-> on('sucursales.id', '=', 'b.id_sucursal');})
+      ->groupBy('sucursales.sucursal')
+      ->select('sucursales.sucursal', DB::raw('SUM(b.saldo) as saldosuc')))
+      ->toJson();
+    }
+/*
+    public function saldos_acobrar_sucursal_operador()
+    {
+      $sucursal = auth()->user()->id_sucursal;
+     $saldos_alumnos= DB::table('ingresos_cursos as i')
+              ->join('alumnos_cursos as a', 'a.id', '=', 'i.id_alumno_curso')
+              ->join('users', 'users.id', '=', 'i.id_usuario')
+              ->select('users.id_sucursal', 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
+              ->where('users.id_sucursal','=',$sucursal)
+              ->groupBy('users.id_sucursal', 'a.id','a.precio')
+              ->havingRaw('a.precio - SUM(i.importe) > 0');
+
+    
+    }
+    */
     /////////////// Ingresos por sucursal/////////////////
     public function ing_suc_en_rango_de_fechas($from,$to)
     {
@@ -199,7 +234,8 @@ class informes_tesoreria extends Controller
                      'cursos.nombre_curso',
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
-                     'ingresos_cursos.importe']))
+                     'ingresos_cursos.importe',
+                     'ingresos_cursos.detalle']))
             ->toJson();   
     }        
     

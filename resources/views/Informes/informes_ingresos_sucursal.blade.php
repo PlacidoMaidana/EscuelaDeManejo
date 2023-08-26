@@ -36,7 +36,8 @@
         <th>Curso</th> 
         <th>Operador caja</th> 
         <th>Modalidad Pago</th>
-        <th>Importe</th>  
+        <th>Importe</th> 
+        <th>Detalle</th>  
       </tr>
      </thead>
     </table>
@@ -54,9 +55,8 @@
           <th>Total Cobrado</th>
         </tr>
        </thead>
-      
-       
       </table>
+      
 @stop
 
 @section('css')
@@ -97,6 +97,7 @@
             {data: 'name', name:'users.name', width: '10%'},
             {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+            {data: 'detalle', name: 'ingresos_cursos.detalle', width: '10%'},
              ]        
 });
 
@@ -115,8 +116,9 @@ $('#totales').dataTable( {
             {data: 'tarjeta_credito', name: 'tarjeta_credito', width: '10%'},
             {data: 'retenciones', name: 'retenciones', width: '10%'},
             {data: 'total_cobrado', name: 'total_cobrado', width: '10%'},
-             ]        
+                      ]        
 });
+
 
   }
 </script>
