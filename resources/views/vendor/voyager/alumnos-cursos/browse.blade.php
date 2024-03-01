@@ -69,7 +69,7 @@
                             </tfoot>
                         </table>                
                         
-                        <h3 id="SaldoTotal"></h3>
+                        
                                                                                                                                                                                                                            
                     </div>
                     <div id="menu1" class="tab-pane fade">
@@ -175,7 +175,7 @@
                              return intVal(a) + intVal(b);
                          }, 0);
                      
-                         $("#SaldoTotal").html('Total Saldos: ' + totalSaldos.toFixed(2));
+                        // $("#SaldoTotal").html('Total Saldos: ' + totalSaldos.toFixed(2));
                          //$(api.column(7).footer()).html('Total Saldos: ' + totalSaldos.toFixed(2));
                      }    
                

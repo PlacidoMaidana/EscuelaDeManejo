@@ -113,6 +113,7 @@ Route::get('/informeingresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\
 Route::get('/totalesingresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@ing_totales_en_rango_de_fechas');//ruta que devuelve datos
 
 Route::get('/informe_saldos_sucursal/','App\Http\Controllers\informes_tesoreria@saldos_acobrar_porsucursal');//ruta que devuelve datos
+Route::get('/informe_saldos_sucursal_operador/','App\Http\Controllers\informes_tesoreria@saldos_acobrar_sucursal_operador');//ruta que devuelve datos
 
 Route::get('/informeegresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@egr_en_rango_de_fechas');//ruta que devuelve datos
 Route::get('/totalesegresos_rango_de_fechas/{from}/{to}','App\Http\Controllers\informes_tesoreria@egr_totales_en_rango_de_fechas');//ruta que devuelve datos

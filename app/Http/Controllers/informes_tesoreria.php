@@ -200,21 +200,26 @@ class informes_tesoreria extends Controller
       ->select('sucursales.sucursal', DB::raw('SUM(b.saldo) as saldosuc')))
       ->toJson();
     }
-/*
+
     public function saldos_acobrar_sucursal_operador()
     {
       $sucursal = auth()->user()->id_sucursal;
-     $saldos_alumnos= DB::table('ingresos_cursos as i')
+      $saldos_alumnos= DB::table('ingresos_cursos as i')
               ->join('alumnos_cursos as a', 'a.id', '=', 'i.id_alumno_curso')
               ->join('users', 'users.id', '=', 'i.id_usuario')
               ->select('users.id_sucursal', 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
               ->where('users.id_sucursal','=',$sucursal)
               ->groupBy('users.id_sucursal', 'a.id','a.precio')
               ->havingRaw('a.precio - SUM(i.importe) > 0');
-
+      return $resultado = datatables()->of( DB::table('sucursales')
+              ->joinSub($saldos_alumnos, 'b' , function ($join) {
+                $join-> on('sucursales.id', '=', 'b.id_sucursal');})
+              ->groupBy('sucursales.sucursal')
+              ->select('sucursales.sucursal', DB::raw('SUM(b.saldo) as saldosuc')))
+              ->toJson();
     
     }
-    */
+    
     /////////////// Ingresos por sucursal/////////////////
     public function ing_suc_en_rango_de_fechas($from,$to)
     {
@@ -222,6 +227,7 @@ class informes_tesoreria extends Controller
      
       return $datos = datatables()->of(DB::table('ingresos_cursos')
            ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
+           ->leftjoin ('empleados','empleados.id','=','alumnos_cursos.id_vendedor' )
            ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
            ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
            ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
@@ -235,7 +241,8 @@ class informes_tesoreria extends Controller
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe',
-                     'ingresos_cursos.detalle']))
+                     'ingresos_cursos.detalle',
+                     'empleados.nombre' ]))
             ->toJson();   
     }        
     

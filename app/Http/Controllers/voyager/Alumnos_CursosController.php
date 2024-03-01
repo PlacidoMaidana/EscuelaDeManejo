@@ -586,10 +586,11 @@ public function recibo_cobranza($id){
        $nombre_alumno=$datos_alumno->nombre;
        $sucursal = $datos_alumno->id_sucursal;
        $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+       $comerciales_activos = DB::table('empleados')->select(['id', 'nombre'])->where ('estado','=',"Alta")->get();
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent',
          'isModelTranslatable','id_alumno', 'nombre_alumno','cursos','localidades',
-         'nombre_sucursal','sucursal'));
+         'nombre_sucursal','sucursal','comerciales_activos'));
     }
 
     // POST BR(E)AD
@@ -701,9 +702,10 @@ public function recibo_cobranza($id){
         $user = Auth::user();
         $sucursal=$user->id_sucursal;
         $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+        $comerciales_activos = DB::table('empleados')->select(['id', 'nombre'])->where ('estado','=',"Alta")->get();
         // ******************
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable',
-        'id_alumno','nombre_alumno','cursos','sucursal','localidades','nombre_sucursal'));
+        'id_alumno','nombre_alumno','cursos','sucursal','localidades','nombre_sucursal', 'comerciales_activos'));
     }
 
     /**

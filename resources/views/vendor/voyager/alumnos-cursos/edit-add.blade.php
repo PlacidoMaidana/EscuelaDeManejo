@@ -22,8 +22,6 @@
 @stop
 
 
-
-
 @section('content')
     <div class="page-content edit-add container-fluid">
         <div class="row">
@@ -60,7 +58,7 @@
                                 $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
                               
                             @endphp
-                          
+
                             @for ($i = 0; $i < count($dataTypeRows); $i++)
                                 <!-- GET THE DISPLAY OPTIONS -->
                                 @php
@@ -109,31 +107,8 @@
                                    continue;
                                @endphp
                                @endif
-{{--  
-                               @if ($row->getTranslatedAttribute('display_name')=='sucursales')
-                                    @php
-                                    $user=auth()->user();
-                                    $sucursal=$user->id_sucursal;
-                                    $registro = Sucursale::find($sucursal);
-                                    @endphp    
-                                
-                                                  
-                                    <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
-                                        {{ $row->slugify }}
-                                        <label class="control-label" for="name">Sucursal: {{ $registro->sucursal}}
-                                        </label>
-                                        <div class="form-group  col-md-12 ">     
-                                            <input type="text" class="form-control"  id='sucursal'  name="id_sucursal" placeholder="sucursal" value="{{ $registro->id}}" readonly >
-                                        </div>                              
-                                            
-                                    </div>
 
-                                        @php
-                                            continue;
-                                        @endphp
-                                                              
-                                @endif
-                          --}} 
+                              
                             @if ($add )
                              @if($row->getTranslatedAttribute('display_name')=='sucursales')
                                <input type="hidden" name="id_sucursal" value="{{$sucursal}}">
@@ -142,6 +117,46 @@
                                 @endphp
                              @endif                      
                             @endif
+
+                            @if ($row->getTranslatedAttribute('display_name')=='Comercial')
+                            <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}
+    
+                                </label>   
+                            </br>
+                                @php
+                                $nombre_vendedor='';
+                                foreach($comerciales_activos as $comercial)
+                                {
+                                if ($comercial->id==$dataTypeContent->id_vendedor) {
+                                $nombre_vendedor=$comercial->nombre;   
+                                }
+                                }
+                                
+                                @endphp
+                                <select name="id_vendedor" id="id_vendedor">
+                                    <option value="">Seleccione un comercial</option>
+                                    @if($edit)  
+                                    
+                                    <option selected value ="{{$dataTypeContent->id_vendedor}}">{{$nombre_vendedor}} </option>
+                                        
+                                    @endif
+
+                                    @foreach($comerciales_activos as $comercial)
+                                        <option value="{{ $comercial->id }}"    >
+                                            {{ $comercial->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @php
+                            
+                                continue;
+                            @endphp
+                          
+                            @endif
+
+                           
 
                             @if ($row->getTranslatedAttribute('display_name')=='alumnos')
  {{-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
