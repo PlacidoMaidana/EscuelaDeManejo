@@ -35,6 +35,7 @@
         <th>Alumno</th>
         <th>Curso</th>
         <th>Vendedor</th>
+        <th>Sucursal</th>
         <th>Precio Curso</th>
         <th>Comision</th>
       </tr>
@@ -91,6 +92,7 @@
             {data: 'nombre', name: 'alumnos.nombre', width: '5%'},
             {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '10%'},
             {data: 'vendedor', name: 'empleados.nombre', width: '10%'},
+            {data: 'sucursal', name: 'sucursales.sucursal', width: '10%'},
             {data: 'precio', name: 'alumnos_cursos.precio',width: '10%'},
             {data: 'monto_comision', name: 'cursos.monto_comision', width: '10%'},
              ]        
