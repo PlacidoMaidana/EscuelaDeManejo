@@ -32,6 +32,8 @@
   </div>    
 
   <button  type="button" id="marca_asistencia" class="btn btn-sm btn-primary"  >marcar asistencia</button>
+  
+  <a href="{{ route('asistencia.rostro.vista') }}" class="btn btn-primary">Asistencia por Foto</a>
 </div>
 
  
