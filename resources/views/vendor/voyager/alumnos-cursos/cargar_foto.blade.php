@@ -18,8 +18,9 @@
                     <div class="card-header">Esta es la pagina para el calendario </div>
                     <div class="card-body">
                         <!-- Formulario para enviar la imagen -->
-                        <form action="{{ route('procesar.asistencia') }}" method="POST">
+                        <form action="{{ route('guardar.foto.alumno.registro', ['id' => $alumno->id]) }}"  method="POST">
                             @csrf
+                            <input type="hidden" name="id" value="{{ $alumno->id }}">
                             <div class="row mb-3">
                                 <div class="col-md-4"></div>
                                 <div class="col-md-6">
@@ -36,11 +37,11 @@
                             </div>
 
                             <!-- Agregar un botón para enviar el formulario -->
-                            <button type="submit" class="btn btn-primary" id="submitButton">Marcar asistencia</button>
+                            <button type="submit" class="btn btn-primary" id="submitButton">Registrar foto</button>
                         </form>
 
                         <!-- Elemento img para mostrar la imagen capturada -->
-                        <img id="capturedImage" src="" alt="Captured Image" style="display:none";> 
+                        <img id="capturedImage" src="" alt="Captured Image" style="display:none;" >
 
                     </div>
 
@@ -91,7 +92,7 @@
                         // Envía los datos base64 al campo oculto en el formulario
                         capturedImageDataInput.value = data;
 
-                        // capturedImage.style.display = 'block';
+                       // capturedImage.style.display = 'block';
                         
 
                     } else {

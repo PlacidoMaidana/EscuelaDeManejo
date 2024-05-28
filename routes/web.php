@@ -137,11 +137,13 @@ Route::get('seguimiento_alumno_export/{id_alumno_curso}', 'App\Http\Controllers\
 Route::get('/analyze-image', [App\Http\Controllers\AsistenciaCamaraController::class, 'encuentraIdFotoAlumnoCurso']);
 Route::get('/asistencia-camara', [App\Http\Controllers\AsistenciaCamaraController::class, 'showAsistenciaCamara'])->name('asistencia.rostro.vista');
 Route::post('/guardar-foto-alumno', [App\Http\Controllers\AsistenciaCamaraController::class, 'guardaFotoAlumnoBuscado'])->name('guardar.foto.alumno');
+
 Route::get('/asistencia-alumno-curso', [App\Http\Controllers\AsistenciaCamaraController::class, 'asistenciaAlumnoCurso'])->name('asistencia.Alumno.Curso');
 Route::post('/procesar-asistencia', [App\Http\Controllers\AsistenciaCamaraController::class, 'procesarAsistencia'])->name('procesar.asistencia');
+Route::get('/cargar-foto-alumno', function () { return view('vendor.voyager.alumnos-cursos.cargar_foto');})->name('alumno.cargar.foto');
 
-
-
+Route::get('/cargar-foto-alumno/{id}', [App\Http\Controllers\AsistenciaCamaraController::class, 'mostrarCargarFoto'])->name('alumno.cargar.foto');
+Route::post('/guardar-foto-alumno-registro/{id}', [App\Http\Controllers\AsistenciaCamaraController::class, 'guardaFotoAlumno'])->name('guardar.foto.alumno.registro');
 Voyager::routes();
 
 Route::get('/dashboard', 'CustomDashboardController@index')->name('voyager.dashboard.custom');
