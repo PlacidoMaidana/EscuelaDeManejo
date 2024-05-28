@@ -24,11 +24,13 @@ class informes_ventas_comisiones extends Controller
             ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
             ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
             ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
+            ->leftjoin('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
             ->whereBetween('alumnos_cursos.fecha_inscripcion',array($from,$to) )
             ->select(['alumnos_cursos.fecha_inscripcion',
             'alumnos.nombre',
             'cursos.nombre_curso',
             'empleados.nombre as vendedor',
+            'sucursales.sucursal as sucursal',
             'alumnos_cursos.precio',
             'cursos.monto_comision'  ]))
    ->toJson();  
@@ -55,7 +57,7 @@ class informes_ventas_comisiones extends Controller
     }
     public function export($desde,$hasta) 
     {
-      $aa = new Informe_ventasExportComisiones();
+      $aa = new Informe_ventasExportComisiones("fecha	alumno	tipo curso	vendedor	sucursal	importe");
       $aa->desde=$desde;
       $aa->hasta=$hasta;
       return Excel::download($aa, 'informe_ventas_comisiones.xlsx');
