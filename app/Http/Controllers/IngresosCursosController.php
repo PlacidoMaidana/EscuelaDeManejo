@@ -397,7 +397,8 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         
         return redirect('admin/alumnos-cursos');
         */
-        return redirect('voyager.alumnos-cursos');
+        return redirect('alumnos-cursos');
+        
     }
 
     //***************************************

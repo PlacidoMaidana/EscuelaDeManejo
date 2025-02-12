@@ -59,6 +59,23 @@
 
                             @endphp
 
+                            <!-- Mostrar id_alumno  -->
+                            @if ($edit)
+                                <div class="form-group col-md-12">
+                                    <label class="control-label" for="id_alumno">ID Alumno</label>
+                                    <input type="text" id="id_alumno"class="form-control" name="id_alumno"
+                                        value="{{ $dataTypeContent->id_alumno }}" readonly>
+                                </div>
+                            @else
+                                <div class="form-group col-md-12">
+                                    <label class="control-label" for="id_alumno">ID Alumno</label>
+                                    <input type="text" id="id_alumno"class="form-control" name="id_alumno" value=""
+                                        readonly>
+                                </div>
+                            @endif
+
+
+
                             @for ($i = 0; $i < count($dataTypeRows); $i++)
                                 <!-- GET THE DISPLAY OPTIONS -->
                                 @php
@@ -122,7 +139,18 @@
                                             continue;
                                         @endphp
                                     @endif
+
+                                    @if ($row->getTranslatedAttribute('display_name') == 'Fecha Inscripcion')
+                                    Fecha Inscripcion:
+                                   <input type="date"  name="fecha_inscripcion" value="{{ date('Y-m-d') }}">
+                                    @php
+                                       continue;
+                                    @endphp
+                                    @endif
+
                                 @endif
+
+
 
                                 @if ($row->getTranslatedAttribute('display_name') == 'Comercial')
                                     <div class="form-group @if ($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}"
@@ -216,9 +244,6 @@
                                                                 name="fecha_nacimiento">
                                                         </div>
 
-
-
-
                                                         <div class="form-group">
                                                             <label for="localidad">Localidad</label>
                                                             <select class="form-control" id="localidad" name="localidad">
@@ -229,6 +254,15 @@
                                                                 @endforeach
                                                             </select>
                                                         </div>
+                                                        <div class="form-group">
+                                                            <label for="genero">Género</label>
+                                                            <select class="form-control" id="genero" name="genero">
+                                                                <option value="M">Masculino</option>
+                                                                <option value="F">Femenino</option>
+                                                            </select>
+                                                        </div>
+
+
                                                         <input class="form-control" type="hidden" id="alumno_curso_id"
                                                             name="alumno_curso_id" value="2">
                                                         <button type="button"
@@ -268,13 +302,9 @@
                                             data-bs-toggle="modal" data-bs-target="#modal_alumno_elegir">
                                             Buscar Alumno
                                         </button>
-
-                                        <input type="hidden" id="id_alumno" name="id_alumno"
-                                            value="{{ session('id_alumno') }}">
-
-
+                                
                                         <input type="text" id="alumno_elegido" name="alumno_elegido" required readonly
-                                            value="{{ session('nombre_alumno') }}" style="WIDTH: 550px">
+                                            value="{{ $nombre_alumno }}" style="WIDTH: 550px">
 
                                         <!-- <a href="#" id="registrar_foto" class="btn btn-primary">Registrar Foto</a> -->
 
@@ -282,8 +312,6 @@
                                             data-bs-toggle="modal" data-bs-target="#modal_foto">
                                             Registrar foto
                                         </button>
-
-
                                     </div>
 
                                     @php
@@ -405,6 +433,7 @@
     </div>
 </div>
 
+
 {{--  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
 {{-- >>>>>>>>>>>>>>>>>>>>>>   MODAL FOTO   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
 {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
@@ -482,12 +511,6 @@
 {{-- <<<<<<<<<<<<<<<<<<<<<<<    FIN MODAL FOTO    >>>>>>>>>>>>>>>>>>>>>>>>>>>> --}}
 {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
 {{-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  --}}
-
-
-
-
-
-
 
 
 
@@ -618,7 +641,6 @@
         });
     });
 </script>
-
 <script>
     $('#boton_foto').on('click', function() {
         $('#modal_foto').modal({
@@ -717,19 +739,6 @@
 
 
 <script>
-    //Una vez usada la variable de sesion que mantiene el alumno quiero que la olvide
-    $(document).ready(function() {
-        // Olvidar la variable de sesión 'nombre_alumno'
-        @if (session()->has('nombre_alumno'))
-            @php
-                session()->forget('nombre_alumno');
-                session()->forget('id_alumno');
-            @endphp
-        @endif
-    });
-</script>
-
-<script>
     // Función para actualizar la acción del formulario con el ID del alumno
     function updateFormAction(id) {
         var actionUrl = "{{ route('guardar.foto.alumno.registro', ['id' => ':id']) }}";
@@ -741,7 +750,7 @@
 
 
     function selecciona_alumno(id, nombre) {
-
+        console.log(nombre);
         $('#id_alumno').val(id);
         $('#alumno_elegido').val(nombre);
         $('#modal_alumno_elegir').modal('hide');
@@ -765,16 +774,31 @@
 
     // Controlador de evento de clic para el botón de envío
     document.getElementById('submitButton').addEventListener('click', function() {
-        // Obtener el ID del alumno
-        var idAlumno = document.getElementById('id_alumno').value;
-        // Actualizar la acción del formulario
-        updateFormAction(idAlumno);
 
-        // Enviar el formulario
-        document.getElementById('formFoto').submit();
-        $('#modal_foto').modal('hide');
-    });
+                var formFoto = document.getElementById('formFoto');
+                var formData = new FormData(formFoto);
+
+                // Obtener el ID del alumno
+                var idAlumno = document.getElementById('id_alumno').value;
+                // Actualizar la acción del formulario
+                updateFormAction(idAlumno);
+                $.ajax({
+                    url: formFoto.action,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#modal_foto').modal('hide');
+                        // Maneja la respuesta según sea necesario
+                    },
+                    error: function(xhr) {
+                        // Maneja los errores según sea necesario
+                    }
+                });
+            });
 </script>
+
 
 
 <script>
@@ -821,6 +845,7 @@
             var localidad = $('#localidad').val();
             var DNI = $('#DNI').val();
             var fecha_nacimiento = $('#fecha_nacimiento').val();
+            var genero = $('#genero').val(); // Obtener el valor del género
 
             // Crear un objeto FormData y agregar los valores obtenidos
             var formData = new FormData();
@@ -831,6 +856,7 @@
             formData.append('localidad', localidad);
             formData.append('DNI', DNI);
             formData.append('fecha_nacimiento', fecha_nacimiento);
+            formData.append('genero', genero); // Agregar el valor del género
 
             // Mostrar los valores del formulario en la consola
             console.log("El formulario que enviaremos:");
@@ -840,17 +866,23 @@
 
             // Obtener los datos del formulario utilizando jQuery
             //var formData = $('#form_alumno').serialize();
-
             // Enviar los datos por Axios
             //Debido a la configuración del servidor virtual de la escuela de manejo, es importante agregar "index.php" a las rutas al realizar solicitudes por Axios.
-            axios.post('/alta_alumno', formData)
+            // axios.post('/alta_alumno', formData)
+            // axios.post("{{ url('/test_alta_alumno') }}", formData)  
+            //axios.post("{{ url('/alta_alumno') }}", formData)
+            console.log("Dando de alta al nuevo alumno {{ url('/alta_alumno') }}/");
+            axios.post("{{ url('/alta_alumno') }}", formData)
                 .then(function(response) {
                     // Manejar la respuesta del servidor
-                    for (var key in response.data) {
-                        console.log(key + ": " + response.data[key]);
-                    }
                     console.log(response.data);
-                    //debugger;
+                    
+                    // Obtener el ID del nuevo alumno desde la respuesta
+                    var nuevoAlumnoId = response.data.id;
+                    console.log("nuevo alumno id  " + nuevoAlumnoId);
+                    // Actualizar el campo "id alumno" en el formulario principal
+                    $('#id_alumno').val(nuevoAlumnoId);
+                    $('#alumno_elegido').val(nombre);
                     // Cerrar el modal después de enviar los datos
                     $('#modal_alumno').modal('hide');
                 })
@@ -922,5 +954,8 @@
 
     });
 </script>
+
+
+
 
 @stop

@@ -157,6 +157,7 @@ class informes_tesoreria extends Controller
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe',
+                     'ingresos_cursos.tipo_pago',
                      'ingresos_cursos.detalle'
                      ]))
             ->toJson();   
@@ -241,6 +242,7 @@ class informes_tesoreria extends Controller
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe',
+                     'ingresos_cursos.tipo_pago',
                      'ingresos_cursos.detalle',
                      'empleados.nombre' ]))
             ->toJson();   

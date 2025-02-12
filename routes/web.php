@@ -1,6 +1,8 @@
 <?php
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+
 use App\AlumnoEvento;
 
 /*
@@ -26,6 +28,12 @@ Route::get('/Alumnos_curso', 'App\Http\Controllers\voyager\Alumnos_CursosControl
 //|##############################################|
 //|           Calendario del alumno              |
 //|##############################################|
+Route::get('/check-env', function () {
+    return env('APP_URL');
+});
+
+
+
 Route::get('/calendario/{idAlumnoCurso}', 'App\Http\Controllers\CalendarioController@index');
 Route::get('/calendario_modificar/', 'App\Http\Controllers\CalendarioController@calendario_modificar')->name('calendario.modificar');;
 Route::get('/calendario/mostrar', 'App\Http\Controllers\CalendarioController@show');
@@ -68,6 +76,19 @@ Route::group(['prefix' => 'admin'], function () {
 Route::get('/egresos_por_sucursal/{sucursal}', 'App\Http\Controllers\voyager\EgresosController@egresos_por_sucursal');
 Route::get('/cursos_activos/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_activos');
 Route::get('/cursos_terminados/{sucursal}', 'App\Http\Controllers\voyager\Alumnos_CursosController@alumnos_por_sucursal_terminados');
+
+
+
+Route::post('/test_alta_alumno', function (Request $request) {
+    // Obtener todos los datos enviados
+    $data = $request->all();
+
+    // Devolver los datos en formato JSON
+    return response()->json($data);
+});
+
+
+
 Route::post('/alta_alumno', 'App\Http\Controllers\voyager\Alumnos_CursosController@alta_alumno');
 Route::get('/create_pago_alumno/{id_alumno_curso}', 'App\Http\Controllers\IngresosCursosController@create_pago_cursos');
 
@@ -142,8 +163,12 @@ Route::get('/asistencia-alumno-curso', [App\Http\Controllers\AsistenciaCamaraCon
 Route::post('/procesar-asistencia', [App\Http\Controllers\AsistenciaCamaraController::class, 'procesarAsistencia'])->name('procesar.asistencia');
 Route::get('/cargar-foto-alumno', function () { return view('vendor.voyager.alumnos-cursos.cargar_foto');})->name('alumno.cargar.foto');
 
-Route::get('/cargar-foto-alumno/{id}', [App\Http\Controllers\AsistenciaCamaraController::class, 'mostrarCargarFoto'])->name('alumno.cargar.foto');
+
 Route::post('/guardar-foto-alumno-registro/{id}', [App\Http\Controllers\AsistenciaCamaraController::class, 'guardaFotoAlumno'])->name('guardar.foto.alumno.registro');
+Route::get('/get-alumno/{id}', [App\Http\Controllers\AsistenciaCamaraController::class, 'get_alumno'])->name('alumno.get_alumno');
+
+
+
 Voyager::routes();
 
 Route::get('/dashboard', 'CustomDashboardController@index')->name('voyager.dashboard.custom');

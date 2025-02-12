@@ -57,7 +57,7 @@ class Calendario_instructorController extends Controller
         ->join('alumno_evento','instructores.id','=','alumno_evento.id_instructor')
         ->join('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
         ->where('alumnos_cursos.id_sucursal','=', $sucursal)
-       //->where('alumno_evento.start_date','>=', $hoy)
+        ->where('instructores.activo','=','SI')
         ->groupBy('instructores.id','instructores.nombre')
         ->select([  'instructores.id','instructores.nombre',
                      DB::raw('COUNT(alumno_evento.id) AS clases'),

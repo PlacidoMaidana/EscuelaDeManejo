@@ -151,7 +151,7 @@ $('#totales').dataTable( {
 
 <script>
    function excelExport()   {
-    window.location.href = '/informes_tesoreria/caja_export/'+$("#fecha").val()+'/'+{{$operador}};
+    window.location.href = '/index.php/informes_tesoreria/caja_export/'+$("#fecha").val()+'/'+{{$operador}};
    }
 </script>
 @stop
