@@ -39,11 +39,18 @@
               <admin-menu :items="{{menu('Administrativo','my_menu') }}"></admin-menu>       
                 @else
                 @if(Auth::user()->getRole($uid)=="Instructor")
-                   <admin-menu :items="{{menu('Instructor','my_menu') }}"></admin-menu>                       
+                   <admin-menu :items="{{menu('Instructor','my_menu') }}"></admin-menu>   
                    @else
-                   <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>
+                   @if(Auth::user()->getRole($uid)=="Alumno")
+                        <admin-menu :items="{{menu('Alumno','my_menu') }}"></admin-menu>               
+                       @else
+                        <admin-menu :items="{{ menu('admin', '_json') }}"></admin-menu>
+                   @endif
+                   
                 @endif
-            @endif       
+            @endif  
+            
+            
         </div>
     </nav>
 </div>

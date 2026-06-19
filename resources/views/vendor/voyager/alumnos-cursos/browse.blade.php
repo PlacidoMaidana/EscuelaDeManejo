@@ -69,7 +69,7 @@
                             </tfoot>
                         </table>                
                         
-                        <h3 id="SaldoTotal"></h3>
+                        
                                                                                                                                                                                                                            
                     </div>
                     <div id="menu1" class="tab-pane fade">
@@ -139,6 +139,13 @@
 //+=====================================================================================================
 
     $(document).ready(function() {
+        var sucursal = '{{ $sucursal ?? '' }}';
+        if (!sucursal) {
+            console.error('Sucursal no definida. Asegurate de estar autenticado y que $sucursal se pase a la vista.');
+            alert('Sucursal no definida. Inicia sesión o verifica el valor de $sucursal.');
+            return;
+        }
+        console.info('Inicializando DataTable cursos_activos con sucursal:', sucursal);
         $('#cursos_activos').dataTable( {
              "serverSide": true,
              "scrollCollapse": true,
@@ -148,7 +155,16 @@
              "responsive": true,
              "colReorder": true,
              "orderCellsTop": true,
-             "ajax":" {{url('cursos_activos/')}}/{{$sucursal}}",                
+            "ajax": {
+                "url": "{{ url('cursos_activos/') }}" + '/' + sucursal,
+                "type": "GET",
+                "error": function(xhr, status, error) {
+                    console.error('AJAX Error - cursos_activos:', status, error);
+                    console.error(xhr.responseText);
+                    var message = 'Error loading cursos_activos: HTTP ' + xhr.status + '\nSee console for response.';
+                    alert(message);
+                }
+            },
              "columns":[
                      {data: 'check', width: '5%'},
                      {data: 'idAlumnoCurso', name: 'alumnos_cursos.id', width: '10%'},
@@ -175,7 +191,7 @@
                              return intVal(a) + intVal(b);
                          }, 0);
                      
-                         $("#SaldoTotal").html('Total Saldos: ' + totalSaldos.toFixed(2));
+                        // $("#SaldoTotal").html('Total Saldos: ' + totalSaldos.toFixed(2));
                          //$(api.column(7).footer()).html('Total Saldos: ' + totalSaldos.toFixed(2));
                      }    
                
@@ -186,6 +202,12 @@
 </script> 
 <script>
     $(document).ready(function() {
+        var sucursal2 = '{{ $sucursal ?? '' }}';
+        if (!sucursal2) {
+            // already alerted above for cursos_activos; avoid duplicate
+            return;
+        }
+        console.info('Inicializando DataTable cursos_terminados with sucursal:', sucursal2);
         $('#cursos_terminados').dataTable( {
              "serverSide": true,
              "scrollCollapse": true,
@@ -195,7 +217,16 @@
              "responsive": true,
              "colReorder": true,
              "orderCellsTop": true,
-             "ajax":"{{url('cursos_terminados/')}}/{{$sucursal}}",                
+             "ajax": {
+                "url": "{{ url('cursos_terminados/') }}" + '/' + sucursal2,
+                "type": "GET",
+                "error": function(xhr, status, error) {
+                    console.error('AJAX Error - cursos_terminados:', status, error);
+                    console.error(xhr.responseText);
+                    var message = 'Error loading cursos_terminados: HTTP ' + xhr.status + '\nSee console for response.';
+                    alert(message);
+                }
+            },
              "columns":[
                      {data: 'check', width: '5%'},
                      {data: 'idAlumnoCurso', name: 'alumnos_cursos.id', width: '10%'},

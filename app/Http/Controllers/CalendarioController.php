@@ -17,7 +17,8 @@ class CalendarioController extends Controller
 
     public function index($idAlumnoCurso)
     {
-      
+        $sucursal = auth()->user()->id_sucursal;
+
         
       /*  $all_events = DB::table('alumno_evento')
         ->join('instructores','alumno_evento.id_instructor','=','instructores.id')
@@ -38,7 +39,8 @@ class CalendarioController extends Controller
        
         $registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
         $franjasHorarias = DB::table('franjas_horarias')->get();
-        $instructores = DB::table('instructores')->get();
+        $instructores = DB::table('instructores')->where('instructores.activo','=','SI')->where('instructores.id_sucursal', $sucursal)->get();
+      //  $instructores = DB::table('instructores')->where('instructores.activo','=','SI')->get();
         $vehiculos = DB::table('vehiculos')->get();
         $tipos_eventos = DB::table('tipos_eventos')->get();
         $numero_clases = DB::table('alumnos_cursos')
@@ -81,9 +83,12 @@ class CalendarioController extends Controller
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public function calendario_modificar()
 {
+    $sucursal = auth()->user()->id_sucursal;
+
     //$registro_AlumnoCurso = DB::table('alumnos_cursos')->find($idAlumnoCurso);
     $franjasHorarias = DB::table('franjas_horarias')->get();
-    $instructores = DB::table('instructores')->get();
+    $instructores = DB::table('instructores')->where('instructores.activo','=','SI')->where('instructores.id_sucursal', $sucursal)->get();
+   // $instructores = DB::table('instructores')->get();
     $vehiculos = DB::table('vehiculos')->get();
     $tipos_eventos = DB::table('tipos_eventos')->get();
     
@@ -357,8 +362,21 @@ public function calendario_modificar()
 
     public function update(Request $request, AlumnoEvento $evento)
     {
-        request()->validate(AlumnoEvento::$rules);
-        $evento->update($request->all());
+        $request->validate(AlumnoEvento::$rules);
+
+        $evento->update([
+            'clase'              => $request->input('clase'),
+            'start_date'         => $request->input('start_date'),
+            'end_date'           => $request->input('end_date'),
+            'id_alumno_curso'    => $request->input('idAlumnoCurso'),
+            'id_franja_horaria'  => $request->input('franja_horaria'),   // Mapeo
+            'id_vehiculo'        => $request->input('vehiculos'),        // Mapeo
+            'id_instructor'      => $request->input('instructores'),     // Mapeo
+            'asistencia'         => $request->input('asistencia'),
+            'descripcion'        => $request->input('descripcion'),
+            'id_tipo_evento'     => $request->input('tipos_eventos'),    // Mapeo
+        ]);
+
         return response()->json($evento);
     }
 

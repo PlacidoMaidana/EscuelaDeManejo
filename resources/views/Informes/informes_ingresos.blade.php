@@ -37,6 +37,7 @@
         <th>Operador caja</th> 
         <th>Modalidad Pago</th>
         <th>Importe</th>  
+        <th>Tipo Pago</th>  
         <th>Detalle</th> 
       </tr>
      </thead>
@@ -107,6 +108,7 @@
             {data: 'name', name:'users.name', width: '10%'},
             {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+            {data: 'tipo_pago', name: 'ingresos_cursos.tipo_pago', width: '10%'},
             {data: 'detalle', name: 'ingresos_cursos.detalle', width: '10%'},
              ]        
 });
@@ -147,7 +149,7 @@ var filtrosaldos_sucursal ="{{url('/informe_saldos_sucursal/')}}";
 
 <script>
    function excelExport()   {
-    window.location.href = '/informes_tesoreria/ing_export/'+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
+    window.location.href = '/index.php/informes_tesoreria/ing_export/'+$("#fecha_desde").val()+'/'+$("#fecha_hasta").val();
    }
 </script>
 @stop

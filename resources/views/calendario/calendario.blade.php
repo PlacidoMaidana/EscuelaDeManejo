@@ -293,9 +293,10 @@
                    selectFranjaHoraria.value = franjasHorarias[i].id;
                    console.log("entro al if");
                    // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
+                  //    url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
                   
                              $.ajax({
-                               url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
+                               url: '/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
                                method: 'GET',
                                success: function(response) {
                                  // Actualizar los campos de fecha en el formulario del evento
@@ -381,8 +382,12 @@
               }
             return;*/
             
-            
-            axios.post("{{url('/calendario/agregar')}}/", datos)
+            console.log("Esta es la url llamada   {{url('/calendario/agregar')}}");
+            //axios.post("{{url('/calendario/agregar')}}/", datos)
+
+           
+          
+            axios.post("https://gestion.autoescuelachaco.com.ar/calendario/agregar", datos)
             .then(
                 (respuesta)=>{
                   console.log("Luego de volver");
@@ -407,7 +412,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
             // console.log(datos.get('start_date'));
             // console.log(formulario.clase.value);
            
-            axios.post("http://127.0.0.1:8000/calendario/borrar/"+formulario.id.value)
+            axios.post("{{url('/calendario/borrar/')}}/"+formulario.id.value)
             .then(
                 (respuesta)=>{  
                     calendar.refetchEvents();
@@ -435,7 +440,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
                 console.log(pair[0] + ': ' + pair[1]);
               }
                        
-            axios.post("http://127.0.0.1:8000/calendario/actualizar/"+formulario.id.value , datos)
+            axios.post("{{url('calendario/actualizar/')}}/"+formulario.id.value , datos)
              .then(
               (respuesta)=>{
                console.log("La respuesta es: ");
@@ -574,9 +579,10 @@ dateClick:function(info){
                  selectFranjaHoraria.value = franjasHorarias[i].id;
                  console.log("entro al if");
                  // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
-              
+                 // url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
+                     
                            $.ajax({
-                             url: '/index.php/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
+                             url: '/calendario/obtener_fechas/' + franjasHorarias[i].id +'/'+dateStr.val(),
                              method: 'GET',
                              success: function(response) {
                                // Actualizar los campos de fecha en el formulario del evento
@@ -689,9 +695,10 @@ dateClick:function(info){
 
     
     // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
-     
+     // url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
+      
       $.ajax({
-        url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
+        url: '/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
         method: 'GET',
         success: function(response) {
           // Actualizar los campos de fecha en el formulario del evento
@@ -733,9 +740,10 @@ dateClick:function(info){
 
     
   // Realizar la solicitud AJAX para obtener los valores de start_date y end_date
-     
+     // url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
+      
       $.ajax({
-        url: '/index.php/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
+        url: '/calendario/obtener_fechas/' + franjaHorariaSeleccionada +'/'+fechaEvento,
         method: 'GET',
         success: function(response) {
           // Actualizar los campos de fecha en el formulario del evento

@@ -23,6 +23,7 @@ use PDF;
 use App\Exports\seguimiento_clasesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Support\Facades\Log; // Importar la clase Log
 
 
 
@@ -42,6 +43,12 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
     //
     //****************************************
 
+    /*
+    public function Alumnos() {
+        // Seleccionar todos los estudiantes cuyo nombre comience con 'A'
+       return $students = Alumno::all();
+        
+    }*/
     public function index(Request $request)
     {
         // GET THE SLUG, ex. 'posts', 'pages', etc.
@@ -73,9 +80,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         if (strlen($dataType->model_name) != 0) {
             $model = app($dataType->model_name);
 
-            $query = $model::select($dataType->name.'.*');
+            $query = $model::select($dataType->name . '.*');
 
-            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
                 $query->{$dataType->scope}();
             }
 
@@ -94,9 +101,9 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
             if ($search->value != '' && $search->key && $search->filter) {
                 $search_filter = ($search->filter == 'equals') ? '=' : 'LIKE';
-                $search_value = ($search->filter == 'equals') ? $search->value : '%'.$search->value.'%';
+                $search_value = ($search->filter == 'equals') ? $search->value : '%' . $search->value . '%';
 
-                $searchField = $dataType->name.'.'.$search->key;
+                $searchField = $dataType->name . '.' . $search->key;
                 if ($row = $this->findSearchableRelationshipRow($dataType->rows->where('type', 'relationship'), $search->key)) {
                     $query->whereIn(
                         $searchField,
@@ -114,12 +121,12 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
                 $querySortOrder = (!empty($sortOrder)) ? $sortOrder : 'desc';
                 if (!empty($row)) {
                     $query->select([
-                        $dataType->name.'.*',
-                        'joined.'.$row->details->label.' as '.$orderBy,
+                        $dataType->name . '.*',
+                        'joined.' . $row->details->label . ' as ' . $orderBy,
                     ])->leftJoin(
-                        $row->details->table.' as joined',
-                        $dataType->name.'.'.$row->details->column,
-                        'joined.'.$row->details->key
+                        $row->details->table . ' as joined',
+                        $dataType->name . '.' . $row->details->column,
+                        'joined.' . $row->details->key
                     );
                 }
 
@@ -183,18 +190,18 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             $index = $dataType->browseRows->where('field', $orderBy)->keys()->first() + ($showCheckboxColumn ? 1 : 0);
             $orderColumn = [[$index, $sortOrder ?? 'desc']];
         }
-       //dd('alumnos_cursosss');
+        //dd('alumnos_cursosss');
         // Define list of columns that can be sorted server side
         $sortableColumns = $this->getSortableColumns($dataType->browseRows);
-       //*****************
-       // Averigua sucursal y filtra datos de alumnos por sucursal
-       // *************
+        //*****************
+        // Averigua sucursal y filtra datos de alumnos por sucursal
+        // *************
         $user = Auth::user();
-        $sucursal=$user->id_sucursal;
+        $sucursal = $user->id_sucursal;
         // ******************
 
         $view = 'voyager::bread.browse';
-        
+
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
@@ -218,34 +225,53 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
             'sucursal'
         ));
     }
-     
+
     public function alta_alumno(Request $request)
     {
+        // Validar los datos
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'mail' => 'required|email|max:255',
+            'telefono' => 'required|string|max:20',
+            'localidad' => 'required|integer',
+            'DNI' => 'required|string|max:20',
+            'fecha_nacimiento' => 'required|date',
+            'genero' => 'required|string|in:F,M', // Validar el género como 'F' o 'M'
+        ]);
 
-    $data = $request->all(); // Obtener todos los datos de la solicitud
+        try {
+            Log::info('Datos validados correctamente', $validatedData);
 
-    $alumno = new Alumno;
-    $alumno->nombre = $data['nombre'];
-    $alumno->direccion = $data['direccion'];
-    $alumno->mail = $data['mail'];
-    $alumno->telefono = $data['telefono'];
-    $alumno->telefono = $data['telefono'];
-    $alumno->DNI = $data['DNI'];
-    $alumno->fecha_nacimiento = $data['fecha_nacimiento'];
-    $alumno->id_localidad = $data['localidad'];
+            // Crear un nuevo alumno
+            $alumno = new Alumno;
+            $alumno->nombre = $validatedData['nombre'];
+            $alumno->direccion = $validatedData['direccion'];
+            $alumno->mail = $validatedData['mail'];
+            $alumno->telefono = $validatedData['telefono'];
+            $alumno->DNI = $validatedData['DNI'];
+            $alumno->fecha_nacimiento = $validatedData['fecha_nacimiento'];
+            $alumno->id_localidad = $validatedData['localidad'];
+            $alumno->genero = $validatedData['genero']; // Asignar el género
 
-                          
-    $alumno->save();
+            Log::info('Guardando el alumno', $alumno->toArray());
 
+            // Guardar el alumno
+            $alumno->save();
 
-        // Imprimir información utilizando var_dump()
-    var_dump($request->all());
-        return response()->json([
-            'request' => $request->input(),
-            'message' => 'Success'
-        ], 200);
-
+            // Devolver la respuesta con el código del nuevo alumno creado
+            return response()->json([
+                'request' => $request->input(),
+                'id' => $alumno->id,
+                'message' => 'Success'
+            ], 200);
+        } catch (\Exception $e) {
+            // Manejar cualquier error que ocurra durante el proceso
+            Log::error('Error al guardar el alumno', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Error al guardar el alumno: ' . $e->getMessage()], 500);
+        }
     }
+
 
     /////////////////////
     public function lista_pagos_alumnos($id_alumno_curso)
@@ -257,75 +283,81 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
 
 
-        return view('voyager::ingresos-cursos.pagos_alumno_browse', compact(['id_alumno_curso','slug','dataType']));
-      
+        return view('voyager::ingresos-cursos.pagos_alumno_browse', compact(['id_alumno_curso', 'slug', 'dataType']));
     }
     public function pagos_alumnos($id_alumno_curso)
     {
-      return $datos = datatables()->of(DB::table('ingresos_cursos') 
-     ->join('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
-     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-     ->where('alumnos_cursos.id','=', $id_alumno_curso)
-     ->select([ 'ingresos_cursos.id',
+        return $datos = datatables()->of(DB::table('ingresos_cursos')
+            ->join('alumnos_cursos', 'ingresos_cursos.id_alumno_curso', '=', 'alumnos_cursos.id')
+            ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+            ->join('cursos', 'alumnos_cursos.id_curso', '=', 'cursos.id')
+            ->where('alumnos_cursos.id', '=', $id_alumno_curso)
+            ->select([
+                'ingresos_cursos.id',
                 'alumnos_cursos.id as id_Alumno_Curso',
                 'alumnos.nombre as nombre_alumno',
                 'cursos.nombre_curso',
                 'ingresos_cursos.fecha',
                 'ingresos_cursos.modalidad_pago',
                 'ingresos_cursos.importe',
+                'ingresos_cursos.tipo_pago',
                 'ingresos_cursos.detalle',
-                 ]))  
-                 ->addColumn('accion','vendor/voyager/ingresos-cursos/acciones_pagos')
-                 ->rawColumns(['accion'])  
-    ->toJson();   
+            ]))
+            ->addColumn('accion', 'vendor/voyager/ingresos-cursos/acciones_pagos')
+            ->rawColumns(['accion'])
+            ->toJson();
     }
 
-////////////////
-public function recibo_cobranza($id){
+    ////////////////
+    public function recibo_cobranza($id)
+    {
 
-    //$texto="esto es el texto de la nota";
-    $datoscobranza= (DB::table('ingresos_cursos') 
-    ->join('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
-    ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-    ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-    ->where('ingresos_cursos.id','=', $id)
-    ->select([ 'ingresos_cursos.id',
-               'alumnos_cursos.id as id_Alumno_Curso',
-               'alumnos_cursos.precio',
-               'alumnos.nombre as nombre_alumno',
-               'alumnos.DNI',
-               'alumnos.direccion',
-               'cursos.nombre_curso',
-               'cursos.caracteristicas',
-               'ingresos_cursos.fecha',
-               'ingresos_cursos.modalidad_pago',
-               'ingresos_cursos.importe',
-               'ingresos_cursos.detalle',
-                ]))        
-    ->first();
-    
-    $id_sucursal = auth()->user()->id_sucursal;
-    $datossucursal= (DB::table('sucursales') 
-    ->where('sucursales.id','=', $id_sucursal)
-    ->select([ 'sucursales.id',
-               'sucursales.direccion',
-               'sucursales.telefono',
-               'sucursales.celular',
-               ]))        
-    ->first();
-    $Total_cobrado = IngresosCurso::where('id_alumno_curso', $datoscobranza->id_Alumno_Curso)
-             ->sum('importe');
-    
-    $saldo = $datoscobranza->precio - $Total_cobrado;
-    // $nombre_sucursal = DB::table('')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+        //$texto="esto es el texto de la nota";
+        $datoscobranza = (DB::table('ingresos_cursos')
+            ->join('alumnos_cursos', 'ingresos_cursos.id_alumno_curso', '=', 'alumnos_cursos.id')
+            ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+            ->join('cursos', 'alumnos_cursos.id_curso', '=', 'cursos.id')
+            ->where('ingresos_cursos.id', '=', $id)
+            ->select([
+                'ingresos_cursos.id',
+                'alumnos_cursos.id as id_Alumno_Curso',
+                'alumnos_cursos.precio',
+                'alumnos.nombre as nombre_alumno',
+                'alumnos.DNI',
+                'alumnos.direccion',
+                'cursos.nombre_curso',
+                'cursos.caracteristicas',
+                'ingresos_cursos.fecha',
+                'ingresos_cursos.modalidad_pago',
+                'ingresos_cursos.importe',
+                'ingresos_cursos.tipo_pago',
+                'ingresos_cursos.detalle',
+            ]))
+            ->first();
 
-     
-      $pdf = PDF::loadView("vendor.voyager.ingresos-cursos.recibo",
-      compact('id','datoscobranza','datossucursal','saldo','Total_cobrado'));
-      return $pdf->stream('recibo.pdf');
+        $id_sucursal = auth()->user()->id_sucursal;
+        $datossucursal = (DB::table('sucursales')
+            ->where('sucursales.id', '=', $id_sucursal)
+            ->select([
+                'sucursales.id',
+                'sucursales.direccion',
+                'sucursales.telefono',
+                'sucursales.celular',
+            ]))
+            ->first();
+        $Total_cobrado = IngresosCurso::where('id_alumno_curso', $datoscobranza->id_Alumno_Curso)
+            ->sum('importe');
 
- }
+        $saldo = $datoscobranza->precio - $Total_cobrado;
+        // $nombre_sucursal = DB::table('')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+
+
+        $pdf = PDF::loadView(
+            "vendor.voyager.ingresos-cursos.recibo",
+            compact('id', 'datoscobranza', 'datossucursal', 'saldo', 'Total_cobrado')
+        );
+        return $pdf->stream('recibo.pdf');
+    }
 
     //////////////////////
 
@@ -333,20 +365,20 @@ public function recibo_cobranza($id){
     {
 
         return view('voyager::alumno-evento.clases_alumno_browse', compact('id_alumno_curso'));
-      
     }
     public function seguimiento_clases_alumnos($id_alumno_curso)
     {
-      return $datos = datatables()->of(DB::table('alumno_evento') 
-     ->join('alumnos_cursos','alumno_evento.id_alumno_curso','=','alumnos_cursos.id')
-     ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-     ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-     ->leftjoin('instructores','alumno_evento.id_instructor','=','instructores.id')
-     ->leftjoin('tipos_eventos','alumno_evento.id_tipo_evento','=','tipos_eventos.id')
-     ->leftjoin('franjas_horarias','alumno_evento.id_franja_horaria','=','franjas_horarias.id')
-     ->where('alumnos_cursos.activo','=','SI')
-     ->where('alumnos_cursos.id','=', $id_alumno_curso)
-     ->select([ 'alumno_evento.id',
+        return $datos = datatables()->of(DB::table('alumno_evento')
+            ->join('alumnos_cursos', 'alumno_evento.id_alumno_curso', '=', 'alumnos_cursos.id')
+            ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+            ->join('cursos', 'alumnos_cursos.id_curso', '=', 'cursos.id')
+            ->leftjoin('instructores', 'alumno_evento.id_instructor', '=', 'instructores.id')
+            ->leftjoin('tipos_eventos', 'alumno_evento.id_tipo_evento', '=', 'tipos_eventos.id')
+            ->leftjoin('franjas_horarias', 'alumno_evento.id_franja_horaria', '=', 'franjas_horarias.id')
+            ->where('alumnos_cursos.activo', '=', 'SI')
+            ->where('alumnos_cursos.id', '=', $id_alumno_curso)
+            ->select([
+                'alumno_evento.id',
                 'alumnos_cursos.id as id_Alumno_Curso',
                 'alumnos.nombre as nombre_alumno',
                 'cursos.nombre_curso',
@@ -357,100 +389,98 @@ public function recibo_cobranza($id){
                 'instructores.nombre as nombre_instructor',
                 'alumno_evento.asistencia',
                 'franjas_horarias.descripcion',
-              ]))  
-              ->addColumn('check','vendor/voyager/alumno-evento/check')
-              ->rawColumns(['check'])  
-    ->toJson();   
+            ]))
+            ->addColumn('check', 'vendor/voyager/alumno-evento/check')
+            ->rawColumns(['check'])
+            ->toJson();
     }
 
-    public function export($id_alumno_curso) 
+    public function export($id_alumno_curso)
     {
-      $aa = new seguimiento_clasesExport();
-      $aa->id_alumno_curso=$id_alumno_curso;
-      return Excel::download($aa, 'seguimiento_clases_programadas.xlsx');
-     // dd($aa)  ;
+        $aa = new seguimiento_clasesExport();
+        $aa->id_alumno_curso = $id_alumno_curso;
+        return Excel::download($aa, 'seguimiento_clases_programadas.xlsx');
+        // dd($aa)  ;
 
-    } 
+    }
 
     public function alumnos_por_sucursal_activos($sucursal)
     {
-      return $datos = datatables()->of(DB::table('alumnos_cursos')
-    ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
-    ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-    ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-    ->leftjoin('empleados','alumnos_cursos.id_vendedor','=','empleados.id')
-    ->where('alumnos_cursos.activo','=', 'SI')
-    ->where('alumnos_cursos.id_sucursal','=', $sucursal)
-    ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
-    ->orderBy('idAlumnoCurso','DESC')
-    ->select([  'alumnos_cursos.id as idAlumnoCurso',
-                'alumnos_cursos.fecha_inscripcion',
-                'cursos.nombre_curso',
-                'alumnos.nombre as nombre_alumno',
-                'empleados.nombre as nombre_vend',
-                'alumnos_cursos.precio',
-                 DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
-                 DB::raw('alumnos_cursos.precio - SUM(ingresos_cursos.importe) AS saldo'),
-                             
-              ]))  
-              ->filterColumn('cobrado', function($query, $keyword) {
-                $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
-                 }) 
-                 ->filterColumn('saldo', function($query, $keyword) {
-                    $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
-                     }) 
-              ->setRowAttr([
-                'style' => 'background-color: #EFEE06;',      
-                 ]) 
-              ->setRowAttr([
-                    'style' => function($item){          
-                      if ($item->saldo>0) {
-                          return 'background-color: #EFBB07;color:#000000';
-                          
-                      }
-                    }
-                ])   
-              ->addColumn('check','vendor/voyager/alumnos-cursos/check')
-              ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_activos')
-              ->rawColumns(['check','accion'])  
-               
-    ->toJson();  
-   
-    }
-    
-    
-    public function alumnos_por_sucursal_terminados($sucursal)
-    {
-       
-
-  return $datos = datatables()->of(DB::table('alumnos_cursos')
-    ->leftjoin('ingresos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
-    ->join('alumnos','alumnos_cursos.id_alumno','=','alumnos.id')
-    ->join('cursos','alumnos_cursos.id_curso','=','cursos.id')
-    ->leftjoin('empleados','alumnos_cursos.id_vendedor','=','empleados.id')
-    ->where('alumnos_cursos.activo','=', 'NO')
-    ->where('alumnos_cursos.id_sucursal','=', $sucursal)
-    ->groupBy('alumnos_cursos.id','alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso','alumnos.nombre','empleados.nombre','alumnos_cursos.precio')
-    ->orderBy('idAlumnoCurso','DESC')
-    ->select([  'alumnos_cursos.id as idAlumnoCurso',
+        return $datos = datatables()->of(DB::table('alumnos_cursos')
+            ->leftjoin('ingresos_cursos', 'alumnos_cursos.id', '=', 'ingresos_cursos.id_alumno_curso')
+            ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+            ->join('cursos', 'alumnos_cursos.id_curso', '=', 'cursos.id')
+            ->leftjoin('empleados', 'alumnos_cursos.id_vendedor', '=', 'empleados.id')
+            ->where('alumnos_cursos.activo', '=', 'SI')
+            ->where('alumnos_cursos.id_sucursal', '=', $sucursal)
+            ->groupBy('alumnos_cursos.id', 'alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso', 'alumnos.nombre', 'empleados.nombre', 'alumnos_cursos.precio')
+            ->orderBy('idAlumnoCurso', 'DESC')
+            ->select([
+                'alumnos_cursos.id as idAlumnoCurso',
                 'alumnos_cursos.fecha_inscripcion',
                 'cursos.nombre_curso',
                 'alumnos.nombre as nombre_alumno',
                 'empleados.nombre as nombre_vend',
                 'alumnos_cursos.precio',
                 DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
-              ]))  
-              ->filterColumn('cobrado', function($query, $keyword) {
+                DB::raw('alumnos_cursos.precio - SUM(ingresos_cursos.importe) AS saldo'),
+
+            ]))
+            ->filterColumn('cobrado', function ($query, $keyword) {
                 $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
-                 }) 
-            
-              ->addColumn('check','vendor/voyager/alumnos-cursos/check')
-              ->addColumn('accion','vendor/voyager/alumnos-cursos/acciones_cursos_terminados')
-              ->rawColumns(['check','accion'])  
-               
-    ->toJson();   
+            })
+            ->filterColumn('saldo', function ($query, $keyword) {
+                $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
+            })
+            ->setRowAttr([
+                'style' => 'background-color: #EFEE06;',
+            ])
+            ->setRowAttr([
+                'style' => function ($item) {
+                    if ($item->saldo > 0) {
+                        return 'background-color: #EFBB07;color:#000000';
+                    }
+                }
+            ])
+            ->addColumn('check', 'vendor/voyager/alumnos-cursos/check')
+            ->addColumn('accion', 'vendor/voyager/alumnos-cursos/acciones_cursos_activos')
+            ->rawColumns(['check', 'accion'])
+
+            ->toJson();
+    }
 
 
+    public function alumnos_por_sucursal_terminados($sucursal)
+    {
+
+
+        return $datos = datatables()->of(DB::table('alumnos_cursos')
+            ->leftjoin('ingresos_cursos', 'alumnos_cursos.id', '=', 'ingresos_cursos.id_alumno_curso')
+            ->join('alumnos', 'alumnos_cursos.id_alumno', '=', 'alumnos.id')
+            ->join('cursos', 'alumnos_cursos.id_curso', '=', 'cursos.id')
+            ->leftjoin('empleados', 'alumnos_cursos.id_vendedor', '=', 'empleados.id')
+            ->where('alumnos_cursos.activo', '=', 'NO')
+            ->where('alumnos_cursos.id_sucursal', '=', $sucursal)
+            ->groupBy('alumnos_cursos.id', 'alumnos_cursos.fecha_inscripcion', 'cursos.nombre_curso', 'alumnos.nombre', 'empleados.nombre', 'alumnos_cursos.precio')
+            ->orderBy('idAlumnoCurso', 'DESC')
+            ->select([
+                'alumnos_cursos.id as idAlumnoCurso',
+                'alumnos_cursos.fecha_inscripcion',
+                'cursos.nombre_curso',
+                'alumnos.nombre as nombre_alumno',
+                'empleados.nombre as nombre_vend',
+                'alumnos_cursos.precio',
+                DB::raw('SUM(ingresos_cursos.importe) AS cobrado'),
+            ]))
+            ->filterColumn('cobrado', function ($query, $keyword) {
+                $query->whereRaw("alumnos_cursos.precio = ?", $keyword);
+            })
+
+            ->addColumn('check', 'vendor/voyager/alumnos-cursos/check')
+            ->addColumn('accion', 'vendor/voyager/alumnos-cursos/acciones_cursos_terminados')
+            ->rawColumns(['check', 'accion'])
+
+            ->toJson();
     }
 
     //***************************************
@@ -481,7 +511,7 @@ public function recibo_cobranza($id){
             if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
                 $query = $query->withTrashed();
             }
-            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
                 $query = $query->{$dataType->scope}();
             }
             $dataTypeContent = call_user_func([$query, 'findOrFail'], $id);
@@ -531,8 +561,8 @@ public function recibo_cobranza($id){
 
     public function edit(Request $request, $id)
     {
-        $cursos= Curso::all();
-        $localidades=Localidad::all();
+        $cursos = Curso::all();
+        $localidades = Localidad::all();
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -545,7 +575,7 @@ public function recibo_cobranza($id){
             if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
                 $query = $query->withTrashed();
             }
-            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
                 $query = $query->{$dataType->scope}();
             }
             $dataTypeContent = call_user_func([$query, 'findOrFail'], $id);
@@ -576,26 +606,40 @@ public function recibo_cobranza($id){
             $view = "voyager::$slug.edit-add";
         }
 
-        $datos_alumno= DB::table ('alumnos')
-        -> join ('alumnos_cursos','alumnos.id','=','alumnos_cursos.id_alumno')
-        -> where('alumnos_cursos.id' , '=' ,$id)
-        -> select(['alumnos.id','alumnos.nombre','alumnos_cursos.id_sucursal' ])           
-       ->first();
-       //dd($datos_cliente);
-       $id_alumno = $datos_alumno->id;
-       $nombre_alumno=$datos_alumno->nombre;
-       $sucursal = $datos_alumno->id_sucursal;
-       $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+        $datos_alumno = DB::table('alumnos')
+            ->join('alumnos_cursos', 'alumnos.id', '=', 'alumnos_cursos.id_alumno')
+            ->where('alumnos_cursos.id', '=', $id)
+            ->select(['alumnos.id', 'alumnos.nombre', 'alumnos_cursos.id_sucursal'])
+            ->first();
+        //dd($datos_cliente);
+        $id_alumno = $datos_alumno->id;
+        $nombre_alumno = $datos_alumno->nombre;
+        $sucursal = $datos_alumno->id_sucursal;
+        $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where('id', '=', $sucursal)->get();
+        $comerciales_activos = DB::table('empleados')->select(['id', 'nombre'])->where('estado', '=', "Alta")->get();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent',
-         'isModelTranslatable','id_alumno', 'nombre_alumno','cursos','localidades',
-         'nombre_sucursal','sucursal'));
+        return Voyager::view($view, compact(
+            'dataType',
+            'dataTypeContent',
+            'isModelTranslatable',
+            'id_alumno',
+            'nombre_alumno',
+            'cursos',
+            'localidades',
+            'nombre_sucursal',
+            'sucursal',
+            'comerciales_activos'
+        ));
     }
 
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
-       
+
+         // Ver los datos que llegan al controlador
+        // dd($request->all());
+
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -605,7 +649,7 @@ public function recibo_cobranza($id){
 
         $model = app($dataType->model_name);
         $query = $model->query();
-        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
             $query = $query->{$dataType->scope}();
         }
         if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
@@ -624,7 +668,7 @@ public function recibo_cobranza($id){
             ->filter(function ($item, $key) use ($request) {
                 return $request->hasFile($item->field);
             });
-        $original_data = clone($data);
+        $original_data = clone ($data);
 
         $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
@@ -640,7 +684,7 @@ public function recibo_cobranza($id){
         }
 
         return $redirect->with([
-            'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+            'message'    => __('voyager::generic.successfully_updated') . " {$dataType->getTranslatedAttribute('display_name_singular')}",
             'alert-type' => 'success',
         ]);
     }
@@ -660,9 +704,9 @@ public function recibo_cobranza($id){
 
     public function create(Request $request)
     {
-        $cursos= Curso::all();
-        $localidades=Localidad::all();
-        
+        $cursos = Curso::all();
+        $localidades = Localidad::all();
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -671,8 +715,8 @@ public function recibo_cobranza($id){
         $this->authorize('add', app($dataType->model_name));
 
         $dataTypeContent = (strlen($dataType->model_name) != 0)
-                            ? new $dataType->model_name()
-                            : false;
+            ? new $dataType->model_name()
+            : false;
 
         foreach ($dataType->addRows as $key => $row) {
             $dataType->addRows[$key]['col_width'] = $row->details->width ?? 100;
@@ -693,17 +737,28 @@ public function recibo_cobranza($id){
             $view = "voyager::$slug.edit-add";
         }
 
-        $id_alumno=1;
-        $nombre_alumno='';
+        $id_alumno = 1;
+        $nombre_alumno = '';
         //*****************
-       // Averigua sucursal 
-       // *************
+        // Averigua sucursal 
+        // *************
         $user = Auth::user();
-        $sucursal=$user->id_sucursal;
-        $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where ('id','=',$sucursal)->get();
+        $sucursal = $user->id_sucursal;
+        $nombre_sucursal = DB::table('sucursales')->select(['sucursal'])->where('id', '=', $sucursal)->get();
+        $comerciales_activos = DB::table('empleados')->select(['id', 'nombre'])->where('estado', '=', "Alta")->get();
         // ******************
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable',
-        'id_alumno','nombre_alumno','cursos','sucursal','localidades','nombre_sucursal'));
+        return Voyager::view($view, compact(
+            'dataType',
+            'dataTypeContent',
+            'isModelTranslatable',
+            'id_alumno',
+            'nombre_alumno',
+            'cursos',
+            'sucursal',
+            'localidades',
+            'nombre_sucursal',
+            'comerciales_activos'
+        ));
     }
 
     /**
@@ -715,6 +770,8 @@ public function recibo_cobranza($id){
      */
     public function store(Request $request)
     {
+        // dd($request->all()); verificar los datos venidos del formulario
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -736,7 +793,7 @@ public function recibo_cobranza($id){
             }
 
             return $redirect->with([
-                'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+                'message'    => __('voyager::generic.successfully_added_new') . " {$dataType->getTranslatedAttribute('display_name_singular')}",
                 'alert-type' => 'success',
             ]);
         } else {
@@ -773,7 +830,7 @@ public function recibo_cobranza($id){
         }
 
         $affected = 0;
-        
+
         foreach ($ids as $id) {
             $data = call_user_func([$dataType->model_name, 'findOrFail'], $id);
 
@@ -798,11 +855,11 @@ public function recibo_cobranza($id){
 
         $data = $affected
             ? [
-                'message'    => __('voyager::generic.successfully_deleted')." {$displayName}",
+                'message'    => __('voyager::generic.successfully_deleted') . " {$displayName}",
                 'alert-type' => 'success',
             ]
             : [
-                'message'    => __('voyager::generic.error_deleting')." {$displayName}",
+                'message'    => __('voyager::generic.error_deleting') . " {$displayName}",
                 'alert-type' => 'error',
             ];
 
@@ -821,7 +878,7 @@ public function recibo_cobranza($id){
 
         // Get record
         $query = $model->withTrashed();
-        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
             $query = $query->{$dataType->scope}();
         }
         $data = $query->findOrFail($id);
@@ -831,11 +888,11 @@ public function recibo_cobranza($id){
         $res = $data->restore($id);
         $data = $res
             ? [
-                'message'    => __('voyager::generic.successfully_restored')." {$displayName}",
+                'message'    => __('voyager::generic.successfully_restored') . " {$displayName}",
                 'alert-type' => 'success',
             ]
             : [
-                'message'    => __('voyager::generic.error_restoring')." {$displayName}",
+                'message'    => __('voyager::generic.error_restoring') . " {$displayName}",
                 'alert-type' => 'error',
             ];
 
@@ -896,7 +953,7 @@ public function recibo_cobranza($id){
 
                 // Check if we're dealing with a nested array for the case of multiple files
                 if (is_array($fieldData[0])) {
-                    foreach ($fieldData as $index=>$file) {
+                    foreach ($fieldData as $index => $file) {
                         // file type has a different structure than images
                         if (!empty($file['original_name'])) {
                             if ($file['original_name'] == $filename) {
@@ -1048,13 +1105,13 @@ public function recibo_cobranza($id){
                     if (isset($row->details->thumbnails)) {
                         foreach ($row->details->thumbnails as $thumbnail) {
                             $ext = explode('.', $image);
-                            $extension = '.'.$ext[count($ext) - 1];
+                            $extension = '.' . $ext[count($ext) - 1];
 
                             $path = str_replace($extension, '', $image);
 
                             $thumb_name = $thumbnail->name;
 
-                            $this->deleteFileIfExists($path.'-'.$thumb_name.$extension);
+                            $this->deleteFileIfExists($path . '-' . $thumb_name . $extension);
                         }
                     }
                 }
@@ -1084,11 +1141,11 @@ public function recibo_cobranza($id){
 
         if (empty($dataType->order_column) || empty($dataType->order_display_column)) {
             return redirect()
-            ->route("voyager.{$dataType->slug}.index")
-            ->with([
-                'message'    => __('voyager::bread.ordering_not_set'),
-                'alert-type' => 'error',
-            ]);
+                ->route("voyager.{$dataType->slug}.index")
+                ->with([
+                    'message'    => __('voyager::bread.ordering_not_set'),
+                    'alert-type' => 'error',
+                ]);
         }
 
         $model = app($dataType->model_name);
@@ -1178,7 +1235,7 @@ public function recibo_cobranza($id){
 
         $this->authorize($method, $model);
 
-        $rows = $dataType->{$method.'Rows'};
+        $rows = $dataType->{$method . 'Rows'};
         foreach ($rows as $key => $row) {
             if ($row->field === $request->input('type')) {
                 $options = $row->details;
@@ -1188,7 +1245,7 @@ public function recibo_cobranza($id){
                 $additional_attributes = $model->additional_attributes ?? [];
 
                 // Apply local scope if it is defined in the relationship-options
-                if (isset($options->scope) && $options->scope != '' && method_exists($model, 'scope'.ucfirst($options->scope))) {
+                if (isset($options->scope) && $options->scope != '' && method_exists($model, 'scope' . ucfirst($options->scope))) {
                     $model = $model->{$options->scope}();
                 }
 
@@ -1203,9 +1260,9 @@ public function recibo_cobranza($id){
                         $total_count = $relationshipOptions->count();
                         $relationshipOptions = $relationshipOptions->forPage($page, $on_page);
                     } else {
-                        $total_count = $model->where($options->label, 'LIKE', '%'.$search.'%')->count();
+                        $total_count = $model->where($options->label, 'LIKE', '%' . $search . '%')->count();
                         $relationshipOptions = $model->take($on_page)->skip($skip)
-                            ->where($options->label, 'LIKE', '%'.$search.'%')
+                            ->where($options->label, 'LIKE', '%' . $search . '%')
                             ->get();
                     }
                 } else {
@@ -1277,8 +1334,8 @@ public function recibo_cobranza($id){
 
             return !$this->relationIsUsingAccessorAsLabel($item->details);
         })
-        ->pluck('field')
-        ->toArray();
+            ->pluck('field')
+            ->toArray();
     }
 
     protected function relationIsUsingAccessorAsLabel($details)

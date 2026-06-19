@@ -32,8 +32,8 @@ class eventosPorInstructor extends AbstractWidget
                 'text' => "Acceder al Calendario",
                 'link' => route('calendario.modificar'),
             ],
-            'image' => voyager_asset('images/widget-backgrounds/03.jpg'),
-            'image' => 'img/dream_TradingCard (4-2).jpg',
+           
+            'image' => 'http://200.58.107.148/img/dream_TradingCard%20(4-2).jpg',
         ]));
     }
 

@@ -83,7 +83,17 @@
                                             @php
                                                 continue;
                                             @endphp
-                                    @endif      
+                                    @endif  
+                                    
+                                    @if ($row->getTranslatedAttribute('display_name') == 'Fecha')
+                                        <div class="form-group">
+                                         <label class="control-label" for="fecha">Fecha</label> 
+                                         <input type="date"  name="fecha" value="{{ date('Y-m-d') }}">
+                                        </div>  
+                                        @php
+                                            continue;
+                                        @endphp
+                                    @endif
                                     
                                     @if($row->getTranslatedAttribute('display_name')=='users')
                                     <input type="hidden" name="id_usuario" value="{{$operador}}">

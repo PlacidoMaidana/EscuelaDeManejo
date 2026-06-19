@@ -301,7 +301,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
             // console.log(datos.get('start_date'));
             // console.log(formulario.clase.value);
            
-            axios.post("http://127.0.0.1:8000/calendario/borrar/"+formulario.id.value)
+            axios.post("{{url('/calendario/borrar/')}}/"+formulario.id.value)
             .then(
                 (respuesta)=>{  
                     calendar.refetchEvents();
@@ -329,7 +329,7 @@ document.getElementById("btn-eliminar").addEventListener("click",function(){
                 console.log(pair[0] + ': ' + pair[1]);
               }
                        
-            axios.post("http://127.0.0.1:8000/calendario/actualizar/"+formulario.id.value , datos)
+            axios.post("{{url('/calendario/actualizar/')}}/"+formulario.id.value , datos)
              .then(
               (respuesta)=>{
                console.log("La respuesta es: ");

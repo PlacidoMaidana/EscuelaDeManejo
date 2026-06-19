@@ -28,8 +28,16 @@ class Calendario_instructorController extends Controller
     }
     public function lista_alumnos_instructor_fecha($idInstructor)
     {
+
+            //*****************
+           // Averigua sucursal para filtrar los profesores por sucursal
+           // *************
+           $user = Auth::user();
+           $sucursal=$user->id_sucursal;
+           // ******************
+       
         $nombre_instructor=Instructore::find($idInstructor);
-        return view('voyager::instructores.lista_alumnnos_browse', compact('idInstructor','nombre_instructor'));
+        return view('voyager::instructores.lista_alumnnos_browse', compact('idInstructor','nombre_instructor','sucursal'));
     }
    // public function alumnos_instructor_por_fecha($idInstructor,$from)
     public function alumnos_instructor_por_fecha($idInstructor, $from)
@@ -41,7 +49,8 @@ class Calendario_instructorController extends Controller
                ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
                ->whereDate('alumno_evento.start_date','=',$from )
                ->where('alumno_evento.id_instructor','=',$idInstructor )
-               ->select(['alumno_evento.start_date',
+               ->select(['alumno_evento.id',
+                         'alumno_evento.start_date',
                          'alumnos.nombre',
                          'alumnos.telefono',
                          'cursos.nombre_curso',
@@ -50,6 +59,26 @@ class Calendario_instructorController extends Controller
                            ]))
                 ->toJson();  
     }
+
+    /* El método permite cambiar el instructor de un grupo de alumnos por posibles ausencias de su instructor programado */
+
+    public function actualizar_alumnos_evento(Request $request)
+    {
+
+        $nuevoInstructor = $request->instructor_id;
+        foreach ($request->ids as $id) {
+            DB::table('alumno_evento')
+                ->where('id', $id)
+                ->update(['id_instructor' => $nuevoInstructor]); // Cuatro correspondería a un instructor elegido para suplantar el primero
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+
+
+
+
     public function query_instructores_sucursal($sucursal)
     {
         $hoy=now();
@@ -57,7 +86,7 @@ class Calendario_instructorController extends Controller
         ->join('alumno_evento','instructores.id','=','alumno_evento.id_instructor')
         ->join('alumnos_cursos','alumnos_cursos.id','=','alumno_evento.id_alumno_curso')
         ->where('alumnos_cursos.id_sucursal','=', $sucursal)
-       //->where('alumno_evento.start_date','>=', $hoy)
+        ->where('instructores.activo','=','SI')
         ->groupBy('instructores.id','instructores.nombre')
         ->select([  'instructores.id','instructores.nombre',
                      DB::raw('COUNT(alumno_evento.id) AS clases'),

@@ -224,8 +224,9 @@ class EgresosController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
                 'egresos_gastos.descripcion',
                 'users.name',
                 'egresos_gastos.modalidad_pago',
-                'egresos_gastos.importe',                
-              ]))  
+                'egresos_gastos.importe',             
+              ])
+              ->orderBy('id', 'DESC'))  
               ->addColumn('check','vendor/voyager/egresos-gastos/check')
               ->addColumn('accion','vendor/voyager/egresos-gastos/acciones_gastos')
               ->rawColumns(['check','accion'])  
