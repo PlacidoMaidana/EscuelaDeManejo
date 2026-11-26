@@ -13,6 +13,11 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class informes_tesoreria extends Controller
 {
+    // Sucursal de un pago: la del usuario que lo cargó, salvo los Incobrable,
+    // que cuentan en la sucursal de la inscripción del alumno (SRS Incobrables, DEC-02).
+    const SUC_PAGO = 'IF(ingresos_cursos.modalidad_pago="Incobrable", alumnos_cursos.id_sucursal, users.id_sucursal)';
+    const SUC_PAGO_ALIAS = 'IF(i.modalidad_pago="Incobrable", a.id_sucursal, users.id_sucursal)';
+    const NO_INCOBRABLE = 'COALESCE(ingresos_cursos.modalidad_pago, "") <> "Incobrable"';
     
     public function index_ing_suc()
      {
@@ -74,11 +79,14 @@ class informes_tesoreria extends Controller
              ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
              ->where('ingresos_cursos.fecha','=',$fecha)
              ->where('ingresos_cursos.id_usuario','=',$operador )
+             ->whereRaw(self::NO_INCOBRABLE)
              ->select(['ingresos_cursos.fecha',
                        'sucursales.sucursal',
                        'users.name',
                        'ingresos_cursos.modalidad_pago',
                        'ingresos_cursos.importe',
+                       'ingresos_cursos.recargo',
+                       DB::raw('ingresos_cursos.importe + ingresos_cursos.recargo AS total_abonado'),
                        'alumnos.nombre',
                        'cursos.nombre_curso'
                        ]))
@@ -93,12 +101,14 @@ class informes_tesoreria extends Controller
       $total_ingresos= DB::table('ingresos_cursos')
               ->whereDate('ingresos_cursos.fecha','=', $fecha) 
               ->where('ingresos_cursos.id_usuario','=', $operador)
+              ->whereRaw(self::NO_INCOBRABLE)
                     ->select([DB::raw('"INGRESOS" as tipo'),
                     DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Efectivo", importe, NULL)) AS Efectivo'),
                     DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Transferencia", importe, NULL)) AS Transferencia'),
                     DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Débito" , importe, NULL)) AS Debito'),
                     DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS Credito'), 
-                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Mercado Pago", importe, NULL)) AS MPago'),  ])
+                    DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Mercado Pago", importe, NULL)) AS MPago'),
+                    DB::raw('SUM(ingresos_cursos.recargo) AS Recargos'),  ])
                     ->groupBy('tipo');
          
 
@@ -110,7 +120,8 @@ class informes_tesoreria extends Controller
                     DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Transferencia", importe, NULL)) AS Transferencia'),
                     DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Tarjeta Débito" , importe, NULL)) AS Debito'),
                     DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS Credito'),
-                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Mercado Pago", importe, NULL)) AS MPago'), ] )
+                    DB::raw('SUM(IF(egresos_gastos.modalidad_pago="Mercado Pago", importe, NULL)) AS MPago'),
+                    DB::raw('NULL AS Recargos'), ] )
                     ->groupBy('tipo')
                     ->union($total_ingresos);
    
@@ -148,7 +159,7 @@ class informes_tesoreria extends Controller
            ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
            ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
            ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
-           ->join('sucursales','sucursales.id','=','users.id_sucursal')
+           ->join('sucursales', function ($j) { $j->on('sucursales.id', '=', DB::raw(self::SUC_PAGO)); })
            ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
            ->select(['ingresos_cursos.fecha',
                      'sucursales.sucursal',
@@ -157,6 +168,7 @@ class informes_tesoreria extends Controller
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe',
+                     'ingresos_cursos.recargo',
                      'ingresos_cursos.tipo_pago',
                      'ingresos_cursos.detalle'
                      ]))
@@ -168,7 +180,8 @@ class informes_tesoreria extends Controller
     {
         return $datos = datatables()->of(DB::table('ingresos_cursos')
             ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
-            ->join('sucursales','sucursales.id','=','users.id_sucursal')
+            ->leftjoin('alumnos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
+            ->join('sucursales', function ($j) { $j->on('sucursales.id', '=', DB::raw(self::SUC_PAGO)); })
              ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
              ->groupBy('sucursales.sucursal')
                ->select([ 'sucursales.sucursal',
@@ -178,7 +191,12 @@ class informes_tesoreria extends Controller
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Débito", importe, NULL)) AS tarjeta_debito'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS tarjeta_credito'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Retenciones", importe, NULL)) AS retenciones'),
-            DB::raw('SUM(ingresos_cursos.importe) AS total_cobrado'),
+            // Los pagos "Incobrable" cancelan saldo pero no son dinero cobrado
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", NULL, importe)) AS total_cobrado'),
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", importe, NULL)) AS incobrables'),
+            // Recargo por financiación: va aparte, no suma en Total Cobrado (SRS Recargo, DEC-04)
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", NULL, ingresos_cursos.recargo)) AS recargos'),
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", NULL, ingresos_cursos.importe + ingresos_cursos.recargo)) AS total_abonado'),
             
               ]))
              ->toJson();  
@@ -190,8 +208,8 @@ class informes_tesoreria extends Controller
      $saldos_alumnos= DB::table('ingresos_cursos as i')
               ->join('alumnos_cursos as a', 'a.id', '=', 'i.id_alumno_curso')
               ->join('users', 'users.id', '=', 'i.id_usuario')
-              ->select('users.id_sucursal', 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
-              ->groupBy('users.id_sucursal', 'a.id','a.precio')
+              ->select(DB::raw(self::SUC_PAGO_ALIAS.' as id_sucursal'), 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
+              ->groupBy(DB::raw(self::SUC_PAGO_ALIAS), 'a.id','a.precio')
               ->havingRaw('a.precio - SUM(i.importe) > 0');
 
     return $resultado = datatables()->of( DB::table('sucursales')
@@ -208,9 +226,9 @@ class informes_tesoreria extends Controller
       $saldos_alumnos= DB::table('ingresos_cursos as i')
               ->join('alumnos_cursos as a', 'a.id', '=', 'i.id_alumno_curso')
               ->join('users', 'users.id', '=', 'i.id_usuario')
-              ->select('users.id_sucursal', 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
-              ->where('users.id_sucursal','=',$sucursal)
-              ->groupBy('users.id_sucursal', 'a.id','a.precio')
+              ->select(DB::raw(self::SUC_PAGO_ALIAS.' as id_sucursal'), 'a.id', DB::raw('(a.precio - SUM(i.importe)) as saldo'))
+              ->whereRaw(self::SUC_PAGO_ALIAS.' = ?', [$sucursal])
+              ->groupBy(DB::raw(self::SUC_PAGO_ALIAS), 'a.id','a.precio')
               ->havingRaw('a.precio - SUM(i.importe) > 0');
       return $resultado = datatables()->of( DB::table('sucursales')
               ->joinSub($saldos_alumnos, 'b' , function ($join) {
@@ -232,9 +250,9 @@ class informes_tesoreria extends Controller
            ->join('alumnos','alumnos.id','=','alumnos_cursos.id_alumno')
            ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
            ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
-           ->join('sucursales','sucursales.id','=','users.id_sucursal')
+           ->join('sucursales', function ($j) { $j->on('sucursales.id', '=', DB::raw(self::SUC_PAGO)); })
            ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
-           ->where('users.id_sucursal','=',$sucursal)
+           ->whereRaw(self::SUC_PAGO.' = ?', [$sucursal])
            ->select(['ingresos_cursos.fecha',
                      'sucursales.sucursal',
                      'alumnos.nombre as nombre_alumno',
@@ -242,6 +260,7 @@ class informes_tesoreria extends Controller
                      'users.name',
                      'ingresos_cursos.modalidad_pago',
                      'ingresos_cursos.importe',
+                     'ingresos_cursos.recargo',
                      'ingresos_cursos.tipo_pago',
                      'ingresos_cursos.detalle',
                      'empleados.nombre' ]))
@@ -254,9 +273,10 @@ class informes_tesoreria extends Controller
         $sucursal = auth()->user()->id_sucursal;
         return $datos = datatables()->of(DB::table('ingresos_cursos')
         ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
-        ->join('sucursales','sucursales.id','=','users.id_sucursal')
+        ->leftjoin('alumnos_cursos','alumnos_cursos.id','=','ingresos_cursos.id_alumno_curso')
+        ->join('sucursales', function ($j) { $j->on('sucursales.id', '=', DB::raw(self::SUC_PAGO)); })
              ->whereBetween('ingresos_cursos.fecha',array($from,$to) )
-             ->where('users.id_sucursal','=',$sucursal)
+             ->whereRaw(self::SUC_PAGO.' = ?', [$sucursal])
              ->groupBy('sucursales.sucursal')
                ->select([ 'sucursales.sucursal',
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Efectivo", importe, NULL)) AS efectivo'),
@@ -265,7 +285,12 @@ class informes_tesoreria extends Controller
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Débito", importe, NULL)) AS tarjeta_debito'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Tarjeta Crédito", importe, NULL)) AS tarjeta_credito'),
             DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Retenciones", importe, NULL)) AS retenciones'),
-            DB::raw('SUM(ingresos_cursos.importe) AS total_cobrado'),
+            // Los pagos "Incobrable" cancelan saldo pero no son dinero cobrado
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", NULL, importe)) AS total_cobrado'),
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", importe, NULL)) AS incobrables'),
+            // Recargo por financiación: va aparte, no suma en Total Cobrado (SRS Recargo, DEC-04)
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", NULL, ingresos_cursos.recargo)) AS recargos'),
+            DB::raw('SUM(IF(ingresos_cursos.modalidad_pago="Incobrable", NULL, ingresos_cursos.importe + ingresos_cursos.recargo)) AS total_abonado'),
               ]))
              ->toJson();  
            

@@ -34,6 +34,7 @@ class Informe_flujofinancieroExport implements FromCollection
                ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
                ->join('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
                ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
+                     ->whereRaw('COALESCE(ingresos_cursos.modalidad_pago, "") <> "Incobrable"')
                          ->select([DB::raw('"INGRESOS" as tipo'),
                                  DB::raw('sucursales.sucursal as tipo1'),
                                  DB::raw('cursos.nombre_curso as tipo2'),

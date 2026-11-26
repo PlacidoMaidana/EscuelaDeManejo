@@ -22,6 +22,8 @@ class informes_flujofinancieroController extends Controller
               
 
             $total_ingresos= DB::table('ingresos_cursos')
+                // Los Incobrable cancelan saldo pero no son dinero (SRS Incobrables, RF-11)
+                ->whereRaw('COALESCE(ingresos_cursos.modalidad_pago, "") <> "Incobrable"')
                 ->select([DB::raw('"INGRESOS TOTAL" as tipo'),
                               DB::raw('" " as tipo1'),
                               DB::raw('" " as tipo2'), 
@@ -81,6 +83,7 @@ class informes_flujofinancieroController extends Controller
                      ->join ('alumnos_cursos','ingresos_cursos.id_alumno_curso','=','alumnos_cursos.id')
                      ->join('sucursales','sucursales.id','=','alumnos_cursos.id_sucursal')
                      ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
+                     ->whereRaw('COALESCE(ingresos_cursos.modalidad_pago, "") <> "Incobrable"')
                                ->select([DB::raw('"INGRESOS" as tipo'),
                                        DB::raw('sucursales.sucursal as tipo1'),
                                        DB::raw('cursos.nombre_curso as tipo2'),

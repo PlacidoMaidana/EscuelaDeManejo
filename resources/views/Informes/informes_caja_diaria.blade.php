@@ -53,7 +53,9 @@
           <th>Sucursal</th>
           <th>operador</th>
           <th>modalidad_pago</th>
-          <th>importe</th>
+          <th>importe del curso</th>
+          <th>Recargo</th>
+          <th>Total abonado</th>
           <th>Alumno</th>
           <th>Curso</th>
         </tr>
@@ -70,6 +72,7 @@
           <th>Tarjetas Debito</th> 
           <th>Tarjetas Credito</th> 
           <th>Mercado Pago</th>
+          <th>Recargos</th>
           </tr>
        </thead>
       </table>
@@ -130,6 +133,8 @@
             {data: 'name', name:'user.name', width: '10%'},
             {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+            {data: 'recargo', name: 'ingresos_cursos.recargo', width: '8%'},
+            {data: 'total_abonado', name: 'total_abonado', searchable: false, orderable: false, width: '10%'},
             {data: 'nombre', name: 'alumnos.nombre', width: '10%'},
             {data: 'nombre_curso', name: 'cursos.nombre_curso', width: '10%'},
           ]        
@@ -148,6 +153,7 @@ $('#totales').dataTable( {
             {data: 'Debito',name: 'Debito', width: '5%'},
             {data: 'Credito',name: 'Credito', width: '5%'},
             {data: 'MPago',name: 'MPago', width: '5%'},
+            {data: 'Recargos',name: 'Recargos', width: '5%'},
              ]        
 });
 

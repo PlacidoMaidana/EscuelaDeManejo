@@ -128,6 +128,13 @@
                                         @endforeach
                                     @endif
                                 </div>
+                                @if ($row->field == 'recargo')
+                                    {{-- SRS Recargo: Total abonado = Importe del curso + Recargo (solo informativo, lo recalcula el servidor) --}}
+                                    <div class="form-group col-md-12" id="total_abonado_box">
+                                        <label class="control-label">Total abonado</label>
+                                        <div><strong id="total_abonado">0</strong></div>
+                                    </div>
+                                @endif
                             @endforeach
 
                         </div><!-- panel-body -->
@@ -246,6 +253,21 @@
             });
             $('[data-toggle="tooltip"]').tooltip();
         });
+    </script>
+    <script>
+        // SRS Recargo: muestra en vivo Total abonado = Importe del curso + Recargo por financiación
+        (function () {
+            var importe = document.querySelector('[name="importe"]');
+            var recargo = document.querySelector('[name="recargo"]');
+            var total = document.getElementById('total_abonado');
+            if (!importe || !recargo || !total) { return; }
+            function aNumero(v) { var n = parseInt(String(v).replace(/[^0-9-]/g, ''), 10); return isNaN(n) ? 0 : n; }
+            function actualizar() { total.textContent = (aNumero(importe.value) + aNumero(recargo.value)).toLocaleString('es-AR'); }
+            if (recargo.value === '') { recargo.value = '0'; }
+            importe.addEventListener('input', actualizar);
+            recargo.addEventListener('input', actualizar);
+            actualizar();
+        })();
     </script>
     
 @stop

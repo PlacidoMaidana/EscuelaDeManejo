@@ -133,8 +133,12 @@
            </div>
                <h4 >
                  Total Curso: {{number_format($datoscobranza->precio, 2, '.', ',')}} <br>
-                 Importe recibido: {{number_format($datoscobranza->importe, 2, '.', ',')}} <br>
-                 Total cobrado a la fecha {{number_format($Total_cobrado, 2, '.', ',')}} <br>
+                 Importe del curso: {{number_format($datoscobranza->importe, 2, '.', ',')}} <br>
+                 @if (($datoscobranza->recargo ?? 0) > 0)
+                 Recargo por financiación: {{number_format($datoscobranza->recargo, 2, '.', ',')}} <br>
+                 @endif
+                 <strong>Total abonado: {{number_format($datoscobranza->importe + ($datoscobranza->recargo ?? 0), 2, '.', ',')}}</strong> <br>
+                 Total cobrado del curso a la fecha: {{number_format($Total_cobrado, 2, '.', ',')}} <br>
                  Saldo restante:{{number_format($saldo, 2, '.', ',')}} <br>
                  Modalidad de Pago:  {{$datoscobranza->modalidad_pago}}  <br>
                  Tipo Pago: {{$datoscobranza->tipo_pago}}  <br>

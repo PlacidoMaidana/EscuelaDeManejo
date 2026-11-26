@@ -17,6 +17,7 @@ use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use App\AlumnosCurso;
+use App\Services\Incobrables;
 use App\Exports\Informe_clasesExportComisiones;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -287,6 +288,9 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
 
     public function edit(Request $request, $id)
     {
+        if ($this->esPagoIncobrable($id)) {
+            return $this->rechazarIncobrable('Los pagos Incobrable no se editan: se revierten desde la pantalla Incobrables.');
+        }
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -346,6 +350,16 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
+        $idPago = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->getKey() : $id;
+        if ($this->esPagoIncobrable($idPago)) {
+            return $this->rechazarIncobrable('Los pagos Incobrable no se editan: se revierten desde la pantalla Incobrables.');
+        }
+        $cuentaActual = DB::table('ingresos_cursos')->where('id', $idPago)->value('id_alumno_curso');
+        if ($request->filled('id_alumno_curso') && (string) $request->input('id_alumno_curso') !== (string) $cuentaActual
+            && Incobrables::cuentaDadaDeBaja($request->input('id_alumno_curso'))) {
+            return $this->rechazarIncobrable(Incobrables::AVISO_BLOQUEO);
+        }
+        $this->normalizarRecargo($request);
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -451,6 +465,9 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
 
     public function create_pago_cursos($id_alumno_curso)
     {   
+        if (Incobrables::cuentaDadaDeBaja($id_alumno_curso)) {
+            return $this->rechazarIncobrable(Incobrables::AVISO_BLOQUEO);
+        }
         $slug = "ingresos-cursos";
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -510,7 +527,11 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
      */
     public function store(Request $request)
     {
-       
+        // Una cuenta dada de baja como incobrable no se cobra hasta que Sistemas la reactive (RF-16)
+        if (Incobrables::cuentaDadaDeBaja($request->input('id_alumno_curso'))) {
+            return $this->rechazarIncobrable(Incobrables::AVISO_BLOQUEO);
+        }
+        $this->normalizarRecargo($request);
         
         $slug = $this->getSlug($request);
 
@@ -581,6 +602,13 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
         } else {
             // Single item delete, get ID from URL
             $ids[] = $id;
+        }
+
+        // Los pagos Incobrable no se borran desde aquí: se revierten desde su lote (RF-14)
+        foreach ($ids as $idPago) {
+            if ($this->esPagoIncobrable($idPago)) {
+                return $this->rechazarIncobrable('Los pagos Incobrable no se borran: se revierten desde la pantalla Incobrables. No se borró nada.');
+            }
         }
 
         $affected = 0;
@@ -1096,5 +1124,28 @@ class IngresosCursosController  extends \TCG\Voyager\Http\Controllers\VoyagerBas
     protected function relationIsUsingAccessorAsLabel($details)
     {
         return in_array($details->label, app($details->model)->additional_attributes ?? []);
+    }
+
+    // ---- Incobrables (SRS Registro de Incobrables) ----
+    private function esPagoIncobrable($id): bool
+    {
+        return DB::table('ingresos_cursos')->where('id', $id)
+            ->where(function ($q) {
+                $q->whereNotNull('id_lote_incobrable')->orWhere('modalidad_pago', Incobrables::MODALIDAD);
+            })->exists();
+    }
+
+    // ---- Recargo por financiación (SRS Recargo) ----
+    // Vacío = 0. La validación (entero >= 0) la hace el BREAD con la regla del campo recargo.
+    private function normalizarRecargo(Request $request): void
+    {
+        if (!$request->filled('recargo')) {
+            $request->merge(['recargo' => 0]);
+        }
+    }
+
+    private function rechazarIncobrable(string $mensaje)
+    {
+        return redirect()->back()->withInput()->with(['message' => $mensaje, 'alert-type' => 'error']);
     }
 }

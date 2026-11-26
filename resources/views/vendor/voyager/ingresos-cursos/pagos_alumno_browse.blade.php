@@ -26,7 +26,9 @@
         <th>Curso</th>
         <th>Fecha Pago</th>
         <th>Modalidad Pago</th>
-        <th>Importe</th>
+        <th>Importe del curso</th>
+        <th>Recargo</th>
+        <th>Total abonado</th>
         <th>Observaciones</th>
         <th>Acciones</th>
         </tr>
@@ -87,6 +89,8 @@
                      {data: 'fecha', name: 'ingresos_cursos.fecha', width: '10%'},
                      {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
                      {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+                     {data: 'recargo', name: 'ingresos_cursos.recargo', width: '8%'},
+                     {data: 'total_abonado', name: 'total_abonado', searchable: false, orderable: false, width: '10%'},
                      {data: 'detalle', name: 'ingresos_cursos.detalle', width: '10%'},
                      {data: 'accion', width: '10%'},
                      ]           

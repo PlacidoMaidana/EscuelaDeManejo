@@ -21,11 +21,13 @@ class Informe_cajaExport implements FromCollection
         ->join('cursos','cursos.id','=','alumnos_cursos.id_curso')
         ->where('ingresos_cursos.fecha','=',$this->fecha)
         ->where('ingresos_cursos.id_usuario','=',$this->operador )
+        ->whereRaw('COALESCE(ingresos_cursos.modalidad_pago, "") <> "Incobrable"')
         ->select(['"INGRESOS" as tipo',
                    'ingresos_cursos.fecha',
                    'users.name as operador',
                    'ingresos_cursos.modalidad_pago',
                    'ingresos_cursos.importe',
+                   'ingresos_cursos.recargo',
                    'alumnos.nombre as detalle1',
                    'cursos.nombre_curso as detalle2',
                    '"-" as detalle3'   ]);
@@ -40,6 +42,7 @@ class Informe_cajaExport implements FromCollection
                   'users.name as operador',
                   'egresos_gastos.modalidad_pago',
                  'egresos_gastos.importe',
+                 DB::raw('0 as recargo'),
                  'egresos_gastos.descripcion as detalle1',
                  'tipos_gastos.tipo1 as detalle2 ',
                  'tipos_gastos.tipo2 as detalle3'])

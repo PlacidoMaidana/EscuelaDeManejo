@@ -22,7 +22,8 @@ class Informe_ingresosExport implements FromCollection
        ->leftjoin('users','users.id','=','ingresos_cursos.id_usuario')
        ->leftjoin('empleados','empleados.id','=','alumnos_cursos.id_vendedor')
        ->whereBetween('ingresos_cursos.fecha',array($this->desde,$this->hasta) )
-       ->where('users.id_sucursal','=',$sucursal)
+       // Los Incobrable cuentan en la sucursal de la inscripción (SRS Incobrables, DEC-02)
+       ->whereRaw('IF(ingresos_cursos.modalidad_pago="Incobrable", alumnos_cursos.id_sucursal, users.id_sucursal) = ?', [$sucursal])
        ->select(['ingresos_cursos.fecha',
                  'sucursales.sucursal',
                  'alumnos.nombre as nombre_alumno',
@@ -30,6 +31,7 @@ class Informe_ingresosExport implements FromCollection
                  'users.name',
                  'ingresos_cursos.modalidad_pago',
                  'ingresos_cursos.importe',
+                 'ingresos_cursos.recargo',
                  'ingresos_cursos.tipo_pago',
                  'ingresos_cursos.detalle',
                  'empleados.nombre'                

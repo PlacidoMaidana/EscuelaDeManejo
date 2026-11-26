@@ -36,7 +36,8 @@
         <th>Curso</th> 
         <th>Operador caja</th> 
         <th>Modalidad Pago</th>
-        <th>Importe</th> 
+        <th>Importe del curso</th>
+        <th>Recargo</th>
         <th>Tipo Pago</th> 
         <th>Detalle</th>  
         <th>Vendedor</th> 
@@ -55,6 +56,9 @@
           <th>Tarjeta Crédito</th>
           <th>Retenciones</th>
           <th>Total Cobrado</th>
+          <th>Recargos</th>
+          <th>Total abonado</th>
+          <th>Incobrables</th>
         </tr>
        </thead>
       </table>
@@ -110,6 +114,7 @@
             {data: 'name', name:'users.name', width: '10%'},
             {data: 'modalidad_pago', name: 'ingresos_cursos.modalidad_pago', width: '10%'},
             {data: 'importe', name: 'ingresos_cursos.importe', width: '10%'},
+            {data: 'recargo', name: 'ingresos_cursos.recargo', width: '8%'},
             {data: 'tipo_pago', name: 'ingresos_cursos.tipo_pago', width: '10%'},
             {data: 'detalle', name: 'ingresos_cursos.detalle', width: '10%'},
             {data: 'nombre', name: 'empleados.nombre', width: '10%'},
@@ -131,6 +136,9 @@ $('#totales').dataTable( {
             {data: 'tarjeta_credito', name: 'tarjeta_credito', width: '10%'},
             {data: 'retenciones', name: 'retenciones', width: '10%'},
             {data: 'total_cobrado', name: 'total_cobrado', width: '10%'},
+            {data: 'recargos', name: 'recargos', width: '10%'},
+            {data: 'total_abonado', name: 'total_abonado', width: '10%'},
+            {data: 'incobrables', name: 'incobrables', width: '10%'},
                       ]        
 });
 

@@ -75,6 +75,18 @@ Route::post('/calendario_instructor/editar/{id}', 'App\Http\Controllers\Calendar
 Route::post('/calendario_instructor/actualizar/{evento}', 'App\Http\Controllers\Calendario_instructorController@update');
 Route::post('/calendario_instructor/borrar/{id}', 'App\Http\Controllers\Calendario_instructorController@destroy');
 
+//////////////////////////////////////////////////////////
+// INCOBRABLES (solo rol Sistemas) – ver SRS Registro de Incobrables
+//////////////////////////////////////////////////////////
+Route::group(['prefix' => 'admin/incobrables', 'middleware' => ['admin.user', 'solo.sistemas']], function () {
+    Route::get('/', 'App\Http\Controllers\IncobrablesController@index')->name('incobrables.index');
+    Route::post('/confirmar', 'App\Http\Controllers\IncobrablesController@confirmar')->name('incobrables.confirmar');
+    Route::get('/lote/{id}', 'App\Http\Controllers\IncobrablesController@lote')->where('id', '[0-9]+')->name('incobrables.lote');
+    Route::post('/lote/{id}/revertir', 'App\Http\Controllers\IncobrablesController@revertir')->where('id', '[0-9]+')->name('incobrables.revertir');
+    Route::post('/lote/{id}/cuenta/{cuenta}/reactivar', 'App\Http\Controllers\IncobrablesController@reactivar')
+        ->where(['id' => '[0-9]+', 'cuenta' => '[0-9]+'])->name('incobrables.reactivar');
+});
+
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });

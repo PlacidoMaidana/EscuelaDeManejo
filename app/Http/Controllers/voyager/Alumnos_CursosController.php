@@ -300,6 +300,8 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
                 'ingresos_cursos.fecha',
                 'ingresos_cursos.modalidad_pago',
                 'ingresos_cursos.importe',
+                'ingresos_cursos.recargo',
+                DB::raw('ingresos_cursos.importe + ingresos_cursos.recargo AS total_abonado'),
                 'ingresos_cursos.tipo_pago',
                 'ingresos_cursos.detalle',
             ]))
@@ -330,6 +332,7 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
                 'ingresos_cursos.fecha',
                 'ingresos_cursos.modalidad_pago',
                 'ingresos_cursos.importe',
+                'ingresos_cursos.recargo',
                 'ingresos_cursos.tipo_pago',
                 'ingresos_cursos.detalle',
             ]))
@@ -663,6 +666,12 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
         // Validate fields with ajax
         $val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
 
+        // Ensure a course and alumno are selected
+        $request->validate([
+            'id_curso' => 'required|integer|exists:cursos,id',
+            'id_alumno' => 'required|integer|exists:alumnos,id',
+        ]);
+
         // Get fields with images to remove before updating and make a copy of $data
         $to_remove = $dataType->editRows->where('type', 'image')
             ->filter(function ($item, $key) use ($request) {
@@ -781,6 +790,12 @@ class Alumnos_CursosController extends \TCG\Voyager\Http\Controllers\VoyagerBase
 
         // Validate fields with ajax
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
+
+        // Ensure a course and alumno are selected
+        $request->validate([
+            'id_curso' => 'required|integer|exists:cursos,id',
+            'id_alumno' => 'required|integer|exists:alumnos,id',
+        ]);
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
 
         event(new BreadDataAdded($dataType, $data));
